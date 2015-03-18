@@ -11,6 +11,10 @@
             audiojs.events.ready(function () {
                 var as = audiojs.createAll();
             });
+            var loc = window.location.pathname;
+            var dir = loc.substring(0, loc.lastIndexOf('/'));
+            alert(loc);
+            alert(dir);
         </script>
         <meta name="msapplication-tap-highlight" content="no" />
         <title>inspire me</title>

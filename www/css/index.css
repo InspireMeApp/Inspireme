@@ -1,3 +1,9 @@
+html, body{
+    height:100%;
+}
 body {
-	margin-top: 20px;
+    margin:0;
+    background:url(../media/mountains-small.jpg) no-repeat center center;
+    background-size:cover;
+    -webkit-background-size:cover;
 }
