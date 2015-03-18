@@ -1,18 +1,25 @@
 var app = (function()
         {
-        
-        document.addEventListener('deviceready', onDeviceReady, false);
+           document.addEventListener('deviceready', onDeviceReady, false); 
+           document.addEventListener('documentready', onDeviceReady, false); 
 
-        function onDeviceReady()
-        {
-            is_device = true;
-            init();
-        }
-        
-        app.init = function(){
-            alert('test');
-        };
+            var app = {};
+            var is_device = false
+            
+            function onDeviceReady(){
+                
+                              
+            }
+            
+              if(checkConnection()){
+                    login('user' , 'password');
+                }
 
-        return app;
+            function init(){
+            
+            }
+           
 
-        })()
+         return app;
+
+    })();
