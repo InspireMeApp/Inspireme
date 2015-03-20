@@ -1,25 +1,42 @@
 var app = (function()
         {
-           document.addEventListener('deviceready', onDeviceReady, false); 
-           document.addEventListener('documentready', onDeviceReady, false); 
+            document.addEventListener('deviceready', onDeviceReady, false); 
 
-            var app = {};
-            var is_device = false
-            
-            function onDeviceReady(){
-                
-                              
-            }
-            
-              if(checkConnection()){
-                    login('user' , 'password');
-                }
+        var app = {};
+        var is_device = false
+        app.currentScreenId = null;
+        app.sessionid = null;
 
-            function init(){
+        app.launch = function(){
+            //init here
             
-            }
+            app.gotoscreen('screen-1');
+
+            //wait here ?
            
+            if(app.sessionid == null){
+               app.gotoscreen('screen-2');
+            }else{
+               app.gotoscreen('screen-3');
+            }
+        }
 
-         return app;
+        app.gotoscreen = function(screenId){
 
-    })();
+        if (app.currentScreenId != null){
+        $('#' + app.currentScreenId).hide();
+        }
+
+        app.currentScreenId = screenId;
+        $('#' + app.currentScreenId).show();
+        document.body.scrollTop = 0;
+
+        }      
+
+        function onDeviceReady(){
+            alert(checkConnection());
+        }
+
+        return app;
+        
+})();
