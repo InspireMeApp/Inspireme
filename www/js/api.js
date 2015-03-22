@@ -2,7 +2,7 @@ var base_url = "http://dotnet.allmusic.eu/IM/api/";
 var token = "sGhyuT62250kpLMsq12d3hqnMbhTIw";
 
 function checkConnection(){
-    
+    // needs work , use communicate();
     url = '?mode=get_connection';
     var result = false;
 
@@ -23,30 +23,22 @@ function checkConnection(){
     return result;
 };
 
-function login(user , pass){
-
-    url = "?token="+ token +"&mode=post_account_login&uname="+ user +"&pword="+ pass;
-
-    $.ajax({
-        url: base_url + url,
-        dataType: "json",
-        type: "GET",
-        async: false,
-        success: function(data) {
-            login = data.login[0].login;
-            if(login == "true"){
-                app.sessionid = data.login[0].session;
-                getCategory();
-                app.gotoscreen('screen-1');
-            }
-        }
+function communicate(params, callback) {
+    return $.ajax({
+        url: base_url,
+        type: 'GET',
+        data : params,
+        dataType:"json",
+        cache: false,
+    })
+    .done(callback)
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        alert('error');
     });
-
-   return session; 
 }
 
 function getCategory(){
-    url = "?token="+ token +"&mode=get_values_categories&res=xml";
+    //placeholder
     alert(url);
 }
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "com.hacktisch.inspireme"
+        version   = "1.0.0">
+    <name>InspireMe</name>
+    <description>
+        A sample Apache Cordova application that responds to the deviceready event.
+    </description>
+    <author email="tech@hacktisch.com" href="http://hacktisch.com">
+        Hacktisch
+    </author>
+    
+    <preference name="phonegap-version" value="3.6.3" />
+    <preference name="orientation" value="portrait" />
+    
+    <!-- Plugins --> 
+    <gap:plugin name="org.apache.cordova.core.media" />
+    
+    <!-- Icons 
+        <icon src="icon.png" width="64" height="64" gap:role="default" />
+        <icon src="screensizes/icon.png" width="72" height="72" gap:platform="android" gap:density="hdpi" />
+        <icon src="screensizes/icon.png" width="96" height="96" gap:platform="android" gap:density="xhdpi" />
+        <icon src="screensizes/icon.png" width="72" height="72" gap:platform="ios" />
+    -->
+
+
+    <!-- Splash Screens -->
+    <gap:splash src="splash.png" />
+    <!--<gap:splash src="screensizes/splash-160x220.png" gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="splash.png" gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="screensizes/splash-450x650.png" gap:platform="android" gap:density="hdpi" />-->
+</widget>

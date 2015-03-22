@@ -1,26 +1,297 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <title>inspire me</title>
+        <link rel="stylesheet/less" type="text/css" href="css/_index.less" />
+        <script src="js/less.min.js"></script>
+        <script src="js/jquery-2.1.3.min.js"></script>
+        <script src="js/jquery.timeline.js"></script>
+        <script type="text/javascript" src="js/api.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                
+
+                app.launch();
+
+                var intro = new timeline().add(1, function () {
+                    $('#circleMain').removeClass('transparent');
+                }).add(1000, function () {
+                    $('#introLogo').removeClass('right');
+                }).add(1100, function () {
+                    $('#introPoweredBy').removeClass('right');
+                }).add(1505, function () {
+                    $('#circleAnimation').addClass('animate');
+                }).add(4800, function () {
+                    $('#introLogo').addClass('left');
+                }).add(4900, function () {
+                    $('#introPoweredBy').addClass('left');
+                }).add(5100, function () {
+                    $('#circleAnimation .border').removeClass('fat');
+                }).add(6000, function () {
+                    $('#circleAnimation').remove();
+                    $('#introText').removeClass('right');
+                    $('#introSteps,h1').removeClass('transparent');
+                }).add(6500, function () {
+                
+                    $('#introSteps').addClass('step1');
+                    var goPressed = false;
+                    $('#introSteps .go').click(function () {
+                        if (goPressed) {
+                            return;
+                        }
+                        goPressed = true;
+                        $(this).unbind('click');
+                        $(document).unbind('click');
+                        press($(this));
+                        setTimeout(function () {
+                            intro2.run();
+                        }, 400);
+                    });
+                    $(document).click(function () {
+                        if (goPressed) {
+                            return;
+                        }
+                        goPressed = true;
+                        $('#introSteps .go').unbind('click');
+                        $(document).unbind('click');
+                        intro2.run();
+                    });
+                });
+                intro.run();
+
+                var intro2 = new timeline().add(1, function () {
+                    $('#introText').addClass('left');
+                }).add(500, function () {
+                    $('#circleMain').addClass('left');
+                }).add(1000, function () {
+                    $('#introSteps').addClass('step2');
+                }).add(1400, function () {
+                    openIntroPage($('#loginChoice'));
+                    var buttons = $('#loginChoice button');
+                    buttons.click(function () {
+                        press($(this));
+                        buttons.unbind();
+                        intro3.run();
+                    });
+                });
+
+                var intro3 = new timeline().add(1, function () {
+                    closeIntroPage($('#loginChoice'));
+                }).add(1250, function () {
+                    $('#backgroundParts').show();
+                }).add(1300, function () {
+                    $('#backgroundParts').addClass('open');
+                    openIntroPage($('#loginDescription'));
+                    $('#loginForm').submit(function (e) {
+                        e.preventDefault();
+
+                        var uname = $('#username').val();
+                        var pass = $('#password').val();
+                            //TODO remove hard code uname and pword
+                             communicate({token : token , mode : "post_account_login" , uname : "merijnvanwouden" , pword : "foVDbxx79O"}, function(data) {
+                            console.log(data.login[0]);
+                            if(data.login[0].login == "true"){
+                                communicate({token : token , mode : "get_account_userinfo" , uid : data.login[0].session} , function(user) {
+                                    app.user = [];
+                                    app.user.firstname = user.userinfo[0].firstname;
+                                    app.user.fullname = user.userinfo[0].fullname;
+                                    app.user.company = user.userinfo[0].company;
+                                    intro4.run();
+                                });
+                            } 
+                            
+                         });
+            });
+        });
+
+
+
+                var intro4 = new timeline().add(1, function () {
+                    $('#usernameContainer').html(app.user.fullname);
+                    closeIntroPage($('#loginDescription'));
+                    $('#backgroundParts').removeClass('open');
+                }).add(1000, function () {
+                    $('#backgroundParts').remove();
+                    openIntroPage($('#welcome'));
+                    $('#introSteps').addClass('step3');
+                    //similar code like before, could be unified:
+                    var goPressed = false;
+                    $('#introSteps .go').click(function () {
+                        if (goPressed) {
+                            return;
+                        }
+                        goPressed = true;
+                        $(this).unbind('click');
+                        $(document).unbind('click');
+                        press($(this));
+                        setTimeout(function () {
+                            introEnd.run();
+                        }, 400);
+                    });
+                    $(document).click(function () {
+                        if (goPressed) {
+                            return;
+                        }
+                        goPressed = true;
+                        $('#introSteps .go').unbind('click');
+                        $(document).unbind('click');
+                        introEnd.run();
+                    });
+                });
+
+                var introEnd = new timeline().add(1, function () {
+                    $('main, header .buttons').show();
+                    }).add(50, function () {
+                    $('main, header .buttons').removeClass('transparent');
+                    }).add(1000, function () {
+                    $('#intro').remove();
+                    $('#categories').css('top',-$('#categories').height()+'px');
+                    }).add(1010, function(){
+                    $('#categories').show().addClass('animating');
+                    }).add(1020, function(){
+                    $('#categories').css('top',0);
+                });
+
+            });
+
+            
+            function press(o) {
+                //press effect on buttons
+                var press = new timeline();
+                press.add(1, function () {
+                    o.addClass('pressed');
+                });
+                press.add(250, function () {
+                    o.removeClass('pressed');
+                });
+                press.run();
+            }
+            function openIntroPage(o) {
+                var t = new timeline();
+                t.add(1, function () {
+                    o.show();
+                });
+                t.add(50, function () {
+                    o.addClass('show');
+                });
+                t.run();
+            }
+            function closeIntroPage(o) {
+                var t = new timeline();
+                t.add(100, function () {
+                    o.removeClass('show');
+                });
+                t.add(1200, function () {
+                    o.hide();
+                });
+                t.run();
+            }
+        </script>
+        <title>Inspire Me</title>
     </head>
     <body>
 
-        <div id='screen-1' style="display:none;">Splash screen</div>
-        <div id='screen-2' style="display:none;">Login</div>
-        <div id='screen-3' style="display:none;">Category page</div>
-        <div id='screen-4' style="display:none;">Category</div>
+        <div id='modal'>
+            <div id='textArea'>teeeeest</div>
+            <div id='buttonArea'></div>
+        </div>
 
-        <script src="js/lib/cordova.js"></script>
-        <script src="js/lib/jquery-2.1.1.min.js"></script>
-        <script src="js/lib/jquery-ui.min.js"></script>
-        <script src="js/lib/touch.js"></script>
-        <script src="js/api.js"></script>
-        <script src="js/app.js"></script>
+        <header>
+            <h1 class="transparent">
+                <span>Inspire Me</span>
+                <u class="wave wave31">
+                    <img src="media/wave31-thin.png">
+                </u>
+            </h1>
+            <div class="buttons transparent">
+                <a class="i" id="headerI"><span></span></a>
+                <a class="menu" id="headerMenu"><span></span></a>
+            </div>
+        </header>
+        
+        <main class="transparent">
+            <section class="categories" id="categories">
+            </section>
+        </main>
+           <div id="intro">
+            <div class="circle" id="circleAnimation"><div class="border fat"></div></div>
+            <div class="circle transparent" id="circleMain"><div class="border"></div></div>
+            <div id="introLogo" class="circle right">
+                <div class="title">Inspire Me</div>
+                <div class="wave wave31">
+                    <img src="media/wave31-thin.png">
+                </div>
+            </div>
+            <div id="introPoweredBy" class="circle right">
+                <div>
+                    POWERED BY
+                    <img src="media/powered-by.png">
+                </div>
+            </div>
+            <div id="introText" class="circle right">
+                <div class="middle"><div>
+                        With this app we'll inspire you with some of the best tracks that we have to offer
+                    </div></div>
+            </div>
+        
+            <div id="loginChoice" class="introPage">
+                <p>
+                    Log in with the same username and password that you use for our website
+                </p>
+                <div class="options">
+                    <button id="loginChoiceLogin">I'm already a user</button>
+                    <button id="loginChoiceRegister">New user</button>
+                </div>
+            </div>
+            <div id="loginDescription" class="introPage">
+                <p>
+                    Log in with your username and password
+                </p>
+            </div>
+            <div id="welcome" class="introPage">
+                <p>
+                Hi <b id='usernameContainer'>Bert Bertsen.</b><br>
+                    Thanks for downloading our app. We change our selections on a weekly basis.<br>
+                    Be prepared to be Inspired.
+                </p>
+            </div>
+            <div id="introSteps" class="transparent">
+                <div class="inner">
+                    <div class="wave wave33">
+                        <img src="media/wave33-thin-transparent.png">
+                        <div class="mask"><img src="media/wave33.png"></div>
+                    </div>
+                    <div class="steps"><span class="s1">Get started</span><span class="s2">Login</span><span class="s3">Welcome</span></div>
+                </div>
+                <div class="go">
+                    <span>Go</span>
+                </div>
+            </div>
+        </div>
+        <div id="backgroundParts">
+            <div class="introPage">
+                <p></p>
+                <div class="options">
+                    <form id="loginForm" action="#">
+                        <input id='username' name="username" type="text" placeholder="Username" spellcheck="false">
+                        <input id='password' name="password" type="password" placeholder="Password" spellcheck="false">
+                        <input type="submit" spellcheck="false">
+                        <div class="problems">
+                            <a id="forgotPassword">Forgot password?</a>
+                            <a id="noAccount">I don't have an account!</a>
+                        </div>
+                        <input type="submit" class="hidden">
+                    </form>
+                </div>
+            </div>
+            <div class="backgroundPart top"><div></div></div>
+            <div class="backgroundPart bottom"><div></div></div>
+        </div>
 
+        <script type="text/javascript" src="phonegap.js"></script>
     </body>
 </html>

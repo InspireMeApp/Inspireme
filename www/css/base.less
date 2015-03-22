@@ -1,0 +1,78 @@
+// default html dom elements
+html, body{
+    height:100%;
+    width:100%;
+}
+body {
+    margin:0;
+    padding:0;
+    .background;
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: none;
+    -webkit-user-select: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight:400;
+    color:@textColor;
+
+    font-size: 2.8vw;
+    letter-spacing: 0.106em;
+}
+.background(){
+    background:url(../media/mountains-small.jpg) no-repeat center center;
+    background-size:cover;
+    -webkit-background-size:cover;
+}
+
+i{
+    .thin;
+    font-style:normal;
+}
+b{
+    .medium;
+}
+
+h1{
+    .thin;
+    text-align:center;
+    letter-spacing:0;
+    font-size:inherit;
+    span{
+        font-size: 2.5em;
+    }
+    .wave{
+        position:absolute;
+        top:100%;
+    }
+}
+
+.input{
+    display: block;
+    width: 100%;
+    border: 1px dotted white;
+    background: none;
+    color: white;
+    line-height: 1.6em;
+    font-size: 2.3em;
+    margin-bottom: 0.4em;
+    text-align:center;
+    .thin;
+    .transition(@pressTransition);
+}
+button{
+    .input;
+    border-style:solid;
+}
+::-webkit-input-placeholder {
+   color: @textColorAlt;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: @textColorAlt;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: @textColorAlt;  
+}
+input{
+    .input;
+}

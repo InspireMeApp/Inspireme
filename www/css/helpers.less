@@ -1,0 +1,91 @@
+//HELPERS AND MIXINS
+.noselect(){
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.selectable(){
+    -webkit-touch-callout: default;
+    -webkit-user-select: all;
+    -khtml-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+}
+.rounded-corners(@radius: 5px) {
+    // rounded corners mixin
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+.transform(@a){
+    // transform mixin
+    -webkit-transform:@a;
+    transform:@a;
+}
+.transform-origin(@a){
+    // transform-origin mixin
+    -webkit-transform-origin:@a;
+    -ms-transform-origin:@a;
+    transform-origin:@a;
+}
+.anim(@a){
+    // animation mixin
+    -webkit-animation:@a;
+    -moz-animation:@a;
+    -ms-animation:@a;
+    -o-animation:@a;
+    animation:@a;
+}
+.transition(@a){
+    // transition mixin
+    -webkit-transition:@a;
+    transition:@a;
+}
+.ellipsis(){
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+}
+
+.rotate(@deg){
+    transform:rotate(@deg);
+    -ms-transform:rotate(@deg);
+    -webkit-transform:rotate(@deg);
+    -moz-transform:rotate(@deg);
+    -o-transform:rotate(@deg);
+}
+
+.placeholder(@c){
+    *::-webkit-input-placeholder {
+        color:    @c;
+    }
+    *:-moz-placeholder {
+        color:    @c;
+        opacity:  1;
+    }
+    *::-moz-placeholder {
+        color:    @c;
+        opacity:  1;
+    }
+    *::-ms-input-placeholder {
+        color:    @c;
+    }
+}
+
+
+.gradient(@startColor: #eee, @endColor: white) {
+	background-color: @endColor;
+	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+	background: -webkit-linear-gradient(top, @startColor, @endColor);
+	background: -moz-linear-gradient(top, @startColor, @endColor);
+	background: -ms-linear-gradient(top, @startColor, @endColor);
+	background: -o-linear-gradient(top, @startColor, @endColor);
+}
+
+@i:!important;
