@@ -207,7 +207,7 @@
                                 communicate({token: token, mode: "get_values_songlist", type: "cat" , type_id : data_tag , uid : app.sessionid}, function (data) {
                                     cur = 0; 
                                     $.each(data.songlist , function(){
-                                    $('ul',cat).append('<li>'+this.title+'</li>');
+                                        $('ul',cat).append('<li><audio src="'+this.streaming_url+'" controls></audio><span class="media_title">'+this.title+'</span><span class="media_duration">'+this.duration_notation+'</span></li>');
                                     cur++;
                                     });
                                 });
@@ -222,16 +222,6 @@
         <title>Inspire Me</title>
     </head>
     <body>
-        <h1>Inspire Me</h1>
-        <div id="deviceready" class="blink">
-            <p class="event listening">Connecting to Device</p>
-            <div class="event received">
-                <p>Device is Ready</p>
-            </div>
-
-            <button onclick="app.playAudio('http://mp364.allmusic.nl/MP364/mt___/00006/mt___-00006-00025-44s112.mp3');">Play Audio</button>
-        </div>
-    </div>
 
          <header>
             <h1 class="transparent">
