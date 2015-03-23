@@ -12,7 +12,8 @@ header{
         line-height:@headerHeight;
         .wave{
             position: absolute;
-            top: 115%;
+            top: 98%;
+            .transition(opacity 0.4s);
         }
     }
     .buttons{
@@ -148,13 +149,18 @@ section{
     .thin;
     .transition(opacity 1s);
     p{
-        min-height: 6.2em;
         font-size: 2.2em;
         line-height: 1.25em;
-        margin-bottom: 0.7em;
     }
     &.show{
         opacity:1;
+    }
+    .options{
+        position: fixed;
+        width:@w;
+        left:(100% - @w) / 2;
+        top: @backgroundSplit * 100%;
+        margin-top: -7.8em;
     }
 }
 
@@ -294,7 +300,7 @@ section{
 
     }
 }
-.pressed{
+#intro .pressed{
     background-color:white;
     @c:#A9A9A9;
     border-color:@c;
@@ -334,8 +340,6 @@ section{
     }
 }
 .backgroundPart{
-
-    @split:0.6;
     position:absolute;
     left:0;
     width:100%;
@@ -349,18 +353,18 @@ section{
     }
     &.top{
         top:0;
-        height:100.5% * @split;
+        height:100.5% * @backgroundSplit;
         >div{
             top:0;
-            height:100% * (1 / @split);
+            height:100% * (1 / @backgroundSplit);
         }
     }
     &.bottom{
         bottom:0;
-        height:100.5% * (1 - @split);
+        height:100.5% * (1 - @backgroundSplit);
         >div{
             bottom:0;
-            height:100% * (1 / (1 - @split));
+            height:100% * (1 / (1 - @backgroundSplit));
         }
     }
 
@@ -377,7 +381,6 @@ form .problems{
 
 //categories
 .categories{
-    img{width:100%;}
     &.animating{
         .transition(top 1.7s ease-out);
     }
@@ -412,23 +415,76 @@ form .problems{
         line-height:0;
         margin-top:-0.5 * @buttonH;
         text-align:center;
+        .transition(opacity 0.6s);
         a{
             display:inline-block;
             vertical-align:center;
+            &.pressed span{
+                opacity:1;
+            }
+        }
+        a>span{
+            display:block;
+            opacity:0;
+            .transition(opacity @pressTransition);
+        }
+        a, a>span{
+            width:@buttonH;
+            height:@buttonH;
             background-size:80%;
             background-repeat:no-repeat;
             background-position:center center;
-            width:@buttonH;
-            height:@buttonH;
         }
         .play{
             background-image:url(../media/audioPlay.png);
+            >span{background-image:url(../media/audioPlay2.png);}
         }
+        .load{
+            background-image:url(../media/loading1.png);
+            background-size: 39%;
+            .anim(spin 0.7s linear infinite);
+            -webkit-animation-play-state:paused;
+            animation-play-state: paused;
+        }
+
     }
-    >div{
+    .category-item{
         >div{
             position:relative;
             background:grey;
+            >img{
+                width:100%;  
+                display: block;
+            }
         }
+        &.loading{
+            .loadingIcon{
+                opacity:1;
+                a{
+                    -webkit-animation-play-state:running;
+                    animation-play-state: running;
+                }
+            }
+            .noPlay{
+                opacity:0;
+            }
+        }
+        &.loadPause .loadingIcon a{
+            -webkit-animation-play-state:paused;
+            animation-play-state: paused;
+        }
+    }
+    li{
+        .thin;
+        line-height: 2em;
+        font-size: 2em;
+        background: grey;
+        border-bottom: 1px solid darkgrey;
+    }
+    .duringPlay, .loadingIcon{
+        opacity:0;
+    }
+    .duringPlay{
+        display:none;
     }
 }

@@ -13,7 +13,7 @@
 
         <script>
             $(document).ready(function () {
-                
+
 
                 app.launch();
 
@@ -36,7 +36,7 @@
                     $('#introText').removeClass('right');
                     $('#introSteps,h1').removeClass('transparent');
                 }).add(6500, function () {
-                
+
                     $('#introSteps').addClass('step1');
                     var goPressed = false;
                     $('#introSteps .go').click(function () {
@@ -91,22 +91,22 @@
 
                         var uname = $('#username').val();
                         var pass = $('#password').val();
-                            //TODO remove hard code uname and pword
-                             communicate({token : token , mode : "post_account_login" , uname : "merijnvanwouden" , pword : "foVDbxx79O"}, function(data) {
+                        //TODO remove hard code uname and pword
+                        communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
                             console.log(data.login[0]);
-                            if(data.login[0].login == "true"){
-                                communicate({token : token , mode : "get_account_userinfo" , uid : data.login[0].session} , function(user) {
+                            if (data.login[0].login == "true") {
+                                communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
                                     app.user = [];
                                     app.user.firstname = user.userinfo[0].firstname;
                                     app.user.fullname = user.userinfo[0].fullname;
                                     app.user.company = user.userinfo[0].company;
                                     intro4.run();
                                 });
-                            } 
-                            
-                         });
-            });
-        });
+                            }
+
+                        });
+                    });
+                });
 
 
 
@@ -145,50 +145,70 @@
 
                 var introEnd = new timeline().add(1, function () {
                     $('main, header .buttons').show();
-                    }).add(50, function () {
+                }).add(50, function () {
                     $('main, header .buttons').removeClass('transparent');
-                    }).add(1000, function () {
-                    $('#intro').remove();
-                    $('#categories').css('top',-$('#categories').height()+'px');
-                    }).add(1010, function(){
+                    $('h1 .wave').addClass('transparent');
+                }).add(1000, function () {
+                    $('#intro, h1 .wave').remove();
+                    $('#categories').css('top', -$('#categories').height() + 'px');
+                    $('.buttons a', $('#categories')).click(function () {
+                        press($(this));
+                        audioAction($(this));
+                    });
+                }).add(1010, function () {
                     $('#categories').show().addClass('animating');
-                    }).add(1020, function(){
-                    $('#categories').css('top',0);
+                }).add(1020, function () {
+                    $('#categories').css('top', 0);
                 });
 
             });
 
-            
+
             function press(o) {
                 //press effect on buttons
-                var press = new timeline();
-                press.add(1, function () {
+                var t = new timeline().add(1, function () {
                     o.addClass('pressed');
-                });
-                press.add(250, function () {
+                }).add(250, function () {
                     o.removeClass('pressed');
-                });
-                press.run();
+                }).run();
             }
             function openIntroPage(o) {
-                var t = new timeline();
-                t.add(1, function () {
+                var t = new timeline().add(1, function () {
                     o.show();
-                });
-                t.add(50, function () {
+                }).add(50, function () {
                     o.addClass('show');
-                });
-                t.run();
+                }).run();
             }
             function closeIntroPage(o) {
-                var t = new timeline();
-                t.add(100, function () {
+                var t = new timeline().add(100, function () {
                     o.removeClass('show');
-                });
-                t.add(1200, function () {
+                }).add(1200, function () {
                     o.hide();
-                });
-                t.run();
+                }).run();
+            }
+
+            function audioAction(o) {
+                var cat = o.closest('.category-item');
+                switch (o.attr('class')) {
+                    case 'play':
+                        var t = new timeline().add(260, function () {
+                            //start loading songs
+                            cat.addClass('loading');
+                        }).add(3000, function () {
+                            var open = new timeline().add(1, function () {
+                                cat.addClass('loadPause');
+                            }).add(700, function () {
+                                cat.removeClass('loadPause loading');
+                            }).add(1100,function(){
+                                $('main').animate({scrollTop:cat.position().top+1},1200);
+                            }).add(2400,function(){
+                                $('ul',cat).html('<li>f iuhfgiuhf</li><li>f iuhjf</li><li>f iuhfhgf</li><li>f iu,</li><li>f ij</li>');
+                            });
+                            //actually run this after load finish        
+                            open.run();
+                        }).run();
+                        break;
+                }
             }
         </script>
         <title>Inspire Me</title>
@@ -206,12 +226,12 @@
                 <a class="menu" id="headerMenu"><span></span></a>
             </div>
         </header>
-        
+
         <main class="transparent">
             <section class="categories" id="categories">
             </section>
         </main>
-           <div id="intro">
+        <div id="intro">
             <div class="circle" id="circleAnimation"><div class="border fat"></div></div>
             <div class="circle transparent" id="circleMain"><div class="border"></div></div>
             <div id="introLogo" class="circle right">
@@ -231,7 +251,7 @@
                         With this app we'll inspire you with some of the best tracks that we have to offer
                     </div></div>
             </div>
-        
+
             <div id="loginChoice" class="introPage">
                 <p>
                     Log in with the same username and password that you use for our website
@@ -248,7 +268,7 @@
             </div>
             <div id="welcome" class="introPage">
                 <p>
-                Hi <b id='usernameContainer'></b><br>
+                    Hi <b id='usernameContainer'></b><br>
                     Thanks for downloading our app. We change our selections on a weekly basis.<br>
                     Be prepared to be Inspired.
                 </p>
@@ -273,7 +293,7 @@
                     <form id="loginForm" action="#">
                         <input id='username' name="username" type="text" placeholder="Username" spellcheck="false">
                         <input id='password' name="password" type="password" placeholder="Password" spellcheck="false">
-                        
+
                         <div class="problems">
                             <a id="forgotPassword">Forgot password?</a>
                             <a id="noAccount">I don't have an account!</a>

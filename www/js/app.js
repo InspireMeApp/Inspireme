@@ -19,11 +19,13 @@ var app = (function()
                          app.images[this.id] = new Image();
                          app.images[this.id].src = this.artwork;
                     });
-
-                
+                    var buttons=
+                            '<div class="buttons loadingIcon"><a class="load"></a></div>'+
+                            '<div class="buttons noPlay"><a class="play"><span></span></a></div>'+
+                            '<div class="buttons duringPlay"><a class="pause"><span></span></a></div>';
                 $.each(data.categories , function(){
                     $('#categories').append(
-                '<div class="category-item" id="cat-'+this.id+'" data-tag="'+this.id+'"><h2>'+this.title+'</h2><div><div class="button"> <a class="play"><img src="'+this.artwork+'"></a></div></div></div>'
+                '<div class="category-item" id="cat-'+this.id+'" data-tag="'+this.id+'"><h2>'+this.title+'</h2><div><img src="'+this.artwork+'">'+buttons+'</div><ul></ul></div>'
                         );
 
                  });
