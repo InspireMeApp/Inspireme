@@ -94,6 +94,7 @@
                         //TODO remove hard code uname and pword
                         communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
                             console.log(data.login[0]);
+                            app.sessionid = data.login[0].session;
                             if (data.login[0].login == "true") {
                                 communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
                                     app.user = [];
@@ -202,7 +203,14 @@
                             }).add(1100,function(){
                                 $('main').animate({scrollTop:cat.position().top+1},1200);
                             }).add(2400,function(){
-                                $('ul',cat).html('<li>f iuhfgiuhf</li><li>f iuhjf</li><li>f iuhfhgf</li><li>f iu,</li><li>f ij</li>');
+                                data_tag = cat[0].dataset.tag;
+                                communicate({token: token, mode: "get_values_songlist", type: "cat" , type_id : data_tag , uid : app.sessionid}, function (data) {
+                                    cur = 0; 
+                                    $.each(data.songlist , function(){
+                                    $('ul',cat).append('<li>'+this.title+'</li>');
+                                    cur++;
+                                    });
+                                });
                             });
                             //actually run this after load finish        
                             open.run();
@@ -214,7 +222,18 @@
         <title>Inspire Me</title>
     </head>
     <body>
-        <header>
+        <h1>Inspire Me</h1>
+        <div id="deviceready" class="blink">
+            <p class="event listening">Connecting to Device</p>
+            <div class="event received">
+                <p>Device is Ready</p>
+            </div>
+
+            <button onclick="app.playAudio('http://mp364.allmusic.nl/MP364/mt___/00006/mt___-00006-00025-44s112.mp3');">Play Audio</button>
+        </div>
+    </div>
+
+         <header>
             <h1 class="transparent">
                 <span>Inspire Me</span>
                 <u class="wave wave31">
@@ -251,7 +270,9 @@
                         With this app we'll inspire you with some of the best tracks that we have to offer
                     </div></div>
             </div>
+            <div class="app">
 
+                   
             <div id="loginChoice" class="introPage">
                 <p>
                     Log in with the same username and password that you use for our website

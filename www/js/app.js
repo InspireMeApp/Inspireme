@@ -33,7 +33,36 @@ var app = (function()
                 });
             
         }
-    
+
+        app.playAudio =  function(src){
+                
+            // Create Media object from src
+            my_media = new Media(src, onSuccess, onError);
+
+            // Play audio
+            my_media.play();
+
+            // Update my_media position every second
+            if (mediaTimer == null) {
+                mediaTimer = setInterval(function() {
+                    // get my_media position
+                    my_media.getCurrentPosition(
+                        // success callback
+                        function(position) {
+                            if (position > -1) {
+                                setAudioPosition((position) + " sec");
+                            }
+                        },
+                        // error callback
+                        function(e) {
+                            console.log("Error getting pos=" + e);
+                            setAudioPosition("Error: " + e);
+                        }
+                    );
+                }, 1000);
+            }
+        };
+
         app.preload = function(obj){
             cur = 0;
             console.log(obj);
