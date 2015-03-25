@@ -1,3 +1,9 @@
+#vwtest{
+    width:100vw;
+    position:absolute;
+    display:none;
+}
+
 body>*{
     z-index:3;
 }
@@ -60,14 +66,16 @@ header{
 main{
     display:none;
     top:@headerHeight;
-    position:relative;
+    position:absolute;
     width:100%;
+    height:100%;
     height:calc(~"100% - " @headerHeight);
     overflow-y:scroll;
     background:@mainBg;
     z-index:50;
     .transition(opacity 0.6s);
 }
+
 section{
     display:none;
     box-sizing:border-box;
@@ -353,7 +361,7 @@ section{
     }
     &.top{
         top:0;
-        height:100.5% * @backgroundSplit;
+        height:100% * @backgroundSplit;
         >div{
             top:0;
             height:100% * (1 / @backgroundSplit);
@@ -361,7 +369,7 @@ section{
     }
     &.bottom{
         bottom:0;
-        height:100.5% * (1 - @backgroundSplit);
+        height:100% * (1 - @backgroundSplit);
         >div{
             bottom:0;
             height:100% * (1 / (1 - @backgroundSplit));
@@ -418,9 +426,14 @@ form .problems{
         .transition(opacity 0.6s);
         a{
             display:inline-block;
-            vertical-align:center;
+            vertical-align:middle;
             &.pressed span{
                 opacity:1;
+            }
+            &.small{
+                @sH:4.2em;
+                width:@sH;height:@sH;
+                >span{width:@sH;height:@sH;}
             }
         }
         a>span{
@@ -439,8 +452,20 @@ form .problems{
             background-image:url(../media/audioPlay.png);
             >span{background-image:url(../media/audioPlay2.png);}
         }
+        .pause{
+            background-image:url(../media/audioPause.png);
+            >span{background-image:url(../media/audioPause2.png);}
+        }
+        .stepBackwards{
+            background-image:url(../media/audioStepBackwards.png);
+            >span{background-image:url(../media/audioStepBackwards2.png);}
+        }
+        .stepForwards{
+            background-image:url(../media/audioStepForwards.png);
+            >span{background-image:url(../media/audioStepForwards2.png);}
+        }
         .load{
-            background-image:url(../media/loading1.png);
+            background-image:url(../media/loading.png);
             background-size: 39%;
             .anim(spin 0.7s linear infinite);
             -webkit-animation-play-state:paused;
@@ -459,37 +484,130 @@ form .problems{
         }
         &.loading{
             .loadingIcon{
-                opacity:1;
+                opacity:1;z-index:6;
                 a{
                     -webkit-animation-play-state:running;
                     animation-play-state: running;
                 }
             }
             .noPlay{
-                opacity:0;
+                opacity:0;z-index:4;
             }
+        }
+        &.playing{
+            .noPlay{opacity:0;z-index:4;}
+            .duringPlay{opacity:1;z-index:6;}
         }
         &.loadPause .loadingIcon a{
             -webkit-animation-play-state:paused;
             animation-play-state: paused;
         }
     }
+    .ulCont{
+        height:0;
+        overflow:hidden;
+    }
     li{
-        audio{
-            width:47px;
-            float:left;
-        }
-        .media_duration{float:right;}
         .thin;
         line-height: 2em;
         font-size: 2em;
-        background: grey;
-        border-bottom: 1px solid darkgrey;
+        background-color: #E6E6E6;
+        border-bottom: 1px solid #D2D2D2;
+        position:relative;
+        color:@textColorDark;
+        height: 2.7em;
+        .transition(background-color 0.5s);
+        &.active{
+            background-color:#BEBEBE;
+            >u{
+                >b{
+                    opacity:1;
+                }
+                >i{
+                    opacity:0;
+                }
+            }
+        }
+        &.loading{
+            >u{
+                >i, >b{
+                    opacity:0;
+                }
+                >u{
+                    opacity:1;
+                    -webkit-animation-play-state:running;
+                    animation-play-state: running;
+                }
+            }
+        }
+        &.paused{
+            >u{
+                >i{
+                    opacity:1;
+                }
+                >b{
+                    opacity:0;
+                }
+            }
+        }
+        .info{
+            letter-spacing:0;
+            position:absolute;
+            top:0.4em;
+            width:100%;
+            box-sizing:border-box;
+            padding: 0 3em 0 1.75em;
+            >*{
+                font-size: 0.66em;
+                line-height: 1.45em;
+                display:block;
+                .ellipsis;
+            }
+        }
+        .duration{
+            float:right;
+            margin-right: 0.7em;
+            margin-top: 0.4em;
+            font-size: 0.83em;
+            letter-spacing: 0;
+        }
+        >u{
+            position:absolute;
+            left:0.35em;
+            top:0.4em;
+            @w:0.8em;
+            width:@w;
+            height:@w;
+            >*{
+                position:absolute;
+                width:100%;
+                height:100%;
+                .transition(opacity 0.6s);
+            }
+            >i{
+                background:url(../media/audioPlaySmall.png) no-repeat 0.15em center;
+                background-size: 0.57em;
+            }
+            >b{
+                background:url(../media/audioPauseSmall.png) no-repeat center center;
+                background-size: 0.57em;
+                opacity:0;
+            }
+            >u{
+                opacity:0;
+                background:url(../media/loadingSmall.png) no-repeat center center;
+                background-size: 100%;
+                .anim(spin 0.7s linear infinite);
+                -webkit-animation-play-state:paused;
+                animation-play-state: paused;
+            }
+        }
+    }
+    .noPlay{
+        z-index:6;
     }
     .duringPlay, .loadingIcon{
         opacity:0;
-    }
-    .duringPlay{
-        display:none;
+        z-index:4;
     }
 }

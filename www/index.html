@@ -8,12 +8,18 @@
         <script src="js/less.min.js"></script>
         <script src="js/jquery-2.1.3.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
-        <script type="text/javascript" src="js/api.js"></script>
-        <script type="text/javascript" src="js/app.js"></script>
+        <script src="js/mediaFallback.js"></script>
+        <script src="js/api.js"></script>
+        <script src="js/app.js"></script>
 
         <script>
             $(document).ready(function () {
 
+                if ($('#vwtest').width() === 0) {
+                    //browser does not support vw, fallback
+                    $(window).resize(resetVw);
+                    resetVw();
+                }
 
                 app.launch();
 
@@ -93,7 +99,6 @@
                         var pass = $('#password').val();
                         //TODO remove hard code uname and pword
                         communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
-                            console.log(data.login[0]);
                             app.sessionid = data.login[0].session;
                             if (data.login[0].login == "true") {
                                 communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
@@ -188,42 +193,166 @@
                 }).run();
             }
 
+            var lastClickedSongId;
             function audioAction(o) {
                 var cat = o.closest('.category-item');
-                switch (o.attr('class')) {
+                switch (o.attr('data-action')) {
                     case 'play':
-                        var t = new timeline().add(260, function () {
-                            //start loading songs
-                            cat.addClass('loading');
-                        }).add(3000, function () {
-                            var open = new timeline().add(1, function () {
-                                cat.addClass('loadPause');
-                            }).add(700, function () {
-                                cat.removeClass('loadPause loading');
-                            }).add(1100,function(){
-                                $('main').animate({scrollTop:cat.position().top+1},1200);
-                            }).add(2400,function(){
-                                data_tag = cat[0].dataset.tag;
-                                communicate({token: token, mode: "get_values_songlist", type: "cat" , type_id : data_tag , uid : app.sessionid}, function (data) {
-                                    cur = 0; 
-                                    $.each(data.songlist , function(){
-                                        $('ul',cat).append('<li><audio src="'+this.streaming_url+'" controls></audio><span class="media_title">'+this.title+'</span><span class="media_duration">'+this.duration_notation+'</span></li>');
-                                    cur++;
-                                    });
-                                });
-                            });
-                            //actually run this after load finish        
-                            open.run();
-                        }).run();
+                        if (!cat.hasClass('open')) {
+                            cat.addClass('open');
+                            openCategory(cat);
+                        } else {
+                            $('.active:first', cat).click();
+                        }
+                        break;
+                    case 'pause':
+                        $('.active:first', cat).click();
+                        break;
+                    case 'stepBackwards':
+                        if ($('.active:first', cat).length) {
+                            var s = Math.round(media.getCurrentPosition() - 10);
+                            if (s < 0) {
+                                s = 0;
+                            }
+                            media.seekTo(s * 1000);
+                        }
+                        break;
+                    case 'stepForwards':
+                        if ($('.active:first', cat).length) {
+                            var s = Math.round(media.getCurrentPosition() + 10);
+                            media.seekTo(s * 1000);
+                        }
                         break;
                 }
             }
+
+            function openCategory(cat) {
+                var t = new timeline().add(260, function () {
+                    //start loading songs
+                    cat.addClass('loading');
+                }).add(3000, function () {
+                    var open = new timeline().add(1, function () {
+                        cat.addClass('loadPause');
+                    }).add(700, function () {
+                        cat.removeClass('loadPause loading');
+                    }).add(1100, function () {
+                        $('main').animate({scrollTop: cat.position().top + 1}, 1200);
+                    }).add(2400, function () {
+                        var data_tag = cat[0].dataset.tag;
+                        communicate({token: token, mode: "get_values_songlist", type: "cat", type_id: data_tag, uid: app.sessionid}, function (data) {
+                            var ul = $('ul', cat);
+                            $.each(data.songlist, function () {
+                                console.log(this);
+                                $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">' +
+                                        '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
+                                        '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></li>'
+                                        ).click(songClick).appendTo(ul);
+                            });
+                            setTimeout(function () {
+                                ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                    $(this).height('auto');
+                                });
+                            }, 10);
+                        });
+                    });
+                    //actually run this after load finish        
+                    open.run();
+                }).run();
+            }
+
+            var media = null;
+            var durSpan;
+            var durLoop;
+            function songClick() {
+                var $this = $(this);
+                if ($this.hasClass('active')) {
+                    if ($this.hasClass('loading')) {
+                        return;
+                    }
+                    if ($this.hasClass('paused')) {
+                        media.play();
+                        $this.removeClass('paused');
+                        $this.closest('.category-item').addClass('playing');
+                        setPositionLoop(durSpan);
+                    } else {
+                        media.pause();
+                        $this.addClass('paused');
+                        $this.closest('.category-item').removeClass('playing');
+                        clearTimeout(durLoop);
+                        setPosition(durSpan, media.getCurrentPosition());
+                    }
+                    return;
+                }
+                lastClickedSongId = $this.attr('data-id');
+                $this.parent().children('.active').each(function () {
+                    $(this).removeClass('loading active paused');
+                    var s = $(this).children('.duration');
+                    setTimeout(function () {
+                        s.text(s.attr('data-dur-sec'));
+                    }, 1000);
+                });
+                if (media != null) {
+                    clearTimeout(durLoop);
+                    setPosition(durSpan, media.getCurrentPosition());
+                    media.stop();
+                    media = null;
+                }
+                var t = new timeline().add(1, function () {
+                    $this.addClass('loading active');
+                }).add(2000, function () {
+                    $this.removeClass('loading');
+                    if (lastClickedSongId === $this.attr('data-id')) {
+                        //check if in the meantime not another song has been clicked
+                        $this.closest('.category-item').addClass('playing');
+                        durSpan = $this.children('.duration');
+                        media = new Media(
+                                $this.attr('data-url'),
+                                function () {
+                                    //success
+                                },
+                                function () {
+                                    //fail
+                                });
+                        media.play();
+                        setPositionLoop(durSpan);
+                    }
+                }).run();
+            }
+            function setPositionLoop(span) {
+                durLoop = setTimeout(function () {
+                    if (media !== null) {
+                        setPosition(span, media.getCurrentPosition());
+                        setPositionLoop(span);
+                    }
+                }, 500);
+            }
+            function setPosition(span, position) {
+                var dur = parseInt(span.attr('data-duration'));
+                var cur = dur - Math.round(position);
+                var secs = cur % 60;
+                var mins = Math.floor(cur / 60);
+                var text = (mins < 10 ? "0" : "") + mins + ':' + (secs < 10 ? "0" : "") + secs;
+                span.text(text);
+                if (cur === 0) {
+                    clearTimeout(durLoop);
+                    media.stop();
+                    media = null;
+                    span.closest('.category-item').removeClass('playing');
+                    span.parent().removeClass('loading active paused');
+                }
+            }
+
+            function resetVw() {
+                var ww = $(window).width();
+                $('body').css('font-size', 0.028 * ww);
+            }
+
         </script>
         <title>Inspire Me</title>
     </head>
     <body>
-
-         <header>
+        <div id="vwtest"></div>
+        <header>
             <h1 class="transparent">
                 <span>Inspire Me</span>
                 <u class="wave wave31">
@@ -260,9 +389,8 @@
                         With this app we'll inspire you with some of the best tracks that we have to offer
                     </div></div>
             </div>
-            <div class="app">
 
-                   
+
             <div id="loginChoice" class="introPage">
                 <p>
                     Log in with the same username and password that you use for our website
@@ -317,7 +445,6 @@
             <div class="backgroundPart top"><div></div></div>
             <div class="backgroundPart bottom"><div></div></div>
         </div>
-
         <script type="text/javascript" src="phonegap.js"></script>
     </body>
 </html>

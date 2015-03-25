@@ -17,13 +17,11 @@
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
     
-    <!-- Icons 
+    <!-- Icons -->
         <icon src="icon.png" width="64" height="64" gap:role="default" />
         <icon src="screensizes/icon.png" width="72" height="72" gap:platform="android" gap:density="hdpi" />
         <icon src="screensizes/icon.png" width="96" height="96" gap:platform="android" gap:density="xhdpi" />
         <icon src="screensizes/icon.png" width="72" height="72" gap:platform="ios" />
-    -->
-
 
     <!-- Splash Screens -->
     <gap:splash src="splash.png" />
