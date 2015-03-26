@@ -199,7 +199,6 @@
                 switch (o.attr('data-action')) {
                     case 'play':
                         if (!cat.hasClass('open')) {
-                            cat.addClass('open');
                             openCategory(cat);
                         } else {
                             $('.active:first', cat).click();
@@ -218,15 +217,39 @@
                         }
                         break;
                     case 'stepForwards':
-                        if ($('.active:first', cat).length) {
+                        var a = $('.active:first', cat);
+                        if (a.length) {
                             var s = Math.round(media.getCurrentPosition() + 10);
+                            var d = parseInt(a.children('.duration').attr('data-duration'));
+                            if (s >= d) {
+                                s = d - 1;
+                            }
                             media.seekTo(s * 1000);
                         }
                         break;
                 }
             }
 
+            var media = null;
+            var durSpan;
+            var durLoop;
             function openCategory(cat) {
+                //close other
+                if (media !== null) {
+                    media.stop();
+                    media = null;
+                }
+                $('.category-item.open').each(function () {
+                    $('.active', $(this)).removeClass('active loading paused');
+                    $(this).removeClass('open playing');
+                    $('.ulCont', $(this)).animate({'height': '0px'}, 600, function () {
+                        $(this).children('ul').empty();
+                    });
+                });
+                setTimeout(function () {
+                    cat.addClass('open');
+                }, 5);
+
                 var t = new timeline().add(260, function () {
                     //start loading songs
                     cat.addClass('loading');
@@ -242,11 +265,10 @@
                         communicate({token: token, mode: "get_values_songlist", type: "cat", type_id: data_tag, uid: app.sessionid}, function (data) {
                             var ul = $('ul', cat);
                             $.each(data.songlist, function () {
-                                console.log(this);
                                 $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">' +
                                         '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
                                         '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></li>'
-                                        ).click(songClick).appendTo(ul);
+                                        ).click(songClick).mousedown(swipeStart).appendTo(ul);
                             });
                             setTimeout(function () {
                                 ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
@@ -260,9 +282,15 @@
                 }).run();
             }
 
-            var media = null;
-            var durSpan;
-            var durLoop;
+            function swipeStart() {
+                console.log('start');
+                var $this = $(this);
+                $this.css('margin-left', '-2%');
+                $(document).bind('mouseup.swipe',function(){
+                    $(document).unbind('mouseup.swipe');
+                    $this.css('margin-left', '0');
+                });
+            }
             function songClick() {
                 var $this = $(this);
                 if ($this.hasClass('active')) {
@@ -337,6 +365,7 @@
                     clearTimeout(durLoop);
                     media.stop();
                     media = null;
+                    span.text(span.attr('data-dur-sec'));
                     span.closest('.category-item').removeClass('playing');
                     span.parent().removeClass('loading active paused');
                 }

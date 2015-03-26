@@ -25,7 +25,6 @@ window.Media = function(src, mediaSuccess, mediaError, mediaStatus){
     release: function(){},
     // Moves the position within the audio file.
     seekTo: function(milliseconds){
-        console.log(milliseconds);
         sound.currentTime = milliseconds * 0.001;
     }, 
     // Set the volume for audio playback (between 0.0 and 1.0).
