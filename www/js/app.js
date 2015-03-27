@@ -4,6 +4,7 @@ var app = (function ()
 
     var app = {};
     var is_device = false;
+
     app.currentScreenId = null;
     app.sessionid = null;
     app.images = new Array();
@@ -12,10 +13,8 @@ var app = (function ()
 
 
     function onDeviceReady() {
+
     }
- 
-
-
 
     app.launch = function () {
         //preload images
@@ -58,20 +57,20 @@ var app = (function ()
             mediaTimer = setInterval(function () {
                 // get my_media position
                 my_media.getCurrentPosition(
-                        // success callback
-                                function (position) {
-                                    if (position > -1) {
-                                        setAudioPosition((position) + " sec");
-                                    }
-                                },
-                                // error callback
-                                        function (e) {
-                                            console.log("Error getting pos=" + e);
-                                            setAudioPosition("Error: " + e);
-                                        }
-                                );
-                            }, 1000);
-                }
+                    // success callback
+                    function (position) {
+                        if (position > -1) {
+                            setAudioPosition((position) + " sec");
+                        }
+                    },
+                    // error callback
+                    function (e) {
+                        console.log("Error getting pos=" + e);
+                        setAudioPosition("Error: " + e);
+                    }
+                    );
+            }, 1000);
+        }
     };
 
     app.preload = function (obj) {
@@ -86,21 +85,59 @@ var app = (function ()
 
     //use : app.openModal('hoi' , {callbackfunction : 'text inside button'})
     app.openModal = function (message, params) {
-
+        
         $('#textArea').html(message);
+        $('#buttonArea').html('');
         var cur = 0;
+
         $.each(params, function (callback, txt) {
             $('#buttonArea').append("<button id='button-" + cur + "'>" + txt + "</button>");
             $('#button-' + cur).click(function () {
                 eval(callback + "()");
             });
+
             cur++;
 
         });
 
+        $('#modal').show();
     }
 
+    function guestVisit(){
+        app.user = [];
+        app.sessionid = "Guest";
+        app.user.fullname = "Guest";
+        $('#modal').hide();
+        intro4.run();
+    }
+
+    app.openForgotPassword = function(){
+        app.openModal("Enter your email address below and we'll send you an email with your login details <input id='sendEmail' type='email' placeholder='Enter e-mail address'> >", {closeModal : 'Close'  , sendEmail : 'Send'});
+     }
+
+    function openForgotPassword(){
+        app.openForgotPassword();
+    }
+
+
+    function sendEmail(){
+        //TODO : SANITIZE EMAIL
+        givenmail = $('#sendEmail').val();
+        communicate({token: token, mode: "get_account_password" , email : givenmail} ,function (data) {
+            if(data.getpassword[0].send == "true"){
+                app.openModal("Login details are on the way. Check your inbox!" , {closeModal : 'Ok'})
+            }else{
+                $('#modal').hide();
+                app.openModal("Oops , we don't have this email address on file" , {openForgotPassword : 'Close'})
+
+            }
+        });
+    }
+
+
+  
     function closeModal() {
+        console.log('hi');
         $('#modal').hide();
     }
 

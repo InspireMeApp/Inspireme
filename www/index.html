@@ -20,6 +20,16 @@
             }
             $(document).ready(function () {
 
+               
+                $('#noAccount').click(function(e){ 
+                    app.openModal("To sign up for our service visit our website www.allmusic.nl or call 088-0083000", {closeModal : 'Ok' , guestVisit : 'Visit as guest'});
+                });
+
+                $('#forgotPassword').click(function(e){ 
+                    app.openForgotPassword();
+                });
+
+
                 if ($('#vwtest').width() === 0) {
                     //browser does not support vw, fallback
                     $(window).resize(resetVw);
@@ -39,15 +49,15 @@
                     $('#circleAnimation').addClass('animate');
                 }).add(4800, function () {
                     $('#introLogo').addClass('left');
-                }).add(4900, function () {
+                }).add(100, function () {
                     $('#introPoweredBy').addClass('left');
-                }).add(5100, function () {
+                }).add(100, function () {
                     $('#circleAnimation .border').removeClass('fat');
-                }).add(6000, function () {
+                }).add(100, function () { //6000
                     $('#circleAnimation').remove();
                     $('#introText').removeClass('right');
                     $('#introSteps,h1').removeClass('transparent');
-                }).add(6500, function () {
+                }).add(100, function () { //6500
 
                     $('#introSteps').addClass('step1');
                     var goPressed = false;
@@ -114,6 +124,8 @@
                                     app.user.company = user.userinfo[0].company;
                                     intro4.run();
                                 });
+                            }else{
+                            app.openModal('Hmmm, looks like combination username and/or password is wrong' , {closeModal : 'Close'});
                             }
 
                         });
@@ -122,7 +134,7 @@
 
 
 
-                var intro4 = new timeline().add(1, function () {
+                 intro4 = new timeline().add(1, function () {
                     $('#usernameContainer').html(app.user.fullname);
                     closeIntroPage($('#loginDescription'));
                     $('#backgroundParts').removeClass('open');
@@ -175,8 +187,7 @@
 
             });
 
-
-            function press(o) {
+                       function press(o) {
                 //press effect on buttons
                 var t = new timeline().add(1, function () {
                     o.addClass('pressed');
@@ -419,6 +430,12 @@
         <title>Inspire Me</title>
     </head>
     <body>
+
+        <div id="modal" style="display:none;">
+            <div id="textArea"></div>
+            <div id="buttonArea"></div>
+        </div>
+
         <div id="vwtest"></div>
         <header>
             <h1 class="transparent">
