@@ -40,6 +40,8 @@ var app = (function ()
             });
 
         });
+        
+        $('#modalX').click(closeModal);
 
     }
 
@@ -83,8 +85,10 @@ var app = (function ()
     };
 
     //use : app.openModal('hoi' , {callbackfunction : 'text inside button'})
-    app.openModal = function (message, params) {
-        
+    app.openModal = function (message, params, title, extraClass) {
+        title=title||'';
+        extraClass=extraClass||'';
+        $('#modalTitle').text(title);
         $('#textArea').html(message);
         $('#buttonArea').html('');
         var cur = 0;
@@ -99,7 +103,7 @@ var app = (function ()
 
         });
 
-        $('#modal').show();
+        $('#modal').attr('class',extraClass).show();
     }
 
     function guestVisit(){
@@ -111,7 +115,7 @@ var app = (function ()
     }
 
     app.openForgotPassword = function(){
-        app.openModal("Enter your email address below and we'll send you an email with your login details <input id='sendEmail' type='email' placeholder='Enter e-mail address'> ", {closeModal : 'Close'  , sendEmail : 'Send'});
+        app.openModal("<p>Enter your email address below and we'll send you an email with your login details.</p><input id='sendEmail' type='email' placeholder='Enter e-mail address'> ", {sendEmail : 'Send'},'Forgot your password?','form');
      }
 
     function openForgotPassword(){
@@ -124,10 +128,10 @@ var app = (function ()
         givenmail = $('#sendEmail').val();
         communicate({token: token, mode: "get_account_password" , email : givenmail} ,function (data) {
             if(data.getpassword[0].send == "true"){
-                app.openModal("Login details are on the way. Check your inbox!" , {closeModal : 'Ok'})
+                app.openModal("<p>Login details are on the way. Check your inbox!</p>" , {closeModal : 'Ok'})
             }else{
                 $('#modal').hide();
-                app.openModal("Oops , we don't have this email address on file" , {openForgotPassword : 'Close'})
+                app.openModal("<p>Oops , we don't have this email address on file</p>" , {openForgotPassword : 'Close'})
 
             }
         });

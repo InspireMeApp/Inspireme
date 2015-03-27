@@ -71,7 +71,6 @@ main{
     height:100%;
     height:calc(~"100% - " @headerHeight);
     overflow-y:scroll;
-    background:@mainBg;
     z-index:50;
     .transition(opacity 0.6s);
 }
@@ -157,8 +156,7 @@ section{
     .thin;
     .transition(opacity 1s);
     p{
-        font-size: 2.2em;
-        line-height: 1.25em;
+        .paragraph;
     }
     &.show{
         opacity:1;
@@ -644,5 +642,15 @@ form .problems{
     }
     .proj{
         background-image:url(../media/songProj.png);
+    }
+}
+
+.appInfo{
+    position: absolute;
+    bottom: 100%;
+    z-index: 2;
+    padding:0 1em;
+    p{
+        font-size:1.5em;
     }
 }

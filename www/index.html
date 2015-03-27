@@ -21,13 +21,18 @@
             $(document).ready(function () {
 
               	//Ugly place , where to put ?? 
-
+                //in app.js
+                        
                 $('#noAccount').click(function(e){ 
-                    app.openModal("To sign up for our service visit our website www.allmusic.nl or call 088-0083000", {closeModal : 'Ok' , guestVisit : 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='http://allmusic.nl' target='_blank'>www.allmusic.nl</a> or call 088-0083000</p>", {closeModal : 'Ok' , guestVisit : 'Visit as guest'});
                 });
 
                 $('#forgotPassword').click(function(e){ 
                     app.openForgotPassword();
+                });
+                
+                $('#headerI').click(function(){
+                    $('.categories').css('top',200);
                 });
 
 
@@ -126,7 +131,7 @@
                                     intro4.run();
                                 });
                             }else{
-                            app.openModal('Hmmm, looks like combination username and/or password is wrong' , {closeModal : 'Close'});
+                            app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>' , {closeModal : 'Close'});
                             }
 
                         });
@@ -338,6 +343,7 @@
                     } else {
                         $this.animate({'left': 0}, 200);
                     }
+                    setTimeout(function(){swiped = false;},20);
                 });
                 setTimeout(function () {
                     if (stillMouseDown && !swiped) {
@@ -454,8 +460,10 @@
     <body>
 
         <div id="modal" style="display:none;">
+            <div id="modalTitle"></div>
             <div id="textArea"></div>
             <div id="buttonArea"></div>
+            <a class="x" id="modalX"><i></i><u></u></a>
         </div>
 
         <div id="vwtest"></div>
@@ -474,6 +482,19 @@
 
         <main class="transparent">
             <section class="categories" id="categories">
+                <div class="appInfo">
+                    <p>
+                        Inspire Me is specifically designed to do just that. We want to give you 
+                        a chance to discover some of the best tracks we have to offer. This app 
+                        is not intended to replace our website. So you won't be able to download 
+                        music or plough through our entire database.
+                    </p>
+                    <p>
+                        Every week we will surprise you with new selections. So whenever you have 
+                        a couple of minutes of spare time. While sipping your cappuccino at your 
+                        local coffeebar for example, just load this app and ask us: Inspire Me.
+                    </p>
+                </div>
             </section>
         </main>
         <div id="intro">
