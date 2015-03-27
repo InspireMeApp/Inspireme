@@ -508,10 +508,10 @@ form .problems{
         overflow:hidden;
     }
     li{
-        height: 2.7em;
+        height: @songHeight;
         line-height: 2em;
         font-size: 2em;
-        background-color: darkgreen;
+        background-color: @mainBg;
         border-bottom: 1px solid #D2D2D2;
         position:relative;
         width:100%;
@@ -522,9 +522,9 @@ form .problems{
             left:0;
             width:100%;
             height:100%;
-                    background-color: #E6E6E6;
-                    color:@textColorDark;
-                    .transition(background-color 0.5s);
+            background-color: #E6E6E6;
+            color:@textColorDark;
+            .transition(background-color 0.5s);
         }
         &.active>.bar{
             background-color:#BEBEBE;
@@ -618,5 +618,31 @@ form .problems{
     .duringPlay, .loadingIcon{
         opacity:0;
         z-index:4;
+    }
+}
+.bs{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    a{
+        display:block;
+        width:@songHeight*1.03;
+        height:100%;
+        float:right;
+        border-left:1px solid #909090;
+        background-repeat:no-repeat;
+        background-position:center 49%;
+        background-size:39%;
+    }
+    .i{
+        background-image:url(../media/songI.png);
+        border-left:none;
+    }
+    .fav{
+        background-image:url(../media/songFav.png);
+    }
+    .proj{
+        background-image:url(../media/songProj.png);
     }
 }
