@@ -19,12 +19,11 @@ var app = (function ()
     app.launch = function () {
         //preload images
         communicate({token: token, mode: 'get_values_categories'}, function (data) {
-
             imgs = [];
             $.each(data.categories, function () {
-                imgs.push(this.artwork);
+                imgs.push(this['artwork-m']);
                 app.images[this.id] = new Image();
-                app.images[this.id].src = this.artwork;
+                app.images[this.id].src = this['artwork-m']
             });
             var buttons =
                     '<div class="buttons loadingIcon"><a class="load"></a></div>' +
@@ -35,7 +34,7 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><h2>' + this.title + '</h2><div><img src="' + this.artwork + '">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><h2>' + this.title + '</h2><div><img src="' + this['artwork-m'] + '">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
