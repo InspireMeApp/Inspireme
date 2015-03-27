@@ -112,7 +112,7 @@ var app = (function ()
     }
 
     app.openForgotPassword = function(){
-        app.openModal("Enter your email address below and we'll send you an email with your login details <input id='sendEmail' type='email' placeholder='Enter e-mail address'> >", {closeModal : 'Close'  , sendEmail : 'Send'});
+        app.openModal("Enter your email address below and we'll send you an email with your login details <input id='sendEmail' type='email' placeholder='Enter e-mail address'> ", {closeModal : 'Close'  , sendEmail : 'Send'});
      }
 
     function openForgotPassword(){
