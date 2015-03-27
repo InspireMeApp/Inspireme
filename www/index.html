@@ -48,17 +48,17 @@
                     $('#introPoweredBy').removeClass('right');
                 }).add(1505, function () {
                     $('#circleAnimation').addClass('animate');
-                }).add(4800, function () {
+                }).add(100, function () {//4900
                     $('#introLogo').addClass('left');
-                }).add(4900, function () {
+                }).add(100, function () {//4900
                     $('#introPoweredBy').addClass('left');
-                }).add(5100, function () {
+                }).add(100, function () {//5100
                     $('#circleAnimation .border').removeClass('fat');
-                }).add(6000, function () { //6000
+                }).add(100, function () { //6000
                     $('#circleAnimation').remove();
                     $('#introText').removeClass('right');
                     $('#introSteps,h1').removeClass('transparent');
-                }).add(6500, function () { //6500
+                }).add(100, function () { //6500
 
                     $('#introSteps').addClass('step1');
                     var goPressed = false;
@@ -117,6 +117,7 @@
                         //TODO remove hard code uname and pword
                         communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
                             app.sessionid = data.login[0].session;
+                            console.log(app.sessionid);
                             if (data.login[0].login == "true") {
                                 communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
                                     app.user = [];
@@ -132,8 +133,6 @@
                         });
                     });
                 });
-
-
 
                  intro4 = new timeline().add(1, function () {
                     $('#usernameContainer').html(app.user.fullname);
@@ -185,6 +184,66 @@
                 }).add(1020, function () {
                     $('#categories').css('top', 0);
                 });
+                
+                //menu listeners
+
+                $('#headerMenu').click(function(){
+                   $('.navigation').toggleClass('open');
+                });
+
+                $('#menu_home').click(function(){
+                    $('.category-item').show(); 
+                    $('#project-container').hide();
+                });
+
+                $('#menu_projects').click(function(){
+
+                if(app.sessionid == "Guest"){
+                app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>' , {closeModal : 'Ok'})
+                }else{
+                    communicate({token : token, mode: "get_account_projects",uid: app.sessionid }, function (data) {
+                        $('#menu-projects ul').html('');
+                            $.each(data.projects, function () {
+                                var li = '<li class="project-item" data-tag="'+this.id+'">'+this.name+'</li>';
+                                $('#menu_projects ul').append(li);
+                            });
+                    });
+                }
+
+                });
+                
+                $('#menu_favourites').click(function(){
+                        communicate({token : token, mode: "get_values_songlist", type: 'fav', uid: app.sessionid }, function (data) {
+                            var proj = $('#project-container');
+                            var ul = $('ul', proj);
+                            ul.html(''); 
+                            $('.category-item').hide();
+
+                               $.each(data.songlist, function () {
+                               var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
+                               var buttons = $('<div class="bs"/>');
+                                   $('<a class="proj"/>').click(songProj).appendTo(buttons);
+                                   $('<a class="fav"/>').click(songFav).appendTo(buttons);
+                                   $('<a class="i"/>').click(songInfo).appendTo(buttons);
+
+                                               buttons.appendTo(li);
+                                               $('<div class="bar">' +
+                                                   '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
+                                                   '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
+                                               ).click(songClick).mousedown(swipeStart).appendTo(li);
+                                               $('#project-container ul').append(li);
+                                               $('#project-container h2').html('Favourites');
+                                               $('#project-container').show();
+                        
+                                               });
+
+                                               });
+                                               });
+
+                $('#menu_profile').click(function(){
+
+                });
+
 
             });
 
@@ -283,6 +342,7 @@
                         var data_tag = cat[0].dataset.tag;
                         communicate({token: token, mode: "get_values_songlist", type: "cat", type_id: data_tag, uid: app.sessionid}, function (data) {
                             var ul = $('ul', cat);
+                            console.log(data);
                             $.each(data.songlist, function () {
                                 var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
                                 var buttons = $('<div class="bs"/>');
@@ -294,6 +354,9 @@
                                         '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
                                         '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
                                         ).click(songClick).mousedown(swipeStart).appendTo(li);
+                                        if(this.in_favourite == "true"){
+                                            li.addClass('faved');
+                                        }
                                 li.appendTo(ul);
                             });
                             setTimeout(function () {
@@ -437,7 +500,10 @@
                 alert('i');
             }
             function songFav() {
-                alert('fav');
+                var song_id = $(this).closest('li').attr('data-id');
+                communicate({token: token , mode : "post_account_infavourite", song : song_id , uid: app.sessionid}, function(data){
+                    console.log(data);
+                });
             }
             function songProj() {
                 alert('proj');
@@ -449,6 +515,7 @@
             }
 
         </script>
+        <script> /* Provisory for dev environment: */ localStorage.clear(); </script>
         <title>Inspire Me</title>
     </head>
     <body>
@@ -474,8 +541,38 @@
 
         <main class="transparent">
             <section class="categories" id="categories">
+            <div class='category-item open' id='project-container' style='display:none;'>
+                <h2> </h2>
+                <div>
+                <img src="http://api.allmusic.eu/dotnet/IM/categories/happy-m.jpg">
+                <div class="buttons loadingIcon"><a class="load"></a></div><div class="buttons noPlay"><a class="play" data-action="play"><span></span></a></div><div class="buttons duringPlay"><a class="stepBackwards small" data-action="stepBackwards"><span></span></a><a class="pause" data-action="pause"><span></span></a><a class="stepForwards small" data-action="stepForwards"><span></span></a></div>
+        </div>
+        <div class="ulCont" style="height:auto;">
+            <ul></ul>
+        </div>
             </section>
         </main>
+
+        <nav class="navigation">
+            <div>
+                Menu
+
+                <ul>
+                    <li id='menu_home'>Home</li>
+                    <li id='menu_projects'>Projects
+                        <ul></ul>
+                    </li>
+                    <li id='menu_favourites'>Favourites</li>
+                    <li id='menu_profile'>Profile</li>
+                    <li id='menu_contact'>Contact</li>
+                    <li id='menu_logout'>Logout</li>
+                </ul>
+
+                <img src="#">
+
+            </div>
+        </nav>
+
         <div id="intro">
             <div class="circle" id="circleAnimation"><div class="border fat"></div></div>
             <div class="circle transparent" id="circleMain"><div class="border"></div></div>

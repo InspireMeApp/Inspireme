@@ -87,6 +87,22 @@ section{
     min-height:120%;
 }
 
+.navigation{
+    display:none;
+    &.open{display:block;}
+    z-index: 100;
+    position: fixed;
+    right: 0;
+    width: 45%;
+    top: @headerHeight;
+    >div{
+        width:50%;
+        margin:auto;
+        >ul{
+
+        } 
+    }
+}
 .circle{
     @fatBorderW:0.28em;
     @trans:0.4s;
@@ -473,7 +489,7 @@ form .problems{
         }
 
     }
-    .category-item{
+    .category-item , #project-container{
         >div{
             position:relative;
             background:grey;
