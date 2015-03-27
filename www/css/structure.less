@@ -48,14 +48,27 @@ header{
             &.i{
                 left:0;
                 padding-left:0.7em;
-                span{
+                >span{
                     background-image:url(../media/header-i.png);
+                }
+                .x{
+                    opacity:0;
+                    right: 1.65em;
+                    top: 1.7em;
+                    width: 2.2em;
+                    height: 2.2em;
+                    position: absolute;
+                }
+                >*{.transition(opacity 0.4s);}
+                &.open{
+                    >span{opacity:0;}
+                    .x{opacity:1;}
                 }
             }
             &.menu{
                 right:0;
                 padding-right:0.8em;
-                span{
+                >span{
                     background-image:url(../media/header-menu.png);
                 }
             }
@@ -388,7 +401,7 @@ form .problems{
 //categories
 .categories{
     &.animating{
-        .transition(top 1.7s ease-out);
+        .transition(~"top 1.7s ease-out,margin-top 0.8s");
     }
     h2{
         .thin;
@@ -649,8 +662,21 @@ form .problems{
     position: absolute;
     bottom: 100%;
     z-index: 2;
-    padding:0 1em;
+    padding:2em 2.7em 3.3em;
+    text-align:center;
     p{
-        font-size:1.5em;
+        font-size:1em;
+        line-height:1.8em;
+        padding:1.5em 0 0;
+    }
+    img{
+        width: 8em;
+    }
+    button{
+        font-size: 1em;
+        letter-spacing: 0.1em;
+        line-height: 2.8em;
+        width: 8.9em;
+        margin: 2.6em auto 0;
     }
 }

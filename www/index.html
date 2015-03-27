@@ -20,19 +20,25 @@
             }
             $(document).ready(function () {
 
-              	//Ugly place , where to put ?? 
+                //Ugly place , where to put ?? 
                 //in app.js
-                        
-                $('#noAccount').click(function(e){ 
-                    app.openModal("<p>To sign up for our services visit our website <a href='http://allmusic.nl' target='_blank'>www.allmusic.nl</a> or call 088-0083000</p>", {closeModal : 'Ok' , guestVisit : 'Visit as guest'});
+
+                $('#noAccount').click(function (e) {
+                    app.openModal("<p>To sign up for our services visit our website <a href='http://allmusic.nl' target='_blank'>www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
 
-                $('#forgotPassword').click(function(e){ 
+                $('#forgotPassword').click(function (e) {
                     app.openForgotPassword();
                 });
-                
-                $('#headerI').click(function(){
-                    $('.categories').css('top',200);
+
+                $('#headerI').click(function () {
+                    if ($(this).hasClass('open')) {
+                        $(this).removeClass('open')
+                        $('.categories').css('margin-top', 0);
+                    } else {
+                        $(this).addClass('open')
+                        $('.categories').css('margin-top', $('.appInfo').outerHeight());
+                    }
                 });
 
 
@@ -130,8 +136,8 @@
                                     app.user.company = user.userinfo[0].company;
                                     intro4.run();
                                 });
-                            }else{
-                            app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>' , {closeModal : 'Close'});
+                            } else {
+                                app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>', {closeModal: 'Close'});
                             }
 
                         });
@@ -140,7 +146,7 @@
 
 
 
-                 intro4 = new timeline().add(1, function () {
+                intro4 = new timeline().add(1, function () {
                     $('#usernameContainer').html(app.user.fullname);
                     closeIntroPage($('#loginDescription'));
                     $('#backgroundParts').removeClass('open');
@@ -193,7 +199,7 @@
 
             });
 
-                       function press(o) {
+            function press(o) {
                 //press effect on buttons
                 var t = new timeline().add(1, function () {
                     o.addClass('pressed');
@@ -343,13 +349,17 @@
                     } else {
                         $this.animate({'left': 0}, 200);
                     }
-                    setTimeout(function(){swiped = false;},20);
+                    setTimeout(function () {
+                        swiped = false;
+                    }, 20);
                 });
                 setTimeout(function () {
                     if (stillMouseDown && !swiped) {
-                        var sw=parseInt($this.css('left'))<-10;
-                        if(sw){swiped=true;}
-                        var ms=sw?450:150;
+                        var sw = parseInt($this.css('left')) < -10;
+                        if (sw) {
+                            swiped = true;
+                        }
+                        var ms = sw ? 450 : 150;
                         $this.animate({'left': threshold}, ms);
                     }
                 }, 500);
@@ -475,7 +485,7 @@
                 </u>
             </h1>
             <div class="buttons transparent">
-                <a class="i" id="headerI"><span></span></a>
+                <a class="i" id="headerI"><span></span><u class="x"><i></i><u></u></u></a>
                 <a class="menu" id="headerMenu"><span></span></a>
             </div>
         </header>
@@ -483,17 +493,19 @@
         <main class="transparent">
             <section class="categories" id="categories">
                 <div class="appInfo">
+                    <img src="media/powered-by.png">
                     <p>
                         Inspire Me is specifically designed to do just that. We want to give you 
                         a chance to discover some of the best tracks we have to offer. This app 
                         is not intended to replace our website. So you won't be able to download 
                         music or plough through our entire database.
                     </p>
-                    <p>
+                    <p class="thin">
                         Every week we will surprise you with new selections. So whenever you have 
                         a couple of minutes of spare time. While sipping your cappuccino at your 
                         local coffeebar for example, just load this app and ask us: Inspire Me.
                     </p>
+                    <button>How to use?</button>
                 </div>
             </section>
         </main>
