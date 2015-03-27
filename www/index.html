@@ -20,7 +20,8 @@
             }
             $(document).ready(function () {
 
-               
+              	//Ugly place , where to put ?? 
+
                 $('#noAccount').click(function(e){ 
                     app.openModal("To sign up for our service visit our website www.allmusic.nl or call 088-0083000", {closeModal : 'Ok' , guestVisit : 'Visit as guest'});
                 });
@@ -53,11 +54,11 @@
                     $('#introPoweredBy').addClass('left');
                 }).add(100, function () {
                     $('#circleAnimation .border').removeClass('fat');
-                }).add(100, function () { //6000
+                }).add(6000, function () { //6000
                     $('#circleAnimation').remove();
                     $('#introText').removeClass('right');
                     $('#introSteps,h1').removeClass('transparent');
-                }).add(100, function () { //6500
+                }).add(6500, function () { //6500
 
                     $('#introSteps').addClass('step1');
                     var goPressed = false;
