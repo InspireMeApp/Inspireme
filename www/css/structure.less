@@ -508,17 +508,25 @@ form .problems{
         overflow:hidden;
     }
     li{
-        .thin;
+        height: 2.7em;
         line-height: 2em;
         font-size: 2em;
-        background-color: #E6E6E6;
+        background-color: darkgreen;
         border-bottom: 1px solid #D2D2D2;
         position:relative;
-        color:@textColorDark;
-        height: 2.7em;
-        .transition(~"background-color 0.5s,margin-left 0.2s");
         width:100%;
-        &.active{
+        position:relative;
+        >.bar{
+            .thin;
+            position:relative;
+            left:0;
+            width:100%;
+            height:100%;
+                    background-color: #E6E6E6;
+                    color:@textColorDark;
+                    .transition(background-color 0.5s);
+        }
+        &.active>.bar{
             background-color:#BEBEBE;
             >u{
                 >b{
@@ -529,7 +537,7 @@ form .problems{
                 }
             }
         }
-        &.loading{
+        &.loading>.bar{
             >u{
                 >i, >b{
                     opacity:0;
@@ -541,7 +549,7 @@ form .problems{
                 }
             }
         }
-        &.paused{
+        &.paused>.bar{
             >u{
                 >i{
                     opacity:1;
@@ -572,7 +580,7 @@ form .problems{
             font-size: 0.83em;
             letter-spacing: 0;
         }
-        >u{
+        >.bar>u{
             position:absolute;
             left:0.35em;
             top:0.4em;

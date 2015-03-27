@@ -13,6 +13,11 @@
         <script src="js/app.js"></script>
 
         <script>
+            var ww;//window width
+            $(window).resize(resetWw);
+            function resetWw() {
+                ww = $(window).width();
+            }
             $(document).ready(function () {
 
                 if ($('#vwtest').width() === 0) {
@@ -20,6 +25,7 @@
                     $(window).resize(resetVw);
                     resetVw();
                 }
+                resetWw();
 
                 app.launch();
 
@@ -201,11 +207,11 @@
                         if (!cat.hasClass('open')) {
                             openCategory(cat);
                         } else {
-                            $('.active:first', cat).click();
+                            $('.active:first>.bar', cat).click();
                         }
                         break;
                     case 'pause':
-                        $('.active:first', cat).click();
+                        $('.active:first>.bar', cat).click();
                         break;
                     case 'stepBackwards':
                         if ($('.active:first', cat).length) {
@@ -220,7 +226,8 @@
                         var a = $('.active:first', cat);
                         if (a.length) {
                             var s = Math.round(media.getCurrentPosition() + 10);
-                            var d = parseInt(a.children('.duration').attr('data-duration'));
+                            var d = parseInt(a.children('.bar').children('.duration').attr('data-duration'));
+                            console.log(s + "___" + d);
                             if (s >= d) {
                                 s = d - 1;
                             }
@@ -265,10 +272,12 @@
                         communicate({token: token, mode: "get_values_songlist", type: "cat", type_id: data_tag, uid: app.sessionid}, function (data) {
                             var ul = $('ul', cat);
                             $.each(data.songlist, function () {
-                                $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">' +
+                                var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
+                                $('<div class="bar">' +
                                         '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
-                                        '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></li>'
-                                        ).click(songClick).mousedown(swipeStart).appendTo(ul);
+                                        '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
+                                        ).click(songClick).mousedown(swipeStart).appendTo(li);
+                                li.appendTo(ul);
                             });
                             setTimeout(function () {
                                 ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
@@ -282,17 +291,47 @@
                 }).run();
             }
 
-            function swipeStart() {
-                console.log('start');
+            var initX;
+            var swiped = false;
+            function swipeStart(e) {
+                initX = e.pageX;
                 var $this = $(this);
-                $this.css('margin-left', '-2%');
-                $(document).bind('mouseup.swipe',function(){
-                    $(document).unbind('mouseup.swipe');
-                    $this.css('margin-left', '0');
+                var end = ww * -0.3;
+                var threshold = ww * -0.03;
+                swiped=false;
+                var o=0;
+                $(document).bind('mousemove.swipe', function (e) {
+                    o = e.pageX - initX;
+                    if (o > threshold) {
+                        o = 0;
+                    } else {
+                        swiped = true;
+                        if (o < end) {
+                            o = end;
+                        }
+                        $this.css('left', o);
+                    }
                 });
+                var stillMouseDown = true;
+                $(document).bind('mouseup.swipe', function () {
+                    stillMouseDown = false;
+                    $(document).unbind('mouseup.swipe').unbind('mousemove.swipe');
+                    if(o<end*0.5){
+                        $this.animate({'left': end+'px'}, 200);
+                    }else{
+                        $this.animate({'left': 0}, 200);
+                    }
+                });
+                setTimeout(function () {
+                    if (stillMouseDown && !swiped) {
+                        $this.animate({'left': threshold}, 150);
+                    }
+                }, 500);
             }
             function songClick() {
-                var $this = $(this);
+                if(swiped){return;}
+                swiped=false;
+                var $this = $(this).parent();
                 if ($this.hasClass('active')) {
                     if ($this.hasClass('loading')) {
                         return;
@@ -314,7 +353,7 @@
                 lastClickedSongId = $this.attr('data-id');
                 $this.parent().children('.active').each(function () {
                     $(this).removeClass('loading active paused');
-                    var s = $(this).children('.duration');
+                    var s = $(this).children('.bar').children('.duration');
                     setTimeout(function () {
                         s.text(s.attr('data-dur-sec'));
                     }, 1000);
@@ -332,7 +371,7 @@
                     if (lastClickedSongId === $this.attr('data-id')) {
                         //check if in the meantime not another song has been clicked
                         $this.closest('.category-item').addClass('playing');
-                        durSpan = $this.children('.duration');
+                        durSpan = $this.children('.bar').children('.duration');
                         media = new Media(
                                 $this.attr('data-url'),
                                 function () {
@@ -367,7 +406,7 @@
                     media = null;
                     span.text(span.attr('data-dur-sec'));
                     span.closest('.category-item').removeClass('playing');
-                    span.parent().removeClass('loading active paused');
+                    span.parent().parent().removeClass('loading active paused');
                 }
             }
 
