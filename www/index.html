@@ -273,6 +273,11 @@
                             var ul = $('ul', cat);
                             $.each(data.songlist, function () {
                                 var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
+                                var buttons = $('<div class="bs"/>');
+                                $('<a class="proj"/>').click(songProj).appendTo(buttons);
+                                $('<a class="fav"/>').click(songFav).appendTo(buttons);
+                                $('<a class="i"/>').click(songInfo).appendTo(buttons);
+                                buttons.appendTo(li);
                                 $('<div class="bar">' +
                                         '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
                                         '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
@@ -296,10 +301,10 @@
             function swipeStart(e) {
                 initX = e.pageX;
                 var $this = $(this);
-                var end = ww * -0.3;
+                var end = ww * -0.471;
                 var threshold = ww * -0.03;
-                swiped=false;
-                var o=0;
+                swiped = false;
+                var o = 0;
                 $(document).bind('mousemove.swipe', function (e) {
                     o = e.pageX - initX;
                     if (o > threshold) {
@@ -316,21 +321,26 @@
                 $(document).bind('mouseup.swipe', function () {
                     stillMouseDown = false;
                     $(document).unbind('mouseup.swipe').unbind('mousemove.swipe');
-                    if(o<end*0.5){
-                        $this.animate({'left': end+'px'}, 200);
-                    }else{
+                    if (o < end * 0.5) {
+                        $this.animate({'left': end + 'px'}, 200);
+                    } else {
                         $this.animate({'left': 0}, 200);
                     }
                 });
                 setTimeout(function () {
                     if (stillMouseDown && !swiped) {
-                        $this.animate({'left': threshold}, 150);
+                        var sw=parseInt($this.css('left'))<-10;
+                        if(sw){swiped=true;}
+                        var ms=sw?450:150;
+                        $this.animate({'left': threshold}, ms);
                     }
                 }, 500);
             }
             function songClick() {
-                if(swiped){return;}
-                swiped=false;
+                if (swiped) {
+                    return;
+                }
+                swiped = false;
                 var $this = $(this).parent();
                 if ($this.hasClass('active')) {
                     if ($this.hasClass('loading')) {
@@ -408,6 +418,17 @@
                     span.closest('.category-item').removeClass('playing');
                     span.parent().parent().removeClass('loading active paused');
                 }
+            }
+
+
+            function songInfo() {
+                alert('i');
+            }
+            function songFav() {
+                alert('fav');
+            }
+            function songProj() {
+                alert('proj');
             }
 
             function resetVw() {
