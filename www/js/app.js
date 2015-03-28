@@ -18,9 +18,9 @@ var app = (function ()
 
     app.launch = function () {
         //preload images
-    
+
         app.sessionid = window.localStorage.getItem("sessionid");
-        if(app.sessionid == null){
+        if (app.sessionid == null) {
             app.sessionid = "0";
         }
 
@@ -35,9 +35,9 @@ var app = (function ()
             var buttons =
                     '<div class="buttons loadingIcon"><a class="load"></a></div>' +
                     '<div class="buttons noPlay"><a class="play" data-action="play"><span></span></a></div>' +
-                    '<div class="buttons duringPlay">'+
-                    '<a class="stepBackwards small" data-action="stepBackwards"><span></span></a>'+
-                    '<a class="pause" data-action="pause"><span></span></a>'+
+                    '<div class="buttons duringPlay">' +
+                    '<a class="stepBackwards small" data-action="stepBackwards"><span></span></a>' +
+                    '<a class="pause" data-action="pause"><span></span></a>' +
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
@@ -47,26 +47,26 @@ var app = (function ()
             });
 
         });
-        
+
         $('#modalX').click(closeModal);
 
     }
 
-    app.loadSongs = function(entity , callback){
+    app.loadSongs = function (entity, callback) {
         console.log(entity.container);
-        if(entity.type == 'fav'){
-            communicate({token: token , mode : "get_values_songlist" , type : entity.type , uid : app.sessionid} , function(data){
+        if (entity.type == 'fav') {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid}, function (data) {
                 callback(data);
             });
         }
-        else{
-            communicate({token: token , mode : "get_values_songlist" , type : entity.type , type_id : entity.type_id , uid : app.sessionid} , function(data){
+        else {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid}, function (data) {
                 callback(data);
             });
         }
     }
 
-    app.renderSongs = function(container , data , callback){
+    app.renderSongs = function (container, data, callback) {
         $.each(data.songlist, function () {
             var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
             var buttons = $('<div class="bs"/>');
@@ -75,18 +75,18 @@ var app = (function ()
             $('<a class="i"/>').click(songInfo).appendTo(buttons);
             buttons.appendTo(li);
             $('<div class="bar">' +
-              '<div class="info"><b>' + this.title + '</b><i>' + 
-              this.title + '</i></div>' +
-              '<span class="duration" data-duration="' + this.duration_sec +
-              '" data-dur-sec="' + this.duration_notation + '">' + 
-              this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
-             ).click(songClick).mousedown(swipeStart).appendTo(li);
-            if(this.in_favourite == "true"){
+                    '<div class="info"><b>' + this.title + '</b><i>' +
+                    this.title + '</i></div>' +
+                    '<span class="duration" data-duration="' + this.duration_sec +
+                    '" data-dur-sec="' + this.duration_notation + '">' +
+                    this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
+                    ).click(songClick).mousedown(swipeStart).appendTo(li);
+            if (this.in_favourite == "true") {
                 li.addClass('faved');
             }
             li.appendTo(container);
         });
-            callback();
+        callback();
     }
 
 
@@ -103,20 +103,20 @@ var app = (function ()
             mediaTimer = setInterval(function () {
                 // get my_media position
                 my_media.getCurrentPosition(
-                    // success callback
-                    function (position) {
-                        if (position > -1) {
-                            setAudioPosition((position) + " sec");
-                        }
-                    },
-                    // error callback
-                    function (e) {
-                        console.log("Error getting pos=" + e);
-                        setAudioPosition("Error: " + e);
-                    }
-                    );
-            }, 1000);
-        }
+                        // success callback
+                                function (position) {
+                                    if (position > -1) {
+                                        setAudioPosition((position) + " sec");
+                                    }
+                                },
+                                // error callback
+                                        function (e) {
+                                            console.log("Error getting pos=" + e);
+                                            setAudioPosition("Error: " + e);
+                                        }
+                                );
+                            }, 1000);
+                }
     };
 
     app.preload = function (obj) {
@@ -131,8 +131,8 @@ var app = (function ()
 
     //use : app.openModal('hoi' , {callbackfunction : 'text inside button'})
     app.openModal = function (message, params, title, extraClass) {
-        title=title||'';
-        extraClass=extraClass||'';
+        title = title || '';
+        extraClass = extraClass || '';
         $('#modalTitle').text(title);
         $('#textArea').html(message);
         $('#buttonArea').html('');
@@ -148,10 +148,10 @@ var app = (function ()
 
         });
 
-        $('#modal').attr('class',extraClass).show();
+        $('#modal').attr('class', extraClass).show();
     }
 
-    function guestVisit(){
+    function guestVisit() {
         app.user = [];
         app.sessionid = "Guest";
         app.user.fullname = "Guest";
@@ -159,40 +159,48 @@ var app = (function ()
         intro4.run();
     }
 
-    app.openForgotPassword = function(){
-        app.openModal("<p>Enter your email address below and we'll send you an email with your login details.</p><input id='sendEmail' type='email' placeholder='Enter e-mail address'> ", {sendEmail : 'Send'},'Forgot your password?','form');
-     }
+    app.openForgotPassword = function () {
+        app.openModal("<p>Enter your email address below and we'll send you an email with your login details.</p><input id='sendEmail' type='email' placeholder='Enter e-mail address'> ", {sendEmail: 'Send'}, 'Forgot your password?', 'form');
+    }
 
-    function openForgotPassword(){
+    function openForgotPassword() {
         app.openForgotPassword();
     }
 
-    function sendEmail(){
+    function sendEmail() {
         //TODO : SANITIZE EMAIL
         givenmail = $('#sendEmail').val();
-        communicate({token: token, mode: "get_account_password" , email : givenmail} ,function (data) {
-            if(data.getpassword[0].send == "true"){
-                app.openModal("<p>Login details are on the way. Check your inbox!</p>" , {closeModal : 'Ok'})
-            }else{
+        communicate({token: token, mode: "get_account_password", email: givenmail}, function (data) {
+            if (data.getpassword[0].send == "true") {
+                app.openModal("<p>Login details are on the way. Check your inbox!</p>", {closeModal: 'Ok'})
+            } else {
                 $('#modal').hide();
-                app.openModal("<p>Oops , we don't have this email address on file</p>" , {openForgotPassword : 'Close'})
+                app.openModal("<p>Oops , we don't have this email address on file</p>", {openForgotPassword: 'Close'})
 
             }
         });
     }
 
-    function logout(){
+    function logout() {
         app.sessionid = null;
         window.localStorage.clear();
         console.log('logged out!');
-        $('main').css('display' , 'none');
         closeModal();
-        $('body').removeClass('menuOpen');
-        $('header .buttons').hide();
-        $('header u').removeClass('transparent');
         $('#introSteps').removeClass('step3');
-        intro3.run();
-    } 
+        var t = new timeline().add(400, function () {
+            $('main, header .buttons').addClass('transparent');
+            $('body').removeClass('menuOpen');
+        }).add(800, function () {
+            intro3.run();
+        }).add(1050, function () {
+            $('#headerI').removeClass('open');
+            $('main, header .buttons').hide();
+            $('main').removeClass('nobg');
+            $('#categories').removeClass('animating').removeAttr('style');
+            $('header u').removeClass('transparent');
+        }).run();
+
+    }
 
     function closeModal() {
         $('#modal').hide();

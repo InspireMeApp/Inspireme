@@ -34,6 +34,9 @@
                 });
 
                 $('#headerI').click(function () {
+                    if ($('header>.buttons').hasClass('transparent')) {
+                        return;
+                    }
                     var $this = $(this);
                     if ($this.hasClass('open')) {
                         $this.removeClass('open');
@@ -76,43 +79,43 @@
                     $('#circleAnimation .border').removeClass('fat');
                 }).add(6000, function () { //6000
                     $('#circleAnimation').remove();
-                    if(app.sessionid.length == 20){
-                    }else{
+                    if (app.sessionid.length == 20) {
+                    } else {
                         $('#introText').removeClass('right');
                         $('#introSteps,h1').removeClass('transparent');
                     }
                 }).add(6500, function () { //6500
-                if(app.sessionid.length == 20){
-                    $('#circleMain').addClass('left');
-                    app.user = [];
-                    app.user.fullname = "test";
-                    introEnd.run();
-                    console.log('test');
-                }else{
-                    $('#introSteps').addClass('step1');
-                    var goPressed = false;
-                    $('#introSteps .go').click(function () {
-                        if (goPressed) {
-                            return;
-                        }
-                        goPressed = true;
-                        $(this).unbind('click');
-                        $(document).unbind('click');
-                        press($(this));
-                        setTimeout(function () {
+                    if (app.sessionid.length == 20) {
+                        $('#circleMain').addClass('left');
+                        app.user = [];
+                        app.user.fullname = "test";
+                        introEnd.run();
+                        console.log('test');
+                    } else {
+                        $('#introSteps').addClass('step1');
+                        var goPressed = false;
+                        $('#introSteps .go').click(function () {
+                            if (goPressed) {
+                                return;
+                            }
+                            goPressed = true;
+                            $(this).unbind('click');
+                            $(document).unbind('click');
+                            press($(this));
+                            setTimeout(function () {
+                                intro2.run();
+                            }, 400);
+                        });
+                        $(document).click(function () {
+                            if (goPressed) {
+                                return;
+                            }
+                            goPressed = true;
+                            $('#introSteps .go').unbind('click');
+                            $(document).unbind('click');
                             intro2.run();
-                        }, 400);
-                    });
-                    $(document).click(function () {
-                        if (goPressed) {
-                            return;
-                        }
-                        goPressed = true;
-                        $('#introSteps .go').unbind('click');
-                        $(document).unbind('click');
-                        intro2.run();
-                    });
-                }
+                        });
+                    }
                 });
                 intro.run();
 
@@ -193,6 +196,7 @@
                         goPressed = true;
                         $('#introSteps .go').unbind('click');
                         $(document).unbind('click');
+                        closeIntroPage($('#welcome'));
                         introEnd.run();
                     });
                 });
@@ -212,11 +216,16 @@
                     $('#categories').show().addClass('animating');
                 }).add(1020, function () {
                     $('#categories').css('top', 0);
+                }).add(3000, function () {
+                    $('main').addClass('nobg');
                 });
 
                 //menu listeners
 
                 $('#headerMenu').click(function () {
+                    if ($('header>.buttons').hasClass('transparent')) {
+                        return;
+                    }
                     if ($('body').toggleClass('menuOpen').hasClass('menuOpen')) {
                         $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
                     }
@@ -305,9 +314,9 @@
 
                 });
 
-                $('#menu_logout').click(function() {
+                $('#menu_logout').click(function () {
                     app.sessionid = null;
-                    app.openModal('are you sure you want to logout?' , {logout : 'Logout' , closeModal : 'Cancel'});
+                    app.openModal('are you sure you want to logout?', {logout: 'Logout', closeModal: 'Cancel'});
                 });
 
 
@@ -378,6 +387,9 @@
             var durSpan;
             var durLoop;
             function openCategory(cat) {
+                if ($('#headerI').hasClass('open')) {
+                    $('#headerI').click();
+                }
                 //close other
                 if (media !== null) {
                     media.stop();
@@ -394,32 +406,42 @@
                     cat.addClass('open');
                 }, 5);
 
-                var t = new timeline().add(260, function () {
+                new timeline().add(260, function () {
                     //start loading songs
                     cat.addClass('loading');
-                }).add(3000, function () {
-                    var open = new timeline().add(1, function () {
-                        cat.addClass('loadPause');
-                    }).add(700, function () {
-                        cat.removeClass('loadPause loading');
-                    }).add(1100, function () {
-                        $('main').animate({scrollTop: cat.position().top + 1}, 1200);
-                    }).add(2400, function () {
-                        var data_tag = cat[0].dataset.tag;
-                        var ul = $('ul', cat);
-                        app.loadSongs({type: 'cat', type_id: data_tag, container: ul}, function (data) {
-                            app.renderSongs(ul, data, function () {
-                                setTimeout(function () {
-                                    ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                        $(this).height('auto');
-                                    });
-                                }, 10);
+                    var data_tag = cat[0].dataset.tag;
+                    var ul = $('ul', cat);
+                    app.loadSongs({type: 'cat', type_id: data_tag, container: ul}, function (data) {
+                        var open = new timeline().add(1, function () {
+                            cat.addClass('loadPause');
+                        }).add(700, function () {
+                            cat.removeClass('loadPause loading');
+                        }).add(1100, function () {
+                            var st = $('main').scrollTop();
+                            var to = cat.position().top + 1;
+                            $('main').animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40), function () {
+
+
+                                app.renderSongs(ul, data, function () {
+                                    setTimeout(function () {
+                                        ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                            $(this).height('auto');
+                                        });
+                                    }, 10);
+
+                                });
+
 
                             });
                         });
+
+                        open.run();
+
+
+
+
+
                     });
-                    //actually run this after load finish        
-                    open.run();
                 }).run();
             }
 
