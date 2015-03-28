@@ -234,13 +234,14 @@
                 $('#menu_home').click(function () {
                     $('.category-item').show();
                     $('#project-container').hide();
+                    $('body').removeClass('menuOpen');
                 });
 
                 $('#menu_projects').click(function () {
 
                     if (app.sessionid == "Guest") {
                         app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
-                    } else {
+                        } else {
                         var pr = $('#menu_projects ul');
                         if (pr.children().length == 0) {
                             communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
@@ -275,11 +276,12 @@
                                             $('#project-container h2').html(text);
                                             $('#project-container').addClass('open');
                                             $('#project-container').show();
+                                            $('body').removeClass('menuOpen');
                                         });
                                     });
 
 
-                });
+                                });
 
 
                             });
@@ -288,8 +290,6 @@
 
                 });
 
-
-                
                 $('#menu_favourites').click(function () {
 
                     var proj = $('#project-container');
@@ -308,6 +308,7 @@
                             $('#project-container h2').html('Favourites');
                             $('#project-container').addClass('open');
                             $('#project-container').show();
+                            $('body').removeClass('menuOpen');
                         });
                     });
 
