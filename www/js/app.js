@@ -167,7 +167,6 @@ var app = (function ()
         app.openForgotPassword();
     }
 
-
     function sendEmail(){
         //TODO : SANITIZE EMAIL
         givenmail = $('#sendEmail').val();
@@ -182,10 +181,20 @@ var app = (function ()
         });
     }
 
+    function logout(){
+        app.sessionid = null;
+        window.localStorage.clear();
+        console.log('logged out!');
+        $('main').css('display' , 'none');
+        closeModal();
+        $('body').removeClass('menuOpen');
+        $('header .buttons').hide();
+        $('header u').removeClass('transparent');
+        $('#introSteps').removeClass('step3');
+        intro3.run();
+    } 
 
-  
     function closeModal() {
-        console.log('hi');
         $('#modal').hide();
     }
 

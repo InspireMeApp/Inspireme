@@ -53,7 +53,7 @@
 
                 app.launch();
 
-                var intro = new timeline().add(1, function () {
+                intro = new timeline().add(1, function () {
                     $('#circleMain').removeClass('transparent');
                 }).add(1000, function () {
                     $('#introLogo').removeClass('right');
@@ -109,7 +109,7 @@
                 });
                 intro.run();
 
-                var intro2 = new timeline().add(1, function () {
+                intro2 = new timeline().add(1, function () {
                     $('#introText').addClass('left');
                 }).add(500, function () {
                     $('#circleMain').addClass('left');
@@ -125,7 +125,7 @@
                     });
                 });
 
-                var intro3 = new timeline().add(1, function () {
+                intro3 = new timeline().add(1, function () {
                     closeIntroPage($('#loginChoice'));
                 }).add(1250, function () {
                     $('#backgroundParts').show();
@@ -162,7 +162,6 @@
                     closeIntroPage($('#loginDescription'));
                     $('#backgroundParts').removeClass('open');
                 }).add(1000, function () {
-                    $('#backgroundParts').remove();
                     openIntroPage($('#welcome'));
                     $('#introSteps').addClass('step3');
                     //similar code like before, could be unified:
@@ -176,6 +175,7 @@
                         $(document).unbind('click');
                         press($(this));
                         setTimeout(function () {
+                            closeIntroPage($('#welcome'));
                             introEnd.run();
                         }, 400);
                     });
@@ -196,7 +196,6 @@
                     $('main, header .buttons').removeClass('transparent');
                     $('h1 .wave').addClass('transparent');
                 }).add(1000, function () {
-                    $('#intro, h1 .wave').remove();
                     $('#categories').css('top', -$('#categories').height() + 'px');
                     $('.buttons a', $('#categories')).click(function () {
                         press($(this));
@@ -263,8 +262,6 @@
                         });
                     }
 
-
-
                 });
 
                 $('#menu_favourites').click(function () {
@@ -293,6 +290,11 @@
 
                 $('#menu_profile').click(function () {
 
+                });
+
+                $('#menu_logout').click(function() {
+                    app.sessionid = null;
+                    app.openModal('are you sure you want to logout?' , {logout : 'Logout' , closeModal : 'Cancel'});
                 });
 
 
