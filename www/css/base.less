@@ -16,6 +16,12 @@ body {
     color:@textColor;
     font-size: 2.8vw;
     letter-spacing: 0.106em;
+    position:relative;
+    right:0;
+    .transition(right @menuTransition);
+    &.menuOpen{
+        right:@menuWidth;
+    }
 }
 .background(){
     background:url(../media/mountains-small.jpg) no-repeat center center;
