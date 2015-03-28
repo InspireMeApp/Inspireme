@@ -69,10 +69,19 @@
                     $('#circleAnimation .border').removeClass('fat');
                 }).add(6000, function () { //6000
                     $('#circleAnimation').remove();
-                    $('#introText').removeClass('right');
-                    $('#introSteps,h1').removeClass('transparent');
+                    if(app.sessionid.length == 20){
+                    }else{
+                        $('#introText').removeClass('right');
+                        $('#introSteps,h1').removeClass('transparent');
+                    }
                 }).add(6500, function () { //6500
-
+                if(app.sessionid.length == 20){
+                    $('#circleMain').addClass('left');
+                    app.user = [];
+                    app.user.fullname = "test";
+                    introEnd.run();
+                    console.log('test');
+                }else{
                     $('#introSteps').addClass('step1');
                     var goPressed = false;
                     $('#introSteps .go').click(function () {
@@ -96,6 +105,7 @@
                         $(document).unbind('click');
                         intro2.run();
                     });
+                }
                 });
                 intro.run();
 
