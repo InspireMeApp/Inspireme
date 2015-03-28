@@ -253,6 +253,35 @@
                                 pr.animate({'height': prc.first().height() * prc.length}, 800, function () {
                                     pr.addClass('open');
                                 });
+
+                                $('#menu_projects ul li').on('click', function () {
+
+                                    var proj_id = $(this).attr('data-tag');
+                                    var proj = $('#project-container');
+                                    var ul = $('ul', proj);
+                                    text = $(this).html();
+                                    ul.html('');
+
+                                    $('.category-item').hide();
+
+                                    app.loadSongs({type: 'proj', type_id: proj_id}, function (data) {
+                                        app.renderSongs(ul, data, function () {
+                                            setTimeout(function () {
+                                                ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                                    $(this).height('auto');
+                                                });
+                                            }, 10);
+
+                                            $('#project-container h2').html(text);
+                                            $('#project-container').addClass('open');
+                                            $('#project-container').show();
+                                        });
+                                    });
+
+
+                });
+
+
                             });
                         }
                     }
@@ -260,32 +289,7 @@
                 });
 
 
-                $('#menu_projects ul li').on('click', function () {
-
-                    var proj = $('#project-container');
-                    var ul = $('ul', proj);
-                    ul.html('');
-
-                    $('.category-item').hide();
-
-                    app.loadSongs({type: 'proj', type_id: proj_id}, function (data) {
-                        app.renderSongs(ul, data, function () {
-                            setTimeout(function () {
-                                ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                    $(this).height('auto');
-                                });
-                            }, 10);
-
-                            $('#project-container h2').html(text);
-                            $('#project-container').addClass('open');
-                            $('#project-container').show();
-                        });
-                    });
-
-
-                });
-
-
+                
                 $('#menu_favourites').click(function () {
 
                     var proj = $('#project-container');
