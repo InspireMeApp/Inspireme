@@ -34,12 +34,19 @@
                 });
 
                 $('#headerI').click(function () {
-                    if ($(this).hasClass('open')) {
-                        $(this).removeClass('open')
+                    var $this = $(this);
+                    if ($this.hasClass('open')) {
+                        $this.removeClass('open');
                         $('.categories').css('margin-top', 0);
                     } else {
-                        $(this).addClass('open')
-                        $('.categories').css('margin-top', $('.appInfo').outerHeight());
+                        var st = $('main').scrollTop();
+                        console.log(Math.sqrt(st) * 20);
+                        $("main").animate({scrollTop: 0}, Math.round(Math.sqrt(st) * 20), function () {
+                            setTimeout(function () {
+                                $this.addClass('open');
+                                $('.categories').css('margin-top', $('.appInfo').outerHeight());
+                            }, Math.round(Math.sqrt(st) * 10));
+                        });
                     }
                 });
 
@@ -201,7 +208,9 @@
                 //menu listeners
 
                 $('#headerMenu').click(function () {
-                    $('body').toggleClass('menuOpen');
+                    if ($('body').toggleClass('menuOpen').hasClass('menuOpen')) {
+                        $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
+                    }
                 });
 
                 $('#menu_home').click(function () {
@@ -215,15 +224,20 @@
                     if (app.sessionid == "Guest") {
                         app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
                     } else {
-                        communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
-                            $('#menu_projects ul').html('');
-
-                            $.each(data.projects, function () {
-                                var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
-                                $('#menu_projects ul').append(li);
+                        var pr = $('#menu_projects ul');
+                        if (pr.children().length == 0) {
+                            communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
+                                $.each(data.projects, function () {
+                                    var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
+                                    pr.append(li);
+                                });
+                                pr.append('<li class="plus">+</li>');//doesnt work yet
+                                var prc = pr.children();
+                                pr.animate({'height': prc.first().height() * prc.length}, 800, function () {
+                                    pr.addClass('open');
+                                });
                             });
-
-                        });
+                        }
                     }
 
                 });
