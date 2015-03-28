@@ -25,6 +25,7 @@ var app = (function ()
                 app.images[this.id] = new Image();
                 app.images[this.id].src = this['artwork-m']
             });
+
             var buttons =
                     '<div class="buttons loadingIcon"><a class="load"></a></div>' +
                     '<div class="buttons noPlay"><a class="play" data-action="play"><span></span></a></div>' +
@@ -44,6 +45,44 @@ var app = (function ()
         $('#modalX').click(closeModal);
 
     }
+
+    app.loadSongs = function(entity , callback){
+        console.log(entity.container);
+        if(entity.type == 'fav'){
+            communicate({token: token , mode : "get_values_songlist" , type : entity.type , uid : app.sessionid} , function(data){
+                callback(data);
+            });
+        }
+        else{
+            communicate({token: token , mode : "get_values_songlist" , type : entity.type , type_id : entity.type_id , uid : app.sessionid} , function(data){
+                callback(data);
+            });
+        }
+    }
+
+    app.renderSongs = function(container , data , callback){
+        $.each(data.songlist, function () {
+            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
+            var buttons = $('<div class="bs"/>');
+            $('<a class="proj"/>').click(songProj).appendTo(buttons);
+            $('<a class="fav"/>').click(songFav).appendTo(buttons);
+            $('<a class="i"/>').click(songInfo).appendTo(buttons);
+            buttons.appendTo(li);
+            $('<div class="bar">' +
+              '<div class="info"><b>' + this.title + '</b><i>' + 
+              this.title + '</i></div>' +
+              '<span class="duration" data-duration="' + this.duration_sec +
+              '" data-dur-sec="' + this.duration_notation + '">' + 
+              this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
+             ).click(songClick).mousedown(swipeStart).appendTo(li);
+            if(this.in_favourite == "true"){
+                li.addClass('faved');
+            }
+            li.appendTo(container);
+        });
+            callback();
+    }
+
 
     app.playAudio = function (src) {
 
