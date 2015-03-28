@@ -221,7 +221,6 @@
 
                 $('#menu_projects').click(function () {
 
-
                     if (app.sessionid == "Guest") {
                         app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
                     } else {
@@ -232,74 +231,39 @@
                                 var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
                                 $('#menu_projects ul').append(li);
                             });
+                            $('#menu_projects ul li').on('click', function () {
+
+                                text = $(this).html();
+                                proj_id = $(this).attr('data-tag');
+
+                                var proj = $('#project-container');
+                                var ul = $('ul', proj);
+                                ul.html('');
+
+                                $('.category-item').hide();
+
+                                app.loadSongs({type: 'proj', type_id: proj_id}, function (data) {
+                                    app.renderSongs(ul, data, function () {
+                                        setTimeout(function () {
+                                            ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                                $(this).height('auto');
+                                            });
+                                        }, 10);
+
+                                        $('#project-container h2').html(text);
+                                        $('#project-container').addClass('open');
+                                        $('#project-container').show();
+                                    });
+                                });
+
+
+                            });
+
 
                         });
                     }
 
-                });
 
-                $('#menu_favourites').click(function () {
-                    communicate({token: token, mode: "get_values_songlist", type: 'fav', uid: app.sessionid}, function (data) {
-                        var proj = $('#project-container');
-                        var ul = $('ul', proj);
-                        ul.html('');
-                        $('.category-item').hide();
-
-                        $.each(data.songlist, function () {
-                            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
-                            var buttons = $('<div class="bs"/>');
-                            $('<a class="proj"/>').click(songProj).appendTo(buttons);
-                            $('<a class="fav"/>').click(songFav).appendTo(buttons);
-                            $('<a class="i"/>').click(songInfo).appendTo(buttons);
-
-                            buttons.appendTo(li);
-                            $('<div class="bar">' +
-                                    '<div class="info"><b>' + this.title + '</b><i>' + this.title + '</i></div>' +
-                                    '<span class="duration" data-duration="' + this.duration_sec + '" data-dur-sec="' + this.duration_notation + '">' + this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
-                                    ).click(songClick).mousedown(swipeStart).appendTo(li);
-                            $('#project-container ul').append(li);
-                            $('#project-container h2').html('Favourites');
-                            $('#project-container').show();
-
-                        });
-
-                    });
-                });
-
-                $('#menu_profile').click(function () {
-
-
-                    $('#menu_projects ul li').on('click', function () {
-
-                        text = $(this).html();
-                        proj_id = $(this).attr('data-tag');
-
-                        var proj = $('#project-container');
-                        var ul = $('ul', proj);
-                        ul.html('');
-
-                        $('.category-item').hide();
-
-                        app.loadSongs({type: 'proj', type_id: proj_id}, function (data) {
-                            app.renderSongs(ul, data, function () {
-                                setTimeout(function () {
-                                    ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                        $(this).height('auto');
-                                    });
-                                }, 10);
-
-                                $('#project-container h2').html(text);
-                                $('#project-container').addClass('open');
-                                $('#project-container').show();
-                            });
-                        });
-
-
-                    });
-                });
-
-
-                $('.navigation li').on('click', function () {
 
                 });
 
