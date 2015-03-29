@@ -1,6 +1,5 @@
 var app = (function ()
 {
-    document.addEventListener('deviceready', onDeviceReady, false);
 
     var app = {};
     var is_device = false;
@@ -10,17 +9,7 @@ var app = (function ()
     app.images = new Array();
     app.user = null;
 
-
-
-    function onDeviceReady() {
-        alert('device is ready');
-        app.sessionid = window.localStorage.getItem("sessionid");
-        if (app.sessionid == null) {
-            app.sessionid = "0";
-        }
-    }
-
-    app.launch = function () {
+     app.launch = function () {
         //preload images
 
         app.sessionid = window.localStorage.getItem("sessionid");
