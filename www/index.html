@@ -249,7 +249,6 @@
                                     var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
                                     pr.append(li);
                                 });
-                                pr.append('<li id="add_project" class="plus">+</li>');//doesnt work yet
                                 var prc = pr.children();
                                 pr.animate({'height': prc.first().height() * prc.length}, 800, function () {
                                     pr.addClass('open');
@@ -312,11 +311,11 @@
                             $('#project-container h2').html('Favourites');
                             $('#project-container').addClass('open');
                             $('#project-container').show();
-                            $('body').removeClass('')
+                            $('body').removeClass('menuOpen');
                         });
-                    });
+                    });;
 
-
+                    
                 });
 
                 $('#menu_profile').click(function () {
@@ -607,7 +606,6 @@
             }
 
         </script>
-        <script> /* Provisory for dev environment: */ localStorage.clear();</script>
         <title>Inspire Me</title>
     </head>
     <body>
