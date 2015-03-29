@@ -23,7 +23,7 @@
                     app.sessionid = "0";
                 }
 
-            },true);
+            }, true);
 
             var ww;//window width
             $(window).resize(resetWw);
@@ -106,6 +106,7 @@
                         $('#circleMain').addClass('left');
                         $('header h1').removeClass('transparent');
                         introEnd.run();
+
                     } else {
                         $('#introSteps').addClass('step1');
                         var goPressed = false;
@@ -224,16 +225,13 @@
                     $('h1 .wave').addClass('transparent');
                 }).add(1000, function () {
                     $('#categories').css('top', -$('#categories').height() + 'px');
-                    $('.buttons a', $('#categories')).click(function () {
-                        press($(this));
-                        audioAction($(this));
-                    });
                 }).add(1010, function () {
                     $('#categories').show().addClass('animating');
-                }).add(1020, function () {
+                }).add(1050, function () {
                     $('#categories').css('top', 0);
                 }).add(3000, function () {
                     $('main').addClass('nobg');
+                    $('#introSteps').removeClass('transparent').addClass('step1 step2 step3');
                 });
 
                 //menu listeners
@@ -294,15 +292,10 @@
                                             $('body').removeClass('menuOpen');
                                         });
                                     });
-
-
                                 });
-
-
                             });
                         }
                     }
-
                 });
 
                 $('#add_project').click(function () {
@@ -329,9 +322,10 @@
                             $('#project-container').show();
                             $('body').removeClass('menuOpen');
                         });
-                    });;
+                    });
+                    ;
 
-                    
+
                 });
 
                 $('#menu_profile').click(function () {
@@ -356,10 +350,27 @@
 
                 $('#menu_logout').click(function () {
                     app.sessionid = null;
-                    app.openModal('are you sure you want to logout?', {logout: 'Logout', closeModal: 'Cancel'});
+                    app.openModal('<p>are you sure you want to logout?</p><br><br>', {logout: 'Logout', closeModal: 'Cancel'});
                 });
 
 
+            });
+
+            $(document).mousedown(function (e) {
+                //swipe close menu
+                if ($('body').hasClass('menuOpen')) {
+                    var initX = e.pageX;
+                    var threshold = ww * 0.15;
+                    $(document).bind('mousemove.menu', function (e) {
+                        if (e.pageX - initX > threshold) {
+                            $(document).unbind('mousemove.menu').unbind('mouseup.menu');
+                            $('#headerMenu').click();
+                        }
+                    });
+                    $(document).bind('mouseup.menu', function (e) {
+                        $(document).unbind('mousemove.menu').unbind('mouseup.menu');
+                    });
+                }
             });
 
             function press(o) {
@@ -425,6 +436,7 @@
 
             var media = null;
             var durSpan;
+            var loaded = false;
             var durLoop;
             function openCategory(cat) {
                 if ($('#headerI').hasClass('open')) {
@@ -568,31 +580,31 @@
                     media.stop();
                     media = null;
                 }
-                var t = new timeline().add(1, function () {
-                    $this.addClass('loading active');
-                }).add(2000, function () {
-                    $this.removeClass('loading');
-                    if (lastClickedSongId === $this.attr('data-id')) {
-                        //check if in the meantime not another song has been clicked
-                        $this.closest('.category-item').addClass('playing');
-                        durSpan = $this.children('.bar').children('.duration');
-                        media = new Media(
-                                $this.attr('data-url'),
-                                function () {
-                                    //success
-                                },
-                                function () {
-                                    //fail
-                                });
-                        media.play();
-                        setPositionLoop(durSpan);
-                    }
-                }).run();
+                $this.addClass('loading active');
+
+                durSpan = $this.children('.bar').children('.duration');
+                media = new Media(
+                        $this.attr('data-url'),
+                        function () {
+                            //success
+                        },
+                        function () {
+                            //fail
+                        });
+                media.play();
+                loaded = false;
+                setPositionLoop(durSpan);
             }
             function setPositionLoop(span) {
                 durLoop = setTimeout(function () {
                     if (media !== null) {
-                        setPosition(span, media.getCurrentPosition());
+                        var p = media.getCurrentPosition();
+                        if (!loaded && p > 0) {
+                            loaded = true;
+                            span.closest('.category-item').addClass('playing');
+                            span.closest('li').removeClass('loading');
+                        }
+                        setPosition(span, p);
                         setPositionLoop(span);
                     }
                 }, 500);
@@ -620,11 +632,11 @@
             }
             function songFav() {
                 press($(this));
-                var li=$(this).closest('li');
+                var li = $(this).closest('li');
                 var song_id = li.attr('data-id');
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
                     console.log(data);
-                    if(data.infavourite[0].successful=='true'){
+                    if (data.infavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
                     }
                 });
