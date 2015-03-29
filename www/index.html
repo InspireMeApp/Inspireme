@@ -16,7 +16,6 @@
         <script>
 
             document.addEventListener("deviceready", function(){
-                StatusBar.overlaysWebView(false);
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";

@@ -10,9 +10,10 @@
     <author email="tech@hacktisch.com" href="http://hacktisch.com">
         Hacktisch
     </author>
-    
+
     <preference name="phonegap-version" value="3.6.3" />
     <preference name="orientation" value="portrait" />
+    <preference name="StatusBarOverlaysWebView" value="false"/>    
     
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
