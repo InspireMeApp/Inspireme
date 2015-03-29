@@ -11,12 +11,6 @@ var app = (function ()
 
     app.launch = function () {
         //preload images
-
-        app.sessionid = window.localStorage.getItem("sessionid");
-        if (app.sessionid == null) {
-            app.sessionid = "0";
-        }
-
         communicate({token: token, mode: 'get_values_categories'}, function (data) {
             imgs = [];
             $.each(data.categories, function () {
