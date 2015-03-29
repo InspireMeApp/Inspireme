@@ -113,7 +113,7 @@ section{
     box-sizing:border-box;
     height:~"calc(100% - 15em)";
     overflow-y: scroll;
-  overflow-x: hidden;
+    overflow-x: hidden;
     .thin;
     .transition(right @menuTransition);
     >ul{
@@ -626,18 +626,21 @@ form .problems{
         line-height: 2em;
         font-size: 2em;
         background-color: @mainBg;
-        border-bottom: 1px solid #D2D2D2;
         position:relative;
         width:100%;
         position:relative;
+        border-bottom: 1px solid #D2D2D2;
         >.bar{
+            border-bottom: 1px solid #D2D2D2;
             .thin;
             position:relative;
+            z-index:5;
             left:0;
             width:100%;
             height:100%;
             background-color: #E6E6E6;
             color:@textColorDark;
+            overflow:hidden;
             .transition(background-color 0.5s);
         }
         &.active>.bar{
@@ -725,6 +728,40 @@ form .problems{
                 animation-play-state: paused;
             }
         }
+        .favIcon{
+            @w:0.75em;
+            &:after{
+                content: "";
+                background: url(../media/smallDiamond.png) no-repeat 20% bottom;
+                background-size: 85%;
+                width: @w;
+                height: @w;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+            }
+            .transition(0.2s);
+            z-index: 1;
+            position:absolute;
+            top:-1.05*@w;
+            right:-1.05*@w;
+            border-width: @w;
+            border-style: solid;
+            border-color: black black transparent transparent;
+
+        }
+        &.inFav{
+            .favIcon{
+                top:0;
+                right:0;
+            }
+            .fav{
+                border-color:@darkgrey;
+                >u{
+                opacity:1;
+            }
+            }
+        }
     }
     .noPlay{
         z-index:6;
@@ -739,25 +776,50 @@ form .problems{
     top: 0;
     right: 0;
     height: 100%;
-    a{
-        display:block;
-        width:@songHeight*1.03;
-        height:100%;
-        float:right;
-        border-left:1px solid #909090;
+    a, a>*{
         background-repeat:no-repeat;
         background-position:center 49%;
         background-size:39%;
     }
+    a{
+        display:block;
+        position: relative;
+        width:@songHeight*1.03;
+        height:100%;
+        float:right;
+        &.pressed>span{
+            opacity:1;
+        }
+        >*{
+            .transition(opacity 0.2s);
+            position: absolute;
+            opacity:0;
+            width:100%;
+            height:100%;
+        }
+        >span{
+            background-color:white;
+            z-index:4;
+        }
+        >u{
+            background-color:@darkgrey;
+            z-index:3;
+        }
+    }
     .i{
         background-image:url(../media/songI.png);
-        border-left:none;
+        >*{background-image:url(../media/songIDark.png);}
     }
     .fav{
+        border-left:1px solid #909090;
+        border-right:1px solid #909090;
+        .transition(border-color 0.2s);
         background-image:url(../media/songFav.png);
+        >*{background-image:url(../media/songFavDark.png);}
     }
     .proj{
         background-image:url(../media/songProj.png);
+        >*{background-image:url(../media/songProjDark.png);}
     }
 }
 
