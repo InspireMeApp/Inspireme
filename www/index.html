@@ -17,7 +17,6 @@
 
             document.addEventListener("deviceready", function(){
                 app.sessionid = window.localStorage.getItem("sessionid");
-                alert(app.sessionid);
                 if (app.sessionid == null) {
                     app.sessionid = "0";
                 }
