@@ -96,7 +96,6 @@
                 }).add(6000, function () { //6000
                     $('#circleAnimation').remove();
                     if (app.sessionid.length == 20) {
-                        console.log(app.sessionid);
                     } else {
                         $('#introText').removeClass('right');
                         $('#introSteps,h1').removeClass('transparent');
@@ -104,8 +103,7 @@
                 }).add(6500, function () { //6500
                     if (app.sessionid.length == 20) {
                         $('#circleMain').addClass('left');
-                        app.user = [];
-                        app.user.fullname = "test";
+                        $('header h1').removeClass('transparent');
                         introEnd.run();
                     } else {
                         $('#introSteps').addClass('step1');
