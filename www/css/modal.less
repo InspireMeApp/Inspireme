@@ -83,7 +83,8 @@
         border-top: 1px solid white;
     }
     .avatar{
-        width: 36%;
+        width: 10em;
+        height: 10em;
         .rounded-corners(10em);
         border: 1px solid white;
         margin-bottom: 2.4em;
@@ -95,7 +96,11 @@
             margin:0 0.8em;
             width:2em;
             height:2em;
-            background:blue;
+            background-size:100%;
+            background-repeat:no-repeat;
+            &.facebook{background-image:url(../media/socialFacebook.png);}
+            &.twitter{background-image:url(../media/socialTwitter.png);}
+            &.linkedin{background-image:url(../media/socialLinkedin.png);}
         }
     }
     &.form{

@@ -9,7 +9,7 @@ var app = (function ()
     app.images = new Array();
     app.user = null;
 
-     app.launch = function () {
+    app.launch = function () {
         //preload images
 
         app.sessionid = window.localStorage.getItem("sessionid");
@@ -34,16 +34,22 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><h2>' + this.title + '</h2><div><img src="' + this['artwork-m'] + '">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><h2>' + this.title + '</h2><div><img src="' + this['artwork-m'] + '" draggable="false">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
+            setTimeout(function () {
+                $('.buttons a', $('#categories')).click(function () {
+                    press($(this));
+                    audioAction($(this));
+                });
+            }, 500);
 
         });
 
         $('#modalX').click(closeModal);
 
-    }
+    };
 
     app.loadSongs = function (entity, callback) {
         console.log(entity.container);
@@ -57,7 +63,7 @@ var app = (function ()
                 callback(data);
             });
         }
-    }
+    };
 
     app.renderSongs = function (container, data, callback) {
         $.each(data.songlist, function () {
@@ -80,7 +86,7 @@ var app = (function ()
             li.appendTo(container);
         });
         callback();
-    }
+    };
 
 
     app.playAudio = function (src) {
@@ -180,6 +186,10 @@ var app = (function ()
         console.log('logged out!');
         closeModal();
         $('#introSteps').removeClass('step3');
+        if (media !== null) {
+            media.stop();
+            media = null;
+        }
         var t = new timeline().add(400, function () {
             $('main, header .buttons').addClass('transparent');
             $('body').removeClass('menuOpen');
@@ -190,6 +200,11 @@ var app = (function ()
             $('main, header .buttons').hide();
             $('main').removeClass('nobg');
             $('#categories').removeClass('animating').removeAttr('style');
+            $('.category-item.open').each(function () {
+                $('.active', $(this)).removeClass('active loading paused');
+                $(this).removeClass('open playing');
+                $('.ulCont', $(this)).css({'height': '0px'}).empty();
+            });
             $('header u').removeClass('transparent');
         }).run();
 
