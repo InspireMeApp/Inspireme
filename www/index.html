@@ -11,8 +11,18 @@
         <script src="js/mediaFallback.js"></script>
         <script src="js/api.js"></script>
         <script src="js/app.js"></script>
+        <script src="cordova.js"></script>
 
         <script>
+
+            document.addEventListener("deviceready", function(){
+                app.sessionid = window.localStorage.getItem("sessionid");
+                if (app.sessionid == null) {
+                    app.sessionid = "0";
+                }
+
+            },true);
+
             var ww;//window width
             $(window).resize(resetWw);
             function resetWw() {
@@ -20,10 +30,8 @@
             }
             $(document).ready(function () {
 
-
                 //Ugly place , where to put ?? 
                 //in app.js
-
 
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='http://allmusic.nl' target='_blank'>www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
@@ -90,7 +98,6 @@
                         app.user = [];
                         app.user.fullname = "test";
                         introEnd.run();
-                        console.log('test');
                     } else {
                         $('#introSteps').addClass('step1');
                         var goPressed = false;
@@ -150,7 +157,8 @@
                         //TODO remove hard code uname and pword
                         communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
                             app.sessionid = data.login[0].session;
-                            console.log(app.sessionid);
+                            window.localStorage.setItem("sessionid", app.sessionid);
+
                             if (data.login[0].login == "true") {
                                 communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
                                     app.user = [];
@@ -249,7 +257,6 @@
                                     var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
                                     pr.append(li);
                                 });
-                                pr.append('<li id="add_project" class="plus">+</li>');//doesnt work yet
                                 var prc = pr.children();
                                 pr.animate({'height': prc.first().height() * prc.length}, 800, function () {
                                     pr.addClass('open');
@@ -312,11 +319,11 @@
                             $('#project-container h2').html('Favourites');
                             $('#project-container').addClass('open');
                             $('#project-container').show();
-                            $('body').removeClass('')
+                            $('body').removeClass('menuOpen');
                         });
-                    });
+                    });;
 
-
+                    
                 });
 
                 $('#menu_profile').click(function () {
@@ -610,7 +617,6 @@
             }
 
         </script>
-        <script> /* Provisory for dev environment: */ localStorage.clear();</script>
         <title>Inspire Me</title>
     </head>
     <body>
