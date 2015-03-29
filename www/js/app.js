@@ -13,7 +13,11 @@ var app = (function ()
 
 
     function onDeviceReady() {
-
+        app.sessionid = window.localStorage.getItem("sessionid");
+        if (app.sessionid == null) {
+            app.sessionid = "0";
+        }
+        alert('device is ready');
     }
 
     app.launch = function () {
