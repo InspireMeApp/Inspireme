@@ -241,7 +241,7 @@
 
                     if (app.sessionid == "Guest") {
                         app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
-                        } else {
+                    } else {
                         var pr = $('#menu_projects ul');
                         if (pr.children().length == 0) {
                             communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
@@ -290,7 +290,7 @@
 
                 });
 
-                $('#add_project').click(function(){
+                $('#add_project').click(function () {
                     console.log('test');
                 });
 
@@ -320,11 +320,14 @@
                 });
 
                 $('#menu_profile').click(function () {
-
+                    var html='<img src="http://www.proprofs.com/quiz-school/upload/yuiupload/1756353485.jpg" class="avatar">'+
+                            '<hr><big><b><big>John Doe</big></b><br>Studio Supersounds</big><hr><br>'+
+                            'Mr. John Doe<br>1234 Main Street<br>Anytown, USA<br>123456';
+                    app.openModal(html, {}, 'My profile', 'titleOnTop');
                 });
 
-                $('#menu_contact').click(function() {
-                    app.openModal($('#contact_page').html(),{});
+                $('#menu_contact').click(function () {
+                    app.openModal($('#contact_page').html(), {}, 'Contact', 'titleOnTop');
                 });
 
                 $('#menu_logout').click(function () {
@@ -761,28 +764,23 @@
         <script type="text/javascript" src="phonegap.js"></script>
 
         <div id='contact_page' style='display:none;'>
-            <img src='media/allmusicLogo.png'>
+            <img src='media/allmusicLogo.png' style="width: 33%;margin: 2.7em auto 4.1em;">
+            <b>All Music Publishing b.v.</b><br>
+            www.allmusic.nl<br>
+            info@allmusic.nl<br>
+            +31 088 008 3000<br>
+            <br>
+            Skoon 8<br>
+            1511 HV Oostzaan<br>
+            The Netherlands<br>
             <br>
             <br>
-            <b>All Music Publishing b.v.</b>
-            <br>
-            www.allmusic.nl
-            <br>
-            info@allmusic.nl
-            <br>
-            +31 088 008 3000
-            <br>
-            <br>
-            Skoon 8
-            <br>
-            1511 HV Oostzaan
-            <br>
-            The Netherlands
-            <br>
-            <br>
-
-            Follow us
-
+            <b>Follow us</b>
+            <div id="socialLinks">
+                <a href="https://www.facebook.com/pages/allmusicnl/155454641175182" target="_blank" class="facebook"></a>
+                <a href="https://twitter.com/allmusicnl" target="_blank" class="twitter"></a>
+                <a href="https://www.linkedin.com/profile/view?id=71611852&authType=NAME_SEARCH&authToken=uf1q&locale=en_US&srchid=3814865331427591310185&srchindex=1&srchtotal=5&trk=vsrp_people_res_name&trkInfo=VSRPsearchId%3A3814865331427591310185%2CVSRPtargetId%3A71611852%2CVSRPcmpt%3Aprimary%2CVSRPnm%3A" target="_blank" class="linkedin"></a>
+            </div>
         </div>
 
     </body>
