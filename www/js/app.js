@@ -61,13 +61,13 @@ var app = (function ()
 
     app.renderSongs = function (container, data, callback) {
         $.each(data.songlist, function () {
-            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '">');
+            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '"/>');
             var buttons = $('<div class="bs"/>');
-            $('<a class="proj"/>').click(songProj).appendTo(buttons);
-            $('<a class="fav"/>').click(songFav).appendTo(buttons);
-            $('<a class="i"/>').click(songInfo).appendTo(buttons);
+            $('<a class="proj"><span></span></a>').click(songProj).appendTo(buttons);
+            $('<a class="fav"><span></span><u></u></a>').click(songFav).appendTo(buttons);
+            $('<a class="i"><span></span></a>').click(songInfo).appendTo(buttons);
             buttons.appendTo(li);
-            $('<div class="bar">' +
+            $('<div class="bar"><div class="favIcon"></div>' +
                     '<div class="info"><b>' + this.title + '</b><i>' +
                     this.title + '</i></div>' +
                     '<span class="duration" data-duration="' + this.duration_sec +

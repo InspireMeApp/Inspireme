@@ -599,16 +599,21 @@
 
 
             function songInfo() {
-                alert('i');
+                press($(this));
             }
             function songFav() {
-                var song_id = $(this).closest('li').attr('data-id');
+                press($(this));
+                var li=$(this).closest('li');
+                var song_id = li.attr('data-id');
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
                     console.log(data);
+                    if(data.infavourite[0].successful=='true'){
+                        li.toggleClass('inFav');
+                    }
                 });
             }
             function songProj() {
-                alert('proj');
+                press($(this));
             }
 
             function resetVw() {
