@@ -16,6 +16,11 @@
         <script>
 
             document.addEventListener("deviceready", function(){
+                if (navigator.userAgent.match(/(iPad.*|iPhone.*|iPod.*);.*CPU.*OS 6_\d/i)) {
+                    document.body.style.marginTop = '20px';
+                    document.getElementById('ios7-statusbar-fix').style.display = 'block';
+                }
+
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
@@ -640,6 +645,7 @@
         <title>Inspire Me</title>
     </head>
     <body>
+        <div id="ios7-statusbar-fix"></div>
         <div id="modal" style="display:none;">
             <div id="modalTitle"></div>
             <div id="textArea"></div>
