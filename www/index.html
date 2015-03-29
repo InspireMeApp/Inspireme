@@ -307,7 +307,7 @@
                 });
 
                 $('#add_project').click(function () {
-                    console.log('test');
+                     
                 });
 
                 $('#menu_favourites').click(function () {
@@ -336,10 +336,19 @@
                 });
 
                 $('#menu_profile').click(function () {
-                    var html='<img src="http://www.proprofs.com/quiz-school/upload/yuiupload/1756353485.jpg" class="avatar">'+
-                            '<hr><big><b><big>John Doe</big></b><br>Studio Supersounds</big><hr><br>'+
-                            'Mr. John Doe<br>1234 Main Street<br>Anytown, USA<br>123456';
-                    app.openModal(html, {}, 'My profile', 'titleOnTop');
+                    communicate({token : token , mode : 'get_account_userinfo' , uid : app.sessionid} , function(userinfo){
+                        communicate({token : token , mode : 'get_account_profile' , uid : app.sessionid} , function(profile){
+                            console.log(userinfo);
+                            console.log(profile);
+                            var html='<img src="http://www.phantomshockey.com/wp-content/uploads/2014/07/profile-icon.png" class="avatar">'+
+                            '<hr><big><b><big>'+userinfo.userinfo[0].fullname+'</big></b><br>'+userinfo.userinfo[0].company+'</big><hr><br>';
+                            $.each(profile.profile , function(e){
+                                console.log(this.line) ;
+                                html += this.line + '<br>';
+                            });
+                            app.openModal(html, {}, 'My profile', 'titleOnTop');
+                        });
+                    });
                 });
 
                 $('#menu_contact').click(function () {
