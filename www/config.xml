@@ -17,7 +17,7 @@
     
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
-    <gap:plugin name="org.apache.cordova.statusbar" version="0.1.4" />
+    <gap:plugin name="org.apache.cordova.statusbar"  />
 
     <!-- Icons -->
         <icon src="icon.png" width="64" height="64" gap:role="default" />
