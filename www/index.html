@@ -16,6 +16,7 @@
         <script>
 
             document.addEventListener("deviceready", function(){
+                StatusBar.overlaysWebView(false);
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
@@ -29,6 +30,13 @@
                 ww = $(window).width();
             }
             $(document).ready(function () {
+
+                //fix for browser
+                app.sessionid = window.localStorage.getItem("sessionid");
+                if (app.sessionid == null) {
+                    app.sessionid = "0";
+                }
+
 
                 //Ugly place , where to put ?? 
                 //in app.js
@@ -88,6 +96,7 @@
                 }).add(6000, function () { //6000
                     $('#circleAnimation').remove();
                     if (app.sessionid.length == 20) {
+                        console.log(app.sessionid);
                     } else {
                         $('#introText').removeClass('right');
                         $('#introSteps,h1').removeClass('transparent');
