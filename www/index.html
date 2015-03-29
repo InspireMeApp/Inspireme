@@ -16,8 +16,6 @@
         <script>
 
             document.addEventListener("deviceready", function(){
-                alert('device ready');
-                StatusBar.overlaysWebView(false);
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
@@ -324,16 +322,12 @@
                         });
                     });
                     ;
-
-
                 });
 
                 $('#menu_profile').click(function () {
                     communicate({token : token , mode : 'get_account_userinfo' , uid : app.sessionid} , function(userinfo){
                         communicate({token : token , mode : 'get_account_profile' , uid : app.sessionid} , function(profile){
-                            console.log(userinfo);
-                            console.log(profile);
-                            var html='<img src="http://www.phantomshockey.com/wp-content/uploads/2014/07/profile-icon.png" class="avatar">'+
+                            var html='<img src="media/profile-icon.png" class="avatar">'+
                             '<hr><big><b><big>'+userinfo.userinfo[0].fullname+'</big></b><br>'+userinfo.userinfo[0].company+'</big><hr><br>';
                             $.each(profile.profile , function(e){
                                 console.log(this.line) ;
