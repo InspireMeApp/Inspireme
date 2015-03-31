@@ -46,8 +46,13 @@
                 //Ugly place , where to put ?? 
                 //in app.js
 
+                 function openLink(){
+                    window.open("http://google.com", '_system');
+                }
+
+
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"alert('test');window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.nhl.com', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest' , openLink: 'Open Link'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -385,7 +390,7 @@
 
 
             });
-
+             
             function press(o) {
                 //press effect on buttons
                 var t = new timeline().add(1, function () {
@@ -688,6 +693,24 @@
                 if (swiped || parseInt($(this).closest('li').children('.bar').css('left')) > -10) {
                     return;
                 }
+
+                var li = $(this).closest('li');
+                var song_id = li.attr('data-id');
+
+                app.loadProjects(function(html){
+
+                app.openModal('<p><br><br>Projects <br></p>'+html+"<br> <div class='plus'>+</div>" , {} , 'Add track to project');
+
+                $('.plus').click(function(){
+                app.openModal("<input type='text' id='proj_title' placeholder='Project title'> <br><br><br>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project');
+                });
+
+                $('.project-item').click(function(){
+                    app.addToProject($(this).attr('data-tag') , song_id )  
+                });
+
+                });
+
                 press($(this));
             }
 
