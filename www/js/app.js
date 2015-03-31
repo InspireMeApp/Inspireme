@@ -162,6 +162,10 @@ var app = (function ()
         app.openForgotPassword();
     }
 
+    function openLink(){
+        window.open("http://google.com", '_system');
+    }
+
     function sendEmail() {
         //TODO : SANITIZE EMAIL
         givenmail = $('#sendEmail').val();
