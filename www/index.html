@@ -47,8 +47,12 @@
                 //in app.js
 
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"alert('test');window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest' , openLink: 'Open Link'});
                 });
+
+                function openLink(){
+                    window.open("http://google.com", '_system');
+                }
 
                 $('#forgotPassword').click(function (e) {
                     app.openForgotPassword();
