@@ -44,9 +44,18 @@ var app = (function ()
         $('#modalX').click(closeModal);
 
     };
+    app.loadProjects = function(callback){
+        communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
+             var html = "";
+             $.each(data.projects, function () {
+                var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
+             html += li;
+            });
+            callback(html);
+        });
+    }
 
     app.loadSongs = function (entity, callback) {
-        console.log(entity.container);
         if (entity.type == 'fav') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid}, function (data) {
                 console.log(data);
@@ -207,13 +216,39 @@ var app = (function ()
             });
             $('header u').removeClass('transparent');
         }).run();
-
     }
 
     function closeModal() {
         $('#modal').hide();
     }
+    
+    app.addToProject = function(proj_id , song_id){
+       communicate({token : token , mode : 'post_account_inproject' , project : proj_id , song : song_id , uid : app.sessionid} , function(data){
+           
+            app.openModal('Track succesfully added to project' , {closeModal : 'Ok'}) 
+       });
+    }
 
+    app.createProject = function(type){
+        title = $('#proj_title').val();
+        communicate({token : token , mode : 'post_account_newproject' , uid : app.sessionid , name : title , type : type} , function(data){
+            app.openModal('New project created and track succesfully added to project' , {closeModal : 'Ok'});
+        });
+    }
+
+    //temp functions
+
+    function postCorporate(){
+        app.createProject(1);
+    }
+
+    function postTV(){
+        app.createProject(2);
+    }
+    
+    function postCommercial(){
+        app.createProject(3);
+    }
 
     return app;
 
