@@ -472,6 +472,7 @@
                     var data_tag = cat[0].dataset.tag;
                     var ul = $('ul', cat);
                     app.loadSongs({type: 'cat', type_id: data_tag, container: ul}, function (data) {
+                    if(data != 0){
                         var open = new timeline().add(1, function () {
                             cat.addClass('loadPause');
                         }).add(700, function () {
@@ -497,11 +498,13 @@
 
                         open.run();
 
-
-
-
+                        }else{
+                            console.log('cat is empty');
+                            cat.removeClass('loadPause loading');
+                        }
 
                     });
+                    
                 }).run();
             }
 
@@ -805,7 +808,7 @@
                 <div class='category-item open' id='project-container' style='display:none;'>
                     <h2> </h2>
                     <div>
-                        <img src="http://api.allmusic.eu/dotnet/IM/categories/happy-m.jpg">
+                        <img src="media/bergen_klein.png">
                         <div class="buttons loadingIcon"><a class="load"></a></div><div class="buttons noPlay"><a class="play" data-action="play"><span></span></a></div><div class="buttons duringPlay"><a class="stepBackwards small" data-action="stepBackwards"><span></span></a><a class="pause" data-action="pause"><span></span></a><a class="stepForwards small" data-action="stepForwards"><span></span></a></div>
                     </div>
                     <div class="ulCont" style="height:auto;">
