@@ -16,10 +16,10 @@
     <preference name="StatusBarOverlaysWebView" value="false"/>    
     <preference name="DisallowOverscroll" value="true" />
 
+        
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
     <gap:plugin name="org.apache.cordova.statusbar"  />
-    <gap:plugin name="org.li8.inappbrowser" version="0.1" />
 
     
     
@@ -63,10 +63,7 @@
     <icon src="i/android/res/drawable-xxhdpi/Icon.png" gap:platform="android" gap:qualifier="xxhdpi" />
     <icon src="i/android/res/drawable-xxxhdpi/Icon.png" gap:platform="android" gap:qualifier="fr-xxhdpi" />
 
-    
-    
-    
-
+    <access origin="*" />
     <!-- Splash Screens -->
     <gap:splash src="splash.png" />
     <gap:splash src="screensizes/splash-160x220.png" gap:platform="android" gap:density="ldpi" />

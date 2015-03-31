@@ -163,7 +163,7 @@ var app = (function ()
     }
 
     function openLink(){
-        window.open("http://google.com", '_system');
+        window.open("http://allmusic.nl", '_system');
     }
 
     function sendEmail() {
