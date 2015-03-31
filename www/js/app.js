@@ -73,7 +73,7 @@ var app = (function ()
                     '<span class="duration" data-duration="' + this.duration_sec +
                     '" data-dur-sec="' + this.duration_notation + '">' +
                     this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
-                    ).click(songClick).swipe({swipeStatus:songSwipeStatus,allowPageScroll:"vertical"}).appendTo(li);
+                    ).click(songClick).swipe({swipeStatus:songSwipeStatus,allowPageScroll:"vertical"}).bind('touchstart',songTouchStart).appendTo(li);
             if (this.in_favourite == "true") {
                 li.addClass('faved');
             }
