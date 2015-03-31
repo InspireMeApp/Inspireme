@@ -49,11 +49,13 @@ var app = (function ()
         console.log(entity.container);
         if (entity.type == 'fav') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid}, function (data) {
+                console.log(data);
                 callback(data);
             });
         }
         else {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid}, function (data) {
+                console.log(data);
                 callback(data);
             });
         }
@@ -69,7 +71,7 @@ var app = (function ()
             buttons.appendTo(li);
             $('<div class="bar"><div class="favIcon"></div>' +
                     '<div class="info"><b>' + this.title + '</b><i>' +
-                    this.title + '</i></div>' +
+                    this.library + '</i></div>' +
                     '<span class="duration" data-duration="' + this.duration_sec +
                     '" data-dur-sec="' + this.duration_notation + '">' +
                     this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
