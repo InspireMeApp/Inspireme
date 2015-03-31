@@ -4,8 +4,9 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet/less" type="text/css" href="css/_index.less" />
-        <script src="js/less.min.js"></script>
+        <!--<link rel="stylesheet/less" type="text/css" href="less/_index.less" />
+        <script src="js/less.min.js"></script>-->
+        <link rel="stylesheet" type="text/css" href="css/_index.css">
         <script src="js/jquery-2.1.3.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
         <script src="js/mediaFallback.js"></script>
@@ -15,7 +16,7 @@
 
         <script>
 
-            document.addEventListener("deviceready", function(){
+            document.addEventListener("deviceready", function () {
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
@@ -30,6 +31,12 @@
             }
             $(document).ready(function () {
 
+                $(window).scroll(function () {//prevent scrollbounce apple devices
+                    $('body,html').scrollTop(0);
+                });
+
+
+
                 //fix for browser
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
@@ -41,7 +48,7 @@
                 //in app.js
 
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='http://allmusic.nl' target='_blank'>www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -49,6 +56,7 @@
                 });
 
                 $('#headerI').click(function () {
+                    alert('menu');
                     if ($('header>.buttons').hasClass('transparent')) {
                         return;
                     }
@@ -73,6 +81,9 @@
                     //browser does not support vw, fallback
                     $(window).resize(resetVw);
                     resetVw();
+                } else {
+                    $(window).resize(checkVwProp);
+                    checkVwProp();
                 }
                 resetWw();
 
@@ -173,6 +184,7 @@
                                     app.user.fullname = user.userinfo[0].fullname;
                                     app.user.company = user.userinfo[0].company;
                                     intro4.run();
+                                    $('#username, #password').blur();
                                 });
                             } else {
                                 app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>', {closeModal: 'Close'});
@@ -297,7 +309,7 @@
                 });
 
                 $('#add_project').click(function () {
-                     
+
                 });
 
                 $('#menu_favourites').click(function () {
@@ -325,12 +337,12 @@
                 });
 
                 $('#menu_profile').click(function () {
-                    communicate({token : token , mode : 'get_account_userinfo' , uid : app.sessionid} , function(userinfo){
-                        communicate({token : token , mode : 'get_account_profile' , uid : app.sessionid} , function(profile){
-                            var html='<img src="media/profile-icon.png" class="avatar">'+
-                            '<hr><big><b><big>'+userinfo.userinfo[0].fullname+'</big></b><br>'+userinfo.userinfo[0].company+'</big><hr><br>';
-                            $.each(profile.profile , function(e){
-                                console.log(this.line) ;
+                    communicate({token: token, mode: 'get_account_userinfo', uid: app.sessionid}, function (userinfo) {
+                        communicate({token: token, mode: 'get_account_profile', uid: app.sessionid}, function (profile) {
+                            var html = '<img src="media/profile-icon.png" class="avatar">' +
+                                    '<hr><big><b><big>' + userinfo.userinfo[0].fullname + '</big></b><br>' + userinfo.userinfo[0].company + '</big><hr><br>';
+                            $.each(profile.profile, function (e) {
+                                console.log(this.line);
                                 html += this.line + '<br>';
                             });
                             app.openModal(html, {}, 'My profile', 'titleOnTop');
@@ -350,19 +362,19 @@
 
             });
 
-            $(document).mousedown(function (e) {
+            $(document).bind('mousedown touchstart', function (e) {
                 //swipe close menu
                 if ($('body').hasClass('menuOpen')) {
                     var initX = e.pageX;
                     var threshold = ww * 0.15;
-                    $(document).bind('mousemove.menu', function (e) {
+                    $(document).bind('mousemove.menu touchmove.menu', function (e) {
                         if (e.pageX - initX > threshold) {
-                            $(document).unbind('mousemove.menu').unbind('mouseup.menu');
+                            $(document).unbind('.menu');
                             $('#headerMenu').click();
                         }
                     });
-                    $(document).bind('mouseup.menu', function (e) {
-                        $(document).unbind('mousemove.menu').unbind('mouseup.menu');
+                    $(document).bind('mouseup.menu touchend.menu', function (e) {
+                        $(document).unbind('.menu');
                     });
                 }
             });
@@ -500,7 +512,7 @@
                 var threshold = ww * -0.03;
                 swiped = false;
                 var o = 0;
-                $(document).bind('mousemove.swipe', function (e) {
+                $(document).bind('mousemove.swipe touchmove.swipe', function (e) {
                     o = e.pageX - initX;
                     if (o > threshold) {
                         o = 0;
@@ -513,9 +525,9 @@
                     }
                 });
                 var stillMouseDown = true;
-                $(document).bind('mouseup.swipe', function () {
+                $(document).bind('mouseup.swipe touchend.swipe', function () {
                     stillMouseDown = false;
-                    $(document).unbind('mouseup.swipe').unbind('mousemove.swipe');
+                    $(document).unbind('.swipe');
                     if (o < end * 0.5) {
                         $this.animate({'left': end + 'px'}, 200);
                     } else {
@@ -642,6 +654,15 @@
             function resetVw() {
                 var ww = $(window).width();
                 $('body').css('font-size', 0.028 * ww);
+            }
+            function checkVwProp() {
+                var ww = $(window).width() * 1.5;
+                var wh = $(window).height();
+                if (ww > wh) {
+                    $('body').css('font-size', (2.8 * (wh / ww)) + 'vw');
+                } else {
+                    $('body').removeAttr('style');
+                }
             }
 
         </script>
