@@ -8,6 +8,7 @@
         <script src="js/less.min.js"></script>-->
         <link rel="stylesheet" type="text/css" href="css/_index.css">
         <script src="js/jquery-2.1.3.min.js"></script>
+        <script src="js/jquery.touchSwipe.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
         <script src="js/mediaFallback.js"></script>
         <script src="js/api.js"></script>
@@ -31,11 +32,9 @@
             }
             $(document).ready(function () {
 
-                $(window).scroll(function () {//prevent scrollbounce apple devices
-                    $('body,html').scrollTop(0);
-                });
-
-
+                //$(window).scroll(function () {//prevent scrollbounce apple devices
+                //    $('body,html').scrollTop(0);
+                //});
 
                 //fix for browser
                 app.sessionid = window.localStorage.getItem("sessionid");
@@ -48,7 +47,7 @@
                 //in app.js
 
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"alert('test');window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -56,7 +55,6 @@
                 });
 
                 $('#headerI').click(function () {
-                    alert('menu');
                     if ($('header>.buttons').hasClass('transparent')) {
                         return;
                     }
@@ -66,7 +64,6 @@
                         $('.categories').css('margin-top', 0);
                     } else {
                         var st = $('main').scrollTop();
-                        console.log(Math.sqrt(st) * 20);
                         $("main").animate({scrollTop: 0}, Math.round(Math.sqrt(st) * 20), function () {
                             setTimeout(function () {
                                 $this.addClass('open');
@@ -252,6 +249,30 @@
                     }
                     if ($('body').toggleClass('menuOpen').hasClass('menuOpen')) {
                         $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
+                        var closingMenu = false;
+                        $(document).bind('bind', {
+                            swipeStatus: function (event, phase, direction, distance, duration, fingers)
+                            {
+                                if (!$('body').hasClass('menuOpen')) {
+                                    return false;
+                                }
+                                if (direction === 'right' && distance > ww * 0.15) {
+                                    if (closingMenu) {
+                                        return;
+                                    }
+                                    closingMenu = true;
+                                    $(document).unbind('.menu');
+                                    $('#headerMenu').click();
+                                    setTimeout(function () {
+                                        closingMenu = false;
+                                    }, 10);
+                                    return false;
+                                }
+                            },
+                            threshold: 20
+                        });
+                    } else {
+                        $(document).unbind('bind');
                     }
                 });
 
@@ -342,7 +363,6 @@
                             var html = '<img src="media/profile-icon.png" class="avatar">' +
                                     '<hr><big><b><big>' + userinfo.userinfo[0].fullname + '</big></b><br>' + userinfo.userinfo[0].company + '</big><hr><br>';
                             $.each(profile.profile, function (e) {
-                                console.log(this.line);
                                 html += this.line + '<br>';
                             });
                             app.openModal(html, {}, 'My profile', 'titleOnTop');
@@ -360,23 +380,6 @@
                 });
 
 
-            });
-
-            $(document).bind('mousedown touchstart', function (e) {
-                //swipe close menu
-                if ($('body').hasClass('menuOpen')) {
-                    var initX = e.pageX;
-                    var threshold = ww * 0.15;
-                    $(document).bind('mousemove.menu touchmove.menu', function (e) {
-                        if (e.pageX - initX > threshold) {
-                            $(document).unbind('.menu');
-                            $('#headerMenu').click();
-                        }
-                    });
-                    $(document).bind('mouseup.menu touchend.menu', function (e) {
-                        $(document).unbind('.menu');
-                    });
-                }
             });
 
             function press(o) {
@@ -430,7 +433,6 @@
                         if (a.length) {
                             var s = Math.round(media.getCurrentPosition() + 10);
                             var d = parseInt(a.children('.bar').children('.duration').attr('data-duration'));
-                            console.log(s + "___" + d);
                             if (s >= d) {
                                 s = d - 1;
                             }
@@ -503,51 +505,116 @@
                 }).run();
             }
 
-            var initX;
             var swiped = false;
-            function swipeStart(e) {
-                initX = e.pageX;
+            var swipeStarted = false;
+            var SWend;
+            var SWthreshold;
+            var fromLeft = false;
+            function songSwipeStatus(event, phase, direction, distance, duration, fingers) {
                 var $this = $(this);
-                var end = ww * -0.471;
-                var threshold = ww * -0.03;
-                swiped = false;
-                var o = 0;
-                $(document).bind('mousemove.swipe touchmove.swipe', function (e) {
-                    o = e.pageX - initX;
-                    if (o > threshold) {
-                        o = 0;
-                    } else {
-                        swiped = true;
-                        if (o < end) {
-                            o = end;
-                        }
-                        $this.css('left', o);
+                if (direction === 'right') {
+                    distance *= -1;
+                }
+                if (fromLeft) {
+                    distance += SWend;
+                }
+                if (distance > SWend) {
+                    distance = SWend;
+                }
+                if (distance < 0) {
+                    distance = 0;
+                }
+                if (phase == "cancel" || phase == "end") {
+                    if (!swiped && direction !== 'left' && direction !== 'right') {
+                        return;
                     }
-                });
-                var stillMouseDown = true;
-                $(document).bind('mouseup.swipe touchend.swipe', function () {
-                    stillMouseDown = false;
-                    $(document).unbind('.swipe');
-                    if (o < end * 0.5) {
-                        $this.animate({'left': end + 'px'}, 200);
+                    swipeStarted = false;
+                    if (distance > SWend * 0.5) {
+                        $this.animate({'left': -SWend + 'px'}, 200);
                     } else {
                         $this.animate({'left': 0}, 200);
                     }
                     setTimeout(function () {
                         swiped = false;
-                    }, 20);
-                });
-                setTimeout(function () {
-                    if (stillMouseDown && !swiped) {
-                        var sw = parseInt($this.css('left')) < -10;
-                        if (sw) {
-                            swiped = true;
+                    }, 700);
+                    return false;
+                }
+                if (direction !== 'left' && direction !== 'right') {
+                    return;
+                }
+                var $this = $(this);
+                if (!swipeStarted) {
+                    swipeStarted = true;
+                    SWend = $this.parent().children('.bs').width();
+                    SWthreshold = ww * 0.03;
+                    fromLeft = parseInt($this.css('left')) < -10;
+                    setTimeout(function () {
+                        if (swipeStarted && !swiped) {
+                            //if (sw) {
+                            //    swiped = true;
+                            //}
+                            var ms = fromLeft ? 450 : 150;
+                            $this.animate({'left': -SWthreshold}, ms);
                         }
-                        var ms = sw ? 450 : 150;
-                        $this.animate({'left': threshold}, ms);
-                    }
-                }, 500);
+                    }, 400);
+                }
+                if (distance > SWthreshold) {
+                    swiped = true;
+                    $this.css('left', -distance);
+                }
+
+                /*if (direction === 'right' && distance > ww * 0.15) {
+                 closingMenu = true;
+                 $(document).unbind('.menu');
+                 $('#headerMenu').click();
+                 setTimeout(function () {
+                 closingMenu = false;
+                 }, 10);
+                 return false;
+                 }*/
+                /*if (direction === 'left') {
+                 var $this = $(this);
+                 var end = ww * 0.471;
+                 var threshold = ww * 0.03;
+                 if(distance>threshold){
+                 $this.css('left', -distance);
+                 }
+                 }
+                 setTimeout(function () {
+                 if (stillMouseDown && !swiped) {
+                 var sw = parseInt($this.css('left')) < -10;
+                 if (sw) {
+                 swiped = true;
+                 }
+                 var ms = sw ? 450 : 150;
+                 $this.animate({'left': threshold}, ms);
+                 }
+                 }, 500);*/
             }
+            function songSwipeEnd(event, direction, distance, duration, fingerCount, fingerData) {
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             function songClick() {
                 if (swiped) {
                     return;
@@ -634,20 +701,28 @@
 
 
             function songInfo() {
+                if (swiped || parseInt($(this).closest('li').children('.bar').css('left')) > -10) {
+                    return;
+                }
                 press($(this));
             }
             function songFav() {
+                if (swiped || parseInt($(this).closest('li').children('.bar').css('left')) > -10) {
+                    return;
+                }
                 press($(this));
                 var li = $(this).closest('li');
                 var song_id = li.attr('data-id');
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
-                    console.log(data);
                     if (data.infavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
                     }
                 });
             }
             function songProj() {
+                if (swiped || parseInt($(this).closest('li').children('.bar').css('left')) > -10) {
+                    return;
+                }
                 press($(this));
             }
 
@@ -692,7 +767,8 @@
 
         <div id="navBg"><div class="inner">
                 <div class="title"><span>Menu</span></div>
-                <img src="media/allmusicLogo.png">
+                <a href='#' onclick="alert('test');
+                        window.open('http://allmusic.nl', '_system');"><img src="media/allmusicLogo.png"></a>
             </div></div>
         <nav class="navigation">
             <ul>
