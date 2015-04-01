@@ -18,13 +18,12 @@
         <script>
 
             document.addEventListener("deviceready", function () {
+                alert('device is readyl');
+                StatusBar.overlaysWebView(false);
+
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
-                }
-                alert(window.device.version);
-                if(window.device && parseFloat(window.device.version) >= 7){
-                    document.body.classList.add('fix-status-bar');
                 }
 
             }, true);

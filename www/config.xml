@@ -19,12 +19,8 @@
         
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
-    <gap:plugin name="org.apache.cordova.statusbar"  />
     <gap:plugin name="org.apache.cordova.inappbrowser" version="0.1.0" />
-
-    
-    
-    
+    <gap:plugin name="com.phonegap.plugin.statusbar" version="1.0.1" />
     
     <!-- ICONS -->
     <icon src="icon.png" width="120" height="120" gap:role="default" />
