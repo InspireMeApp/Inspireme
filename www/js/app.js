@@ -237,7 +237,11 @@ var app = (function ()
     }
 
     //temp functions
-
+    
+    function reconnect(){
+        closeModal();
+        app.launch();
+    }
     function postCorporate(){
         app.createProject(1);
     }
