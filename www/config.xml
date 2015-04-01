@@ -15,6 +15,7 @@
     <preference name="orientation" value="portrait" />
     <preference name="StatusBarOverlaysWebView" value="false"/>    
     <preference name="DisallowOverscroll" value="true" />
+    <preference name="stay-in-webview" value="false" />
 
         
     <!-- Plugins --> 
