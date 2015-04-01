@@ -222,17 +222,19 @@ var app = (function ()
         $('#modal').hide();
     }
     
-    app.addToProject = function(proj_id , song_id){
+    app.addToProject = function(proj_id , song_id , callback){
        communicate({token : token , mode : 'post_account_inproject' , project : proj_id , song : song_id , uid : app.sessionid} , function(data){
-           
-            app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
+           callback(data);
        });
     }
 
     app.createProject = function(type){
         title = $('#proj_title').val();
         communicate({token : token , mode : 'post_account_newproject' , uid : app.sessionid , name : title , type : type} , function(data){
-            app.openModal('<p>New project created and track succesfully added to project</p>' , {closeModal : 'Ok'});
+            proj_id = data.newproject[0].id
+            app.addToProject(proj_id , song_id , function(data){
+                app.openModal('<p>New project created and track succesfully added to project</p>' , {closeModal : 'Ok'});
+            });
         });
     }
 

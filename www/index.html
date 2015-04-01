@@ -35,7 +35,6 @@
             }
             $(document).ready(function () {
 
-
                 //$(window).scroll(function () {//prevent scrollbounce apple devices
                 //    $('body,html').scrollTop(0);
                 //});
@@ -302,6 +301,7 @@
                         var pr = $('#menu_projects ul');
                         if (pr.children().length == 0) {
                             communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
+                                console.log(data);
                                 $.each(data.projects, function () {
                                     if(!this.name){return;}
                                     var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
@@ -708,18 +708,22 @@
                 }
 
                 var li = $(this).closest('li');
-                var song_id = li.attr('data-id');
+                song_id = li.attr('data-id');
 
                 app.loadProjects(function(html){
 
                 app.openModal('<br><br><ul><li><b>Projects</b></li>'+html+"<li class='plus'><span>+</span></li></ul>" , {} , 'Add track to project','opacity textNotAbs');
 
                 $('#modal .plus').click(function(){
-                app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project','textNotAbs');
+                    app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project','textNotAbs');
                 });
 
                 $('#modal .project-item').click(function(){
-                    app.addToProject($(this).attr('data-tag') , song_id )  
+                    app.addToProject($(this).attr('data-tag') , song_id , function(){
+
+                        app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
+
+                    } );
                 });
 
                 });
