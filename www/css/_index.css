@@ -1137,7 +1137,10 @@ form .problems a {
   animation: openModal 0.2s;
 }
 #modal.opacity {
-  background: rgba(0, 0, 0, 0.87);
+  background: rgba(0, 0, 0, 0.85);
+}
+#modal .plus > span {
+  font-size: 140%;
 }
 #modal #textArea {
   position: absolute;
@@ -1190,15 +1193,17 @@ form .problems a {
   font-family: 'robotothin';
   font-weight: normal;
 }
-#modal.titleOnTop {
-  padding-top: 0;
-}
 #modal.titleOnTop #modalTitle {
   bottom: auto;
   top: 2.6%;
   line-height: 1.4em;
 }
-#modal.titleOnTop #textArea {
+#modal.textNotAbs {
+  padding-top: 0;
+}
+#modal.textNotAbs #textArea {
+  width: 100%;
+  font-size: 1.25em;
   top: 14%;
   font-family: 'robotothin';
   font-weight: normal;
@@ -1208,13 +1213,30 @@ form .problems a {
   left: auto;
   margin: auto;
 }
-#modal.titleOnTop #textArea > img {
+#modal.textNotAbs #textArea > img {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
+#modal.textNotAbs #textArea input {
+  line-height: 2.8em;
+  font-size: 1em;
+}
+#modal.textNotAbs #buttonArea {
+  position: relative;
+  top: 15em;
+}
+#modal.textNotAbs #buttonArea button {
+  display: block;
+  margin: auto;
+  width: 16.3em;
+  margin-bottom: 0.5em;
+}
 #modal big {
   font-size: 120%;
+}
+#modal small {
+  font-size: 80%;
 }
 #modal hr {
   width: 4%;
@@ -1222,13 +1244,13 @@ form .problems a {
   border-top: 1px solid white;
 }
 #modal .avatar {
-  width: 10em;
-  height: 10em;
+  width: 8em;
+  height: 8em;
   -webkit-border-radius: 10em;
   -moz-border-radius: 10em;
   border-radius: 10em;
   border: 1px solid white;
-  margin-bottom: 2.4em;
+  margin-bottom: 1.7em;
 }
 #modal #socialLinks {
   margin-top: 0.5em;
@@ -1272,6 +1294,15 @@ form .problems a {
   right: 7.6%;
   width: 2.6em;
   height: 2.6em;
+}
+#modal li {
+  font-size: 1.1em;
+  line-height: 3.45em;
+  font-family: 'robotothin';
+  font-weight: normal;
+}
+#modal li > b {
+  font-size: 1.2em;
 }
 @-moz-keyframes openModal {
   from {

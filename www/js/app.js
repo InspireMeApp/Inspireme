@@ -225,14 +225,14 @@ var app = (function ()
     app.addToProject = function(proj_id , song_id){
        communicate({token : token , mode : 'post_account_inproject' , project : proj_id , song : song_id , uid : app.sessionid} , function(data){
            
-            app.openModal('Track succesfully added to project' , {closeModal : 'Ok'}) 
+            app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
        });
     }
 
     app.createProject = function(type){
         title = $('#proj_title').val();
         communicate({token : token , mode : 'post_account_newproject' , uid : app.sessionid , name : title , type : type} , function(data){
-            app.openModal('New project created and track succesfully added to project' , {closeModal : 'Ok'});
+            app.openModal('<p>New project created and track succesfully added to project</p>' , {closeModal : 'Ok'});
         });
     }
 

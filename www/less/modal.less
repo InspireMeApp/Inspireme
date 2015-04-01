@@ -54,13 +54,16 @@
         .thin;
     }
     &.titleOnTop{
-        padding-top:0;
         #modalTitle{
             bottom: auto;
             top: 2.6%;
             line-height: 1.4em;
         }
+    }
+    &.textNotAbs{
+        padding-top:0;
         #textArea{
+            width:100%;
             >img{
                 display:block;
                 margin-left: auto;
@@ -74,10 +77,27 @@
             position: relative;
             left: auto;
             margin: auto;
+            input{
+                line-height: 2.8em;
+                font-size: 1em;
+            }
+        }
+        #buttonArea{
+            position: relative;
+            top:15em;
+            button{
+                display: block;
+                margin: auto;
+                width: 16.3em;
+                margin-bottom: 0.5em;
+            }
         }
     }
     big{
         font-size: 120%;
+    }
+    small{
+        font-size: 80%;
     }
     hr{
         width: 4%;
@@ -131,10 +151,13 @@
         width: 2.6em;
         height: 2.6em;
     }
-    li,.plus{
-        font-size: 1.25em;
-        line-height: 3.6em;
+    li{
+        font-size: 1.1em;
+        line-height: 3.45em;
         .thin;
+        >b{
+            font-size: 1.2em;
+        }
     }
 }
 
