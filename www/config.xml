@@ -20,6 +20,7 @@
     <!-- Plugins --> 
     <gap:plugin name="org.apache.cordova.core.media" />
     <gap:plugin name="org.apache.cordova.statusbar"  />
+    <gap:plugin name="org.apache.cordova.inappbrowser" version="0.1.0" />
 
     
     

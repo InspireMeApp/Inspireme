@@ -4,9 +4,9 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <!--<link rel="stylesheet/less" type="text/css" href="less/_index.less" />
-        <script src="js/less.min.js"></script>-->
-        <link rel="stylesheet" type="text/css" href="css/_index.css">
+        <link rel="stylesheet/less" type="text/css" href="less/_index.less" />
+        <script src="js/less.min.js"></script>
+        <!--<link rel="stylesheet" type="text/css" href="css/_index.css">-->
         <script src="js/jquery-2.1.3.min.js"></script>
         <script src="js/jquery.touchSwipe.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
@@ -52,7 +52,7 @@
 
 
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://allmusic.nl', '_system');\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest' , openLink: 'Open Link'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.nhl.com', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest' , openLink: 'Open Link'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -254,10 +254,10 @@
                     }
                     if ($('body').toggleClass('menuOpen').hasClass('menuOpen')) {
                         $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
+                        $('.navigation .clicked').removeClass('clicked');
                         var closingMenu = false;
-                        $(document).bind('bind', {
-                            swipeStatus: function (event, phase, direction, distance, duration, fingers)
-                            {
+                        $(document).swipe({
+                            swipeStatus: function (event, phase, direction, distance, duration, fingers) {
                                 if (!$('body').hasClass('menuOpen')) {
                                     return false;
                                 }
@@ -266,7 +266,7 @@
                                         return;
                                     }
                                     closingMenu = true;
-                                    $(document).unbind('.menu');
+                                    $(document).swipe('destroy');
                                     $('#headerMenu').click();
                                     setTimeout(function () {
                                         closingMenu = false;
@@ -274,7 +274,8 @@
                                     return false;
                                 }
                             },
-                            threshold: 20
+                            threshold: 20,
+                            allowPageScroll: "vertical"
                         });
                     } else {
                         $(document).unbind('bind');
@@ -288,7 +289,10 @@
                 });
 
                 $('#menu_projects').click(function () {
-
+                    if ($(this).hasClass('clicked')) {
+                        return;
+                    }
+                    $(this).addClass('clicked');
                     if (app.sessionid == "Guest") {
                         app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
                     } else {
@@ -477,39 +481,39 @@
                     var data_tag = cat[0].dataset.tag;
                     var ul = $('ul', cat);
                     app.loadSongs({type: 'cat', type_id: data_tag, container: ul}, function (data) {
-                    if(data != 0){
-                        var open = new timeline().add(1, function () {
-                            cat.addClass('loadPause');
-                        }).add(700, function () {
-                            cat.removeClass('loadPause loading');
-                        }).add(1100, function () {
-                            var st = $('main').scrollTop();
-                            var to = cat.position().top + 1;
-                            $('main').animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40), function () {
+                        if (data != 0) {
+                            var open = new timeline().add(1, function () {
+                                cat.addClass('loadPause');
+                            }).add(700, function () {
+                                cat.removeClass('loadPause loading');
+                            }).add(1100, function () {
+                                var st = $('main').scrollTop();
+                                var to = cat.position().top + 1;
+                                $('main').animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40), function () {
 
 
-                                app.renderSongs(ul, data, function () {
-                                    setTimeout(function () {
-                                        ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                            $(this).height('auto');
-                                        });
-                                    }, 10);
+                                    app.renderSongs(ul, data, function () {
+                                        setTimeout(function () {
+                                            ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                                $(this).height('auto');
+                                            });
+                                        }, 10);
+
+                                    });
+
 
                                 });
-
-
                             });
-                        });
 
-                        open.run();
+                            open.run();
 
-                        }else{
+                        } else {
                             console.log('cat is empty');
                             cat.removeClass('loadPause loading');
                         }
 
                     });
-                    
+
                 }).run();
             }
 
@@ -538,9 +542,9 @@
                     }
                     swipeStarted = false;
                     if (distance > SWend * 0.5) {
-                        $this.animate({'left': -SWend + 'px'}, 200);
+                        $this.stop().animate({'left': -SWend + 'px'}, 200);
                     } else {
-                        $this.animate({'left': 0}, 200);
+                        $this.stop().animate({'left': 0}, 200);
                     }
                     setTimeout(function () {
                         swiped = false;
@@ -556,70 +560,28 @@
                     SWend = $this.parent().children('.bs').width();
                     SWthreshold = ww * 0.03;
                     fromLeft = parseInt($this.css('left')) < -10;
-                    setTimeout(function () {
-                        if (swipeStarted && !swiped) {
-                            //if (sw) {
-                            //    swiped = true;
-                            //}
-                            var ms = fromLeft ? 450 : 150;
-                            $this.animate({'left': -SWthreshold}, ms);
-                        }
-                    }, 400);
                 }
                 if (distance > SWthreshold) {
                     swiped = true;
                     $this.css('left', -distance);
                 }
-
-                /*if (direction === 'right' && distance > ww * 0.15) {
-                 closingMenu = true;
-                 $(document).unbind('.menu');
-                 $('#headerMenu').click();
-                 setTimeout(function () {
-                 closingMenu = false;
-                 }, 10);
-                 return false;
-                 }*/
-                /*if (direction === 'left') {
-                 var $this = $(this);
-                 var end = ww * 0.471;
-                 var threshold = ww * 0.03;
-                 if(distance>threshold){
-                 $this.css('left', -distance);
-                 }
-                 }
-                 setTimeout(function () {
-                 if (stillMouseDown && !swiped) {
-                 var sw = parseInt($this.css('left')) < -10;
-                 if (sw) {
-                 swiped = true;
-                 }
-                 var ms = sw ? 450 : 150;
-                 $this.animate({'left': threshold}, ms);
-                 }
-                 }, 500);*/
-            }
-            function songSwipeEnd(event, direction, distance, duration, fingerCount, fingerData) {
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            function songTouchStart() {
+                var $this = $(this);
+                var k = setTimeout(function () {
+                    if (!swiped && !fromLeft) {
+                        $this.animate({'left': ww * -0.03}, 150);
+                    }
+                }, 400);
+                $(window).bind("touchend", function (e) {
+                    clearTimeout(k);
+                    $(window).unbind("touchend");
+                    if (!swiped) {
+                        $this.stop().animate({'left': 0}, 150);
+                    }
+                });
+            }
 
 
 
@@ -779,6 +741,7 @@
         <title>Inspire Me</title>
     </head>
     <body>
+        <script type="text/javascript" src="phonegap.js"></script>
         <div id="modal" style="display:none;">
             <div id="modalTitle"></div>
             <div id="textArea"></div>
@@ -802,8 +765,7 @@
 
         <div id="navBg"><div class="inner">
                 <div class="title"><span>Menu</span></div>
-                <a href='#' onclick="alert('test');
-                        window.open('http://allmusic.nl', '_system');"><img src="media/allmusicLogo.png"></a>
+                <a href='#' onclick="window.open('http://www.nhl.com', '_system', 'location=no');return false;"><img src="media/allmusicLogo.png"></a>
             </div></div>
         <nav class="navigation">
             <ul>
@@ -840,7 +802,7 @@
                 <div class='category-item open' id='project-container' style='display:none;'>
                     <h2> </h2>
                     <div>
-                        <img src="media/bergen_klein.png">
+                        <img src="media/mountains-small.png">
                         <div class="buttons loadingIcon"><a class="load"></a></div><div class="buttons noPlay"><a class="play" data-action="play"><span></span></a></div><div class="buttons duringPlay"><a class="stepBackwards small" data-action="stepBackwards"><span></span></a><a class="pause" data-action="pause"><span></span></a><a class="stepForwards small" data-action="stepForwards"><span></span></a></div>
                     </div>
                     <div class="ulCont" style="height:auto;">
@@ -927,11 +889,9 @@
             <div class="backgroundPart top"><div></div></div>
             <div class="backgroundPart bottom"><div></div></div>
         </div>
-        <script type="text/javascript" src="phonegap.js"></script>
 
         <div id='contact_page' style='display:none;'>
-            <img src='media/allmusicLogo.png' style="width: 33%;margin: 2.7em auto 4.1em;">
-            <b>All Music Publishing b.v.</b><br>
+            <img src='media/allmusicLogo.png' style="width: 61%;margin: 1.7em auto 2.7em;">
             www.allmusic.nl<br>
             info@allmusic.nl<br>
             +31 088 008 3000<br>
