@@ -18,7 +18,6 @@
         <script>
 
             document.addEventListener("deviceready", function () {
-                alert('device is readyl');
                 StatusBar.overlaysWebView(false);
 
                 app.sessionid = window.localStorage.getItem("sessionid");
@@ -301,7 +300,6 @@
                         var pr = $('#menu_projects ul');
                         if (pr.children().length == 0) {
                             communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
-                                console.log(data);
                                 $.each(data.projects, function () {
                                     if(!this.name){return;}
                                     var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
@@ -512,7 +510,6 @@
                             open.run();
 
                         } else {
-                            console.log('cat is empty');
                             cat.removeClass('loadPause loading');
                         }
 
