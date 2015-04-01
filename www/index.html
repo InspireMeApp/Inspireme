@@ -52,7 +52,7 @@
 
 
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.nhl.com', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call 088-0083000</p>", {closeModal: 'Ok', guestVisit: 'Visit as guest' , openLink: 'Open Link'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -294,7 +294,7 @@
                     }
                     $(this).addClass('clicked');
                     if (app.sessionid == "Guest") {
-                        app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website www.allmusic.nl or call 088-0083000</p>', {closeModal: 'Ok'})
+                        app.openModal('<p>For this function you need to sign up for your services.</p><p>Visit our website<br>www.allmusic.nl<br>or call 088-0083000</p>', {closeModal: 'Ok'})
                     } else {
                         var pr = $('#menu_projects ul');
                         if (pr.children().length == 0) {
@@ -699,7 +699,7 @@
 
                 app.loadProjects(function(html){
 
-                app.openModal('<p><br><br>Projects <br></p>'+html+"<br> <div class='plus'>+</div>" , {} , 'Add track to project');
+                app.openModal('<p><br><br>Projects</p><ul>'+html+"</ul><div class='plus'><span>+</span</div>" , {} , 'Add track to project','opacity');
 
                 $('.plus').click(function(){
                 app.openModal("<input type='text' id='proj_title' placeholder='Project title'> <br><br><br>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project');
@@ -756,7 +756,7 @@
 
         <div id="navBg"><div class="inner">
                 <div class="title"><span>Menu</span></div>
-                <a href='#' onclick="window.open('http://www.nhl.com', '_system', 'location=no');return false;"><img src="media/allmusicLogo.png"></a>
+                <a href='#' onclick="window.open('http://www.allmusic.nl', '_system', 'location=no');return false;"><img src="media/allmusicLogo.png"></a>
             </div></div>
         <nav class="navigation">
             <ul>

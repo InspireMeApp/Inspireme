@@ -8,10 +8,10 @@
     box-sizing:border-box;
     background-color:black;
     &.opacity{
-        background: rgba(0,0,0,0.87);
+        background: rgba(0,0,0,0.85);
     }
     .anim(openModal 0.2s);
-    .plus{font-size:130%;}
+    .plus>span{font-size:140%;}
     @g:58%;
     #textArea{
         position:absolute;
@@ -130,6 +130,11 @@
         right: 7.6%;
         width: 2.6em;
         height: 2.6em;
+    }
+    li,.plus{
+        font-size: 1.25em;
+        line-height: 3.6em;
+        .thin;
     }
 }
 
