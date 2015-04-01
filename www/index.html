@@ -22,6 +22,10 @@
                 if (app.sessionid == null) {
                     app.sessionid = "0";
                 }
+                alert(window.device.version);
+                if(window.device && parseFloat(window.device.version) >= 7){
+                    document.body.classList.add('fix-status-bar');
+                }
 
             }, true);
 
@@ -31,6 +35,7 @@
                 ww = $(window).width();
             }
             $(document).ready(function () {
+
 
                 //$(window).scroll(function () {//prevent scrollbounce apple devices
                 //    $('body,html').scrollTop(0);
@@ -42,7 +47,6 @@
                     app.sessionid = "0";
                 }
 
-
                 //Ugly place , where to put ?? 
                 //in app.js
 
@@ -50,7 +54,7 @@
                     window.open("http://google.com", '_system');
                 }
 
-
+                
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
