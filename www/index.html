@@ -712,6 +712,15 @@
                 if (swiped || parseInt($(this).closest('li').children('.bar').css('left')) > -10) {
                     return;
                 }
+
+                var li = $(this).closest('li');
+                var song_id = li.attr('data-id');
+                
+                communicate({token:token , mode : 'get_values_copyright' , song : song_id} , function(data){
+                    info = data.copyright[0];
+                    app.openModal( "--<br>" + info.title + "<br>" + info.library + "<br>-- <br><br>" + info.song_description + "<br><br>Composer(s)<br>" + info.composer + "<br><br>BPM<br>" + info.bpm , {} , 'Copyright details')
+                });
+
                 press($(this));
             }
             function songFav() {
