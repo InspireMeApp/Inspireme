@@ -189,6 +189,7 @@ var app = (function ()
         app.sessionid = null;
         window.localStorage.clear();
         console.log('logged out!');
+        app.endInfiniteScroll();
         closeModal();
         $('#introSteps').removeClass('step3');
         if (media !== null) {
@@ -220,22 +221,38 @@ var app = (function ()
         });
     }
 
-    app.addToProject = function (proj_id, song_id) {
+    app.addToProject = function (proj_id, song_id, callback) {
         communicate({token: token, mode: 'post_account_inproject', project: proj_id, song: song_id, uid: app.sessionid}, function (data) {
-
-            app.openModal('<p>Track succesfully added to project</p>', {closeModal: 'Ok'})
+            callback(data);
         });
     }
 
     app.createProject = function (type) {
         title = $('#proj_title').val();
         communicate({token: token, mode: 'post_account_newproject', uid: app.sessionid, name: title, type: type}, function (data) {
-            app.openModal('<p>New project created and track succesfully added to project</p>', {closeModal: 'Ok'});
+            proj_id = data.newproject[0].id
+            app.addToProject(proj_id, song_id, function (data) {
+                app.openModal('<p>New project created and track succesfully added to project</p>', {closeModal: 'Ok'});
+            });
         });
     }
 
-    //temp functions
+    app.startInfiniteScroll = function () {
+        console.log('initiate infinite scroll');
+        var main = $('main');
+        main.bind('scroll.inf touchmove.inf', function () {
+            console.log(main.scrollTop());
+        });
+    };
+    app.endInfiniteScroll = function () {
+        $('main').unbind('.inf');
+    };
 
+    //temp functions
+    function reconnect() {
+        closeModal();
+        app.launch();
+    }
     function postCorporate() {
         app.createProject(1);
     }

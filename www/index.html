@@ -18,6 +18,8 @@
         <script>
 
             document.addEventListener("deviceready", function () {
+                StatusBar.overlaysWebView(false);
+
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
@@ -32,16 +34,11 @@
             }
             $(document).ready(function () {
 
-                //$(window).scroll(function () {//prevent scrollbounce apple devices
-                //    $('body,html').scrollTop(0);
-                //});
-
                 //fix for browser
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
                 }
-
 
                 //Ugly place , where to put ?? 
                 //in app.js
@@ -50,7 +47,7 @@
                     window.open("http://google.com", '_system');
                 }
 
-
+                
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
@@ -256,7 +253,7 @@
                         $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
                         $('.navigation .clicked').removeClass('clicked');
                         var closingMenu = false;
-                        $(document).swipe({
+                        /*$(document).swipe({
                             swipeStatus: function (event, phase, direction, distance, duration, fingers) {
                                 if (!$('body').hasClass('menuOpen')) {
                                     return false;
@@ -276,9 +273,10 @@
                             },
                             threshold: 20,
                             allowPageScroll: "vertical"
-                        });
+                        });*/
                     } else {
-                        $(document).unbind('bind');
+                        //$(document).unbind('bind');
+                        //$(document).swipe('destroy');
                     }
                 });
 
@@ -286,6 +284,7 @@
                     $('.category-item').show();
                     $('#project-container').hide();
                     $('body').removeClass('menuOpen');
+                    app.endInfiniteScroll();
                 });
 
                 $('#menu_projects').click(function () {
@@ -333,6 +332,7 @@
                                             $('#project-container').addClass('open');
                                             $('#project-container').show();
                                             $('body').removeClass('menuOpen');
+                                            app.startInfiniteScroll();
                                         });
                                     });
                                 });
@@ -511,7 +511,6 @@
                             open.run();
 
                         } else {
-                            console.log('cat is empty');
                             cat.removeClass('loadPause loading');
                         }
 
@@ -548,7 +547,7 @@
                         $('.swiped',$this.closest('ul')).removeClass('swiped').animate({'left': 0}, 300);
                         $this.stop().animate({'left': -SWend + 'px'}, 200,function(){$this.addClass('swiped');});
                     } else {
-                        $this.removeClass('swiped').stop().animate({'left': 0}, 200);
+                        closeSwipe($this);
                     }
                     setTimeout(function () {
                         swiped = false;
@@ -699,6 +698,7 @@
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
                     if (data.infavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
+                        closeSwipe(li.children('.bar'));
                     }
                 });
             }
@@ -708,19 +708,21 @@
                 }
 
                 var li = $(this).closest('li');
-                var song_id = li.attr('data-id');
+                song_id = li.attr('data-id');
 
                 app.loadProjects(function (html) {
 
                     app.openModal('<br><br><ul><li><b>Projects</b></li>' + html + "<li class='plus'><span>+</span></li></ul>", {}, 'Add track to project', 'opacity textNotAbs');
 
-                    $('#modal .plus').click(function () {
-                        app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>", {postCorporate: 'Corporate film', postTV: 'TV programme', postCommercial: 'Commercial'}, 'Create project', 'textNotAbs');
-                    });
+                $('#modal .plus').click(function(){
+                    app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project','textNotAbs');
+                });
 
-                    $('#modal .project-item').click(function () {
-                        app.addToProject($(this).attr('data-tag'), song_id)
-                    });
+                $('#modal .project-item').click(function(){
+                    app.addToProject($(this).attr('data-tag') , song_id , function(){
+                        app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
+                    } );
+                });
 
                 });
 
@@ -739,6 +741,10 @@
                 } else {
                     $('body').removeAttr('style');
                 }
+            }
+            
+            function closeSwipe(s){
+                s.removeClass('swiped').stop().animate({'left': 0}, 340);
             }
 
         </script>
