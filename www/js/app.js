@@ -57,14 +57,12 @@ var app = (function ()
 
     app.loadSongs = function (entity, callback) {
         if (entity.type == 'fav') {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid}, function (data) {
-                console.log(data);
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid , page : entity.page}, function (data) {
                 callback(data);
             });
         }
         else {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid}, function (data) {
-                console.log(data);
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid , page : entity.page}, function (data) {
                 callback(data);
             });
         }
@@ -236,15 +234,32 @@ var app = (function ()
             });
         });
     }
-
-    app.startInfiniteScroll = function () {
-        console.log('initiate infinite scroll');
+    
+    //TODO unbind when not needed anymore..
+    app.startInfiniteScroll = function (type , proj_id) {
         var main = $('main');
+        var counter = 1;
         main.bind('scroll.inf touchmove.inf', function () {
-            console.log(main.scrollTop());
+
+            var hh = $('header').height();
+            var wh = $('body').height() - hh;
+    
+            if($(this).scrollTop() + wh + 5 >= $('#project-container').height())
+        {
+            app.loadSongs({type: type , type_id : proj_id , page : counter} , function(data){
+                counter++;
+                if(data == 0){ 
+                    app.endInfiniteScroll(); 
+                }else{
+                    app.renderSongs($('#project-container ul') , data , function(){
+                    });
+                }
+            });    
+        }
         });
     };
-    app.endInfiniteScroll = function () {
+
+            app.endInfiniteScroll = function () {
         $('main').unbind('.inf');
     };
 

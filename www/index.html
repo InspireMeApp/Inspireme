@@ -46,7 +46,6 @@
                 function openLink() {
                     window.open("http://google.com", '_system');
                 }
-
                 
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
@@ -228,6 +227,7 @@
                 });
 
                 var introEnd = new timeline().add(1, function () {
+                    app.endInfiniteScroll(); 
                     $('main, header .buttons').show();
                 }).add(50, function () {
                     $('main, header .buttons').removeClass('transparent');
@@ -312,7 +312,7 @@
 
                                 $('#menu_projects ul li').on('click', function () {
 
-                                    var proj_id = $(this).attr('data-tag');
+                                    proj_id = $(this).attr('data-tag');
                                     var proj = $('#project-container');
                                     var ul = $('ul', proj);
                                     text = $(this).html();
@@ -320,7 +320,7 @@
 
                                     $('.category-item').hide();
 
-                                    app.loadSongs({type: 'proj', type_id: proj_id}, function (data) {
+                                    app.loadSongs({type: 'proj', type_id: proj_id , page : "1"}, function (data) {
                                         app.renderSongs(ul, data, function () {
                                             setTimeout(function () {
                                                 ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
@@ -332,7 +332,7 @@
                                             $('#project-container').addClass('open');
                                             $('#project-container').show();
                                             $('body').removeClass('menuOpen');
-                                            app.startInfiniteScroll();
+                                            app.startInfiniteScroll('proj' , proj_id);
                                         });
                                     });
                                 });
@@ -352,7 +352,7 @@
                     ul.html('');
                     $('.category-item').hide();
 
-                    app.loadSongs({type: 'fav'}, function (data) {
+                    app.loadSongs({type: 'fav' , page: "1"}, function (data) {
                         app.renderSongs(ul, data, function () {
                             setTimeout(function () {
                                 ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
@@ -364,6 +364,7 @@
                             $('#project-container').addClass('open');
                             $('#project-container').show();
                             $('body').removeClass('menuOpen');
+                            app.startInfiniteScroll('fav' , '0');
                         });
                     });
                     ;
@@ -483,7 +484,7 @@
                     cat.addClass('loading');
                     var data_tag = cat[0].dataset.tag;
                     var ul = $('ul', cat);
-                    app.loadSongs({type: 'cat', type_id: data_tag, container: ul}, function (data) {
+                    app.loadSongs({type: 'cat', type_id: data_tag, container: ul , page : "1"}, function (data) {
                         if (data != 0) {
                             var open = new timeline().add(1, function () {
                                 cat.addClass('loadPause');
