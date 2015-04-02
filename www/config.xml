@@ -10,6 +10,8 @@
     <author email="tech@hacktisch.com" href="http://hacktisch.com">
         Hacktisch
     </author>
+    
+    <access origin="*" />   
 
     <preference name="phonegap-version" value="3.6.3" />
     <preference name="orientation" value="portrait" />
@@ -22,6 +24,7 @@
     <gap:plugin name="org.apache.cordova.statusbar"  />
     <gap:plugin name="org.apache.cordova.inappbrowser" version="0.1.0" />
 
+    
     
     
     
@@ -64,14 +67,36 @@
     <icon src="i/android/res/drawable-xxhdpi/Icon.png" gap:platform="android" gap:qualifier="xxhdpi" />
     <icon src="i/android/res/drawable-xxxhdpi/Icon.png" gap:platform="android" gap:qualifier="fr-xxhdpi" />
 
-    <access origin="*" />
+    
+    
+    
+    
+    
     <!-- Splash Screens -->
     <gap:splash src="splash.png" />
-    <gap:splash src="screensizes/splash-160x220.png" gap:platform="android" gap:density="ldpi" />
-    <gap:splash src="splash.png" gap:platform="android" gap:density="mdpi" />
-    <gap:splash src="screensizes/splash-450x650.png" gap:platform="android" gap:density="hdpi" />
     
+    <!-- iPhone and iPod touch -->
+    <gap:splash src="s/ios/Default.png" gap:platform="ios" width="320" height="480" />
+    <gap:splash src="s/ios/Default@2x.png" gap:platform="ios" width="640" height="960" />
+    <!-- iPhone 5 / iPod Touch (5th Generation) -->
+    <gap:splash src="s/ios/Default-568h@2x.png" gap:platform="ios" width="640" height="1136" />
+    <!-- iPhone 6 -->
+    <gap:splash src="s/ios/Default-667h@2x.png" gap:platform="ios" width="750" height="1334" />
+    <gap:splash src="s/ios/Default-Portrait-736h@3x.png" gap:platform="ios" width="1242" height="2208" />
+    <!-- iPad -->
+    <gap:splash src="s/ios/Default-Portrait.png" gap:platform="ios" width="768" height="1024" />
+    <!-- Retina iPad -->
+    <gap:splash src="s/ios/Default-Portrait@2x.png" gap:platform="ios" width="1536" height="2048" />
     
-    
+    <gap:splash src="s/android/res-long-port-ldpi/default.png" gap:platform="android" gap:qualifier="ldpi" />
+    <gap:splash src="s/android/res-long-port-mdpi/default.png" gap:platform="android" gap:qualifier="mdpi" />
+    <gap:splash src="s/android/res-long-port-hdpi/default.png" gap:platform="android" gap:qualifier="hdpi" />
+    <gap:splash src="s/android/res-long-port-xhdpi/default.png" gap:platform="android" gap:qualifier="xhdpi" />
+    <gap:splash src="s/android/res-long-port-xxhdpi/default.png" gap:platform="android" gap:qualifier="fr-xhdpi" />
+    <gap:splash src="s/android/res-long-port-xxxhdpi/default.png" gap:platform="android" gap:qualifier="port-xxhdpi" />
+
+
+
+ 
     
 </widget>

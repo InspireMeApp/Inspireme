@@ -44,12 +44,12 @@ var app = (function ()
         $('#modalX').click(closeModal);
 
     };
-    app.loadProjects = function(callback){
+    app.loadProjects = function (callback) {
         communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
-             var html = "";
-             $.each(data.projects, function () {
+            var html = "";
+            $.each(data.projects, function () {
                 var li = '<li class="project-item" data-tag="' + this.id + '">' + this.name + '</li>';
-             html += li;
+                html += li;
             });
             callback(html);
         });
@@ -84,7 +84,7 @@ var app = (function ()
                     '<span class="duration" data-duration="' + this.duration_sec +
                     '" data-dur-sec="' + this.duration_notation + '">' +
                     this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
-                    ).click(songClick).swipe({swipeStatus:songSwipeStatus,allowPageScroll:"vertical"}).bind('touchstart',songTouchStart).appendTo(li);
+                    ).click(songClick).swipe({swipeStatus: songSwipeStatus, allowPageScroll: "vertical"}).bind('touchstart', songTouchStart).appendTo(li);
             if (this.in_favourite == "true") {
                 li.addClass('faved');
             }
@@ -92,7 +92,7 @@ var app = (function ()
         });
         callback();
     };
-    
+
 
     app.playAudio = function (src) {
 
@@ -141,17 +141,13 @@ var app = (function ()
         $('#textArea').html(message);
         $('#buttonArea').html('');
         var cur = 0;
-
         $.each(params, function (callback, txt) {
             $('#buttonArea').append("<button id='button-" + cur + "'>" + txt + "</button>");
             $('#button-' + cur).click(function () {
                 eval(callback + "()");
             });
-
             cur++;
-
         });
-
         $('#modal').attr('class', extraClass).show();
     }
 
@@ -171,7 +167,7 @@ var app = (function ()
         app.openForgotPassword();
     }
 
-    function openLink(){
+    function openLink() {
         window.open("http://allmusic.nl", '_system');
     }
 
@@ -219,34 +215,36 @@ var app = (function ()
     }
 
     function closeModal() {
-        $('#modal').hide();
-    }
-    
-    app.addToProject = function(proj_id , song_id){
-       communicate({token : token , mode : 'post_account_inproject' , project : proj_id , song : song_id , uid : app.sessionid} , function(data){
-           
-            app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
-       });
+        $('#modal').fadeOut(280, function () {
+            $(this).hide();
+        });
     }
 
-    app.createProject = function(type){
+    app.addToProject = function (proj_id, song_id) {
+        communicate({token: token, mode: 'post_account_inproject', project: proj_id, song: song_id, uid: app.sessionid}, function (data) {
+
+            app.openModal('<p>Track succesfully added to project</p>', {closeModal: 'Ok'})
+        });
+    }
+
+    app.createProject = function (type) {
         title = $('#proj_title').val();
-        communicate({token : token , mode : 'post_account_newproject' , uid : app.sessionid , name : title , type : type} , function(data){
-            app.openModal('<p>New project created and track succesfully added to project</p>' , {closeModal : 'Ok'});
+        communicate({token: token, mode: 'post_account_newproject', uid: app.sessionid, name: title, type: type}, function (data) {
+            app.openModal('<p>New project created and track succesfully added to project</p>', {closeModal: 'Ok'});
         });
     }
 
     //temp functions
 
-    function postCorporate(){
+    function postCorporate() {
         app.createProject(1);
     }
 
-    function postTV(){
+    function postTV() {
         app.createProject(2);
     }
-    
-    function postCommercial(){
+
+    function postCommercial() {
         app.createProject(3);
     }
 
