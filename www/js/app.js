@@ -44,6 +44,7 @@ var app = (function ()
         $('#modalX').click(closeModal);
 
     };
+
     app.loadProjects = function (callback) {
         communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
             var html = "";
@@ -268,16 +269,10 @@ var app = (function ()
         closeModal();
         app.launch();
     }
-    function postCorporate() {
-        app.createProject(1);
-    }
 
-    function postTV() {
-        app.createProject(2);
-    }
-
-    function postCommercial() {
-        app.createProject(3);
+    function postProject(){
+        var type = $('.proj_button.active').attr('data-tag');
+        app.createProject(type);
     }
 
     return app;

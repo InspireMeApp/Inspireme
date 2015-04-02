@@ -1288,6 +1288,10 @@ form .problems a {
 #modal.form #textArea input {
   margin-top: 1em;
 }
+#modal .proj_button.active{
+  background: white;
+  color: rgb(186, 183, 183);
+} 
 #modal .x {
   position: absolute;
   top: 2.6%;

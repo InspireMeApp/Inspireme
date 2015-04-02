@@ -716,10 +716,19 @@
                     app.openModal('<br><br><ul><li><b>Projects</b></li>' + html + "<li class='plus'><span>+</span></li></ul>", {}, 'Add track to project', 'opacity textNotAbs');
 
                 $('#modal .plus').click(function(){
-                    app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" , {postCorporate : 'Corporate film' , postTV : 'TV programme' , postCommercial : 'Commercial'}, 'Create project','textNotAbs');
+                    app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>"+
+                    "<button class='proj_button' data-tag='1'>Corporate film</button>"+
+                    "<button class='proj_button' data-tag='2'>TV programme</button>"+
+                    "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject : 'Create project'}, 'Create project','textNotAbs');
+
+                    $('.proj_button').click(function(){
+                        $('.proj_button').removeClass('active');
+                        $(this).addClass('active');
+                    });
+
                 });
 
-                $('#modal .project-item').click(function(){
+                                $('#modal .project-item').click(function(){
                     app.addToProject($(this).attr('data-tag') , song_id , function(){
                         app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
                     } );
