@@ -46,7 +46,7 @@
                 function openLink() {
                     window.open("http://google.com", '_system');
                 }
-                
+
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
@@ -227,7 +227,7 @@
                 });
 
                 var introEnd = new timeline().add(1, function () {
-                    app.endInfiniteScroll(); 
+                    app.endInfiniteScroll();
                     $('main, header .buttons').show();
                 }).add(50, function () {
                     $('main, header .buttons').removeClass('transparent');
@@ -254,26 +254,26 @@
                         $('.navigation .clicked').removeClass('clicked');
                         var closingMenu = false;
                         /*$(document).swipe({
-                            swipeStatus: function (event, phase, direction, distance, duration, fingers) {
-                                if (!$('body').hasClass('menuOpen')) {
-                                    return false;
-                                }
-                                if (direction === 'right' && distance > ww * 0.15) {
-                                    if (closingMenu) {
-                                        return;
-                                    }
-                                    closingMenu = true;
-                                    $(document).swipe('destroy');
-                                    $('#headerMenu').click();
-                                    setTimeout(function () {
-                                        closingMenu = false;
-                                    }, 10);
-                                    return false;
-                                }
-                            },
-                            threshold: 20,
-                            allowPageScroll: "vertical"
-                        });*/
+                         swipeStatus: function (event, phase, direction, distance, duration, fingers) {
+                         if (!$('body').hasClass('menuOpen')) {
+                         return false;
+                         }
+                         if (direction === 'right' && distance > ww * 0.15) {
+                         if (closingMenu) {
+                         return;
+                         }
+                         closingMenu = true;
+                         $(document).swipe('destroy');
+                         $('#headerMenu').click();
+                         setTimeout(function () {
+                         closingMenu = false;
+                         }, 10);
+                         return false;
+                         }
+                         },
+                         threshold: 20,
+                         allowPageScroll: "vertical"
+                         });*/
                     } else {
                         //$(document).unbind('bind');
                         //$(document).swipe('destroy');
@@ -289,6 +289,11 @@
 
                 $('#menu_projects').click(function () {
                     if ($(this).hasClass('clicked')) {
+                        var t = $(this);
+                        $('ul', $(this)).stop().animate({'height': 0}, 800, function () {
+                            $(this).empty();
+                            t.removeClass('clicked');
+                        });
                         return;
                     }
                     $(this).addClass('clicked');
@@ -320,10 +325,10 @@
 
                                     $('.category-item').hide();
 
-                                    app.loadSongs({type: 'proj', type_id: proj_id , page : "1"}, function (data) {
+                                    app.loadSongs({type: 'proj', type_id: proj_id, page: "1"}, function (data) {
                                         app.renderSongs(ul, data, function () {
                                             setTimeout(function () {
-                                                ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                                ul.parent().stop().animate({'height': ul.height() + 'px'}, 1300, function () {
                                                     $(this).height('auto');
                                                 });
                                             }, 10);
@@ -332,7 +337,7 @@
                                             $('#project-container').addClass('open');
                                             $('#project-container').show();
                                             $('body').removeClass('menuOpen');
-                                            app.startInfiniteScroll('proj' , proj_id);
+                                            app.startInfiniteScroll('proj', proj_id);
                                         });
                                     });
                                 });
@@ -352,7 +357,7 @@
                     ul.html('');
                     $('.category-item').hide();
 
-                    app.loadSongs({type: 'fav' , page: "1"}, function (data) {
+                    app.loadSongs({type: 'fav', page: "1"}, function (data) {
                         app.renderSongs(ul, data, function () {
                             setTimeout(function () {
                                 ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
@@ -364,7 +369,7 @@
                             $('#project-container').addClass('open');
                             $('#project-container').show();
                             $('body').removeClass('menuOpen');
-                            app.startInfiniteScroll('fav' , '0');
+                            app.startInfiniteScroll('fav', '0');
                         });
                     });
                     ;
@@ -426,11 +431,11 @@
                         if (!cat.hasClass('open')) {
                             openCategory(cat);
                         } else {
-                            $('.active:first>.bar', cat).click();
+                            songClick($('.active:first>.bar', cat), false);
                         }
                         break;
                     case 'pause':
-                        $('.active:first>.bar', cat).click();
+                        songClick($('.active:first>.bar', cat), false);
                         break;
                     case 'stepBackwards':
                         if ($('.active:first', cat).length) {
@@ -484,7 +489,7 @@
                     cat.addClass('loading');
                     var data_tag = cat[0].dataset.tag;
                     var ul = $('ul', cat);
-                    app.loadSongs({type: 'cat', type_id: data_tag, container: ul , page : "1"}, function (data) {
+                    app.loadSongs({type: 'cat', type_id: data_tag, container: ul, page: "1"}, function (data) {
                         if (data != 0) {
                             var open = new timeline().add(1, function () {
                                 cat.addClass('loadPause');
@@ -500,6 +505,7 @@
                                         setTimeout(function () {
                                             ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
                                                 $(this).height('auto');
+                                                songClick(ul.children().first().find('.bar'), false);
                                             });
                                         }, 10);
 
@@ -545,8 +551,10 @@
                     }
                     swipeStarted = false;
                     if (distance > SWend * 0.5) {
-                        $('.swiped',$this.closest('ul')).removeClass('swiped').animate({'left': 0}, 300);
-                        $this.stop().animate({'left': -SWend + 'px'}, 200,function(){$this.addClass('swiped');});
+                        $('.swiped', $this.closest('ul')).removeClass('swiped').animate({'left': 0}, 300);
+                        $this.stop().animate({'left': -SWend + 'px'}, 200, function () {
+                            $this.addClass('swiped');
+                        });
                     } else {
                         closeSwipe($this);
                     }
@@ -570,31 +578,38 @@
                     $this.css('left', -distance);
                 }
             }
+            /*
+             function songTouchStart() {
+             var $this = $(this);
+             var k = setTimeout(function () {
+             if (!swiped && !fromLeft) {
+             $this.animate({'left': ww * -0.03}, 150);
+             }
+             }, 400);
+             $(window).bind("touchend", function (e) {
+             clearTimeout(k);
+             $(window).unbind("touchend");
+             if (!swiped) {
+             $this.stop().animate({'left': 0}, 150);
+             }
+             });
+             }
+             */
 
-            function songTouchStart() {
-                var $this = $(this);
-                var k = setTimeout(function () {
-                    if (!swiped && !fromLeft) {
-                        $this.animate({'left': ww * -0.03}, 150);
-                    }
-                }, 400);
-                $(window).bind("touchend", function (e) {
-                    clearTimeout(k);
-                    $(window).unbind("touchend");
-                    if (!swiped) {
-                        $this.stop().animate({'left': 0}, 150);
-                    }
-                });
-            }
 
-
-
-            function songClick() {
+            function songClick(bar, touched) {
+                touched = touched || false;
                 if (swiped) {
                     return;
                 }
                 swiped = false;
-                var $this = $(this).parent();
+                if (touched) {
+                    bar.addClass('bounce');
+                    setTimeout(function () {
+                        bar.removeClass('bounce');
+                    }, 100);
+                }
+                var $this = bar.parent();
                 if ($this.hasClass('active')) {
                     if ($this.hasClass('loading')) {
                         return;
@@ -715,24 +730,24 @@
 
                     app.openModal('<br><br><ul><li><b>Projects</b></li>' + html + "<li class='plus'><span>+</span></li></ul>", {}, 'Add track to project', 'opacity textNotAbs');
 
-                $('#modal .plus').click(function(){
-                    app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>"+
-                    "<button class='proj_button' data-tag='1'>Corporate film</button>"+
-                    "<button class='proj_button' data-tag='2'>TV programme</button>"+
-                    "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject : 'Create project'}, 'Create project','textNotAbs');
+                    $('#modal .plus').click(function () {
+                        app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" +
+                                "<button class='proj_button' data-tag='1'>Corporate film</button>" +
+                                "<button class='proj_button' data-tag='2'>TV programme</button>" +
+                                "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject: 'Create project'}, 'Create project', 'textNotAbs');
 
-                    $('.proj_button').click(function(){
-                        $('.proj_button').removeClass('active');
-                        $(this).addClass('active');
+                        $('.proj_button').click(function () {
+                            $('.proj_button').removeClass('active');
+                            $(this).addClass('active');
+                        });
+
                     });
 
-                });
-
-                                $('#modal .project-item').click(function(){
-                    app.addToProject($(this).attr('data-tag') , song_id , function(){
-                        app.openModal('<p>Track succesfully added to project</p>' , {closeModal : 'Ok'}) 
-                    } );
-                });
+                    $('#modal .project-item').click(function () {
+                        app.addToProject($(this).attr('data-tag'), song_id, function () {
+                            app.openModal('<p>Track succesfully added to project</p>', {closeModal: 'Ok'})
+                        });
+                    });
 
                 });
 
@@ -752,8 +767,8 @@
                     $('body').removeAttr('style');
                 }
             }
-            
-            function closeSwipe(s){
+
+            function closeSwipe(s) {
                 s.removeClass('swiped').stop().animate({'left': 0}, 340);
             }
 

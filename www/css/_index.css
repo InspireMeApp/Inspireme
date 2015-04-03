@@ -785,7 +785,7 @@ form .problems a {
   width: 100%;
   top: 50%;
   line-height: 0;
-  margin-top: -3.75em;
+  margin-top: -4.25em;
   text-align: center;
   -webkit-transition: opacity 0.6s;
   transition: opacity 0.6s;
@@ -793,17 +793,21 @@ form .problems a {
 .categories .buttons a {
   display: inline-block;
   vertical-align: middle;
+  margin-left: -0.55em;
+  margin-right: -0.55em;
 }
 .categories .buttons a.pressed span {
   opacity: 1;
 }
 .categories .buttons a.small {
-  width: 4.2em;
-  height: 4.2em;
+  width: 5.3em;
+  height: 5.3em;
+  position: relative;
+  top: 0.25em;
 }
 .categories .buttons a.small > span {
-  width: 4.2em;
-  height: 4.2em;
+  width: 5.3em;
+  height: 5.3em;
 }
 .categories .buttons a > span {
   display: block;
@@ -813,8 +817,8 @@ form .problems a {
 }
 .categories .buttons a,
 .categories .buttons a > span {
-  width: 7.5em;
-  height: 7.5em;
+  width: 8.5em;
+  height: 8.5em;
   background-size: 80%;
   background-repeat: no-repeat;
   background-position: center center;
@@ -917,8 +921,13 @@ form .problems a {
   background-color: #E6E6E6;
   color: #313131;
   overflow: hidden;
-  -webkit-transition: background-color 0.5s;
-  transition: background-color 0.5s;
+  -webkit-transition: background-color 0.5s, margin-left 0.1s ease-in;
+  transition: background-color 0.5s, margin-left 0.1s ease-in;
+}
+.categories li > .bar.bounce {
+  margin-left: -0.5em;
+  -webkit-transition: background-color 0.5s, margin-left 0.1s ease-out;
+  transition: background-color 0.5s, margin-left 0.1s ease-out;
 }
 .categories li.active > .bar {
   background-color: #BEBEBE;
@@ -972,7 +981,7 @@ form .problems a {
 .categories li > .bar > u {
   position: absolute;
   left: 0.35em;
-  top: 0.4em;
+  top: 0.5em;
   width: 0.8em;
   height: 0.8em;
 }
@@ -1137,7 +1146,7 @@ form .problems a {
   animation: openModal 0.2s;
 }
 #modal.opacity {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.95);
 }
 #modal .plus > span {
   font-size: 140%;
@@ -1288,10 +1297,6 @@ form .problems a {
 #modal.form #textArea input {
   margin-top: 1em;
 }
-#modal .proj_button.active{
-  background: white;
-  color: rgb(186, 183, 183);
-} 
 #modal .x {
   position: absolute;
   top: 2.6%;

@@ -530,7 +530,7 @@ form .problems{
         }
     }
     .buttons{
-        @buttonH:7.5em;
+        @buttonH:8.5em;
         position:absolute;
         width:100%;
         top:50%;
@@ -541,12 +541,17 @@ form .problems{
         a{
             display:inline-block;
             vertical-align:middle;
+            margin-left: -0.55em;
+            margin-right: -0.55em;
             &.pressed span{
                 opacity:1;
             }
             &.small{
-                @sH:4.2em;
-                width:@sH;height:@sH;
+                @sH:5.3em;
+                width:@sH;
+                height:@sH;
+                position:relative;
+                top:0.25em;
                 >span{width:@sH;height:@sH;}
             }
         }
@@ -641,7 +646,11 @@ form .problems{
             background-color: #E6E6E6;
             color:@textColorDark;
             overflow:hidden;
-            .transition(background-color 0.5s);
+            .transition(~"background-color 0.5s, margin-left 0.1s ease-in");
+            &.bounce{
+                margin-left:-0.5em;
+                .transition(~"background-color 0.5s, margin-left 0.1s ease-out");
+            }
         }
         &.active>.bar{
             background-color:#BEBEBE;
@@ -700,7 +709,7 @@ form .problems{
         >.bar>u{
             position:absolute;
             left:0.35em;
-            top:0.4em;
+            top: 0.5em;
             @w:0.8em;
             width:@w;
             height:@w;
@@ -758,8 +767,8 @@ form .problems{
             .fav{
                 border-color:@darkgrey;
                 >u{
-                opacity:1;
-            }
+                    opacity:1;
+                }
             }
         }
     }
