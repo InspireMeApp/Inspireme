@@ -46,6 +46,14 @@ var app = (function ()
 
     };
 
+    $('body').on('click', 'a', function(e) {
+        alert('clicking on link');
+        if($(this).attr("href") && $(this).attr("href") != "#" && $(this).attr("href").substring(0, 6) != "mailto" && !$(this).hasClass("telnr")) {
+            e.preventDefault();
+            window.open($(this).attr("href"), '_blank', 'location=yes');
+        }
+    });
+
     app.loadProjects = function (callback) {
         communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
             var html = "";
