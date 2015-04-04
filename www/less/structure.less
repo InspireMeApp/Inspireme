@@ -11,7 +11,7 @@ body>*{
 header{
     position:absolute;
     width:100%;
-    z-index:40;
+    z-index:55;
     height:@headerHeight;
     h1{
         .transition(opacity @h1Transition);
@@ -28,7 +28,14 @@ header{
         left:0;
         width:100%;
         display:none;
-        .transition(opacity 0.6s);
+        height:@headerHeight;
+        box-shadow: black 0 0.3em 0.4em -0.1em;
+        .transition(~"opacity 0.6s, box-shadow 0.2s");
+        .transition-delay(0.6s);
+        &.noShadow{
+            .transition-delay(0s);
+            box-shadow:none;
+        }
         >a{
             height:@headerHeight;
             position:absolute;
@@ -87,6 +94,8 @@ main{
     z-index:50;
     .transition(opacity 0.6s);
     background-color:@mainBg;
+          margin-bottom: 2000px;
+
     &.nobg{
         background:none;
     }
@@ -127,7 +136,7 @@ section{
             left:@menuWidth;
             line-height:2.8em;
             .transition(left @menuTransition);
-            .transition-delay(700ms);
+            .transition-delay(@menuTransitionL);
             ul{
                 opacity:0;
                 height:0;
@@ -163,6 +172,7 @@ section{
         top:0;
         right:0;
         background-color:@mainBg;
+        box-shadow: inset black 1em 0 1.4em -1em;
     }
     .title{
         line-height:@headerHeight;
@@ -186,17 +196,17 @@ body.menuOpen{
         left:0;
 
         .transition(left 0.3s);
-        @a:700ms;
-        @e:80ms;
+        @a:@menuTransitionL - 100ms;
+        @e:70ms;
         .transition-delay(@a);
-        &:nth-child(2){.transition-delay(@a+@e*1);}
-        &:nth-child(3){.transition-delay(@a+@e*2);}
-        &:nth-child(4){.transition-delay(@a+@e*3);}
-        &:nth-child(5){.transition-delay(@a+@e*4);}
-        &:nth-child(6){.transition-delay(@a+@e*5);}
-        &:nth-child(7){.transition-delay(@a+@e*6);}
-        &:nth-child(8){.transition-delay(@a+@e*7);}
-        &:nth-child(9){.transition-delay(@a+@e*8);}
+        &:nth-child(2){.transition-delay(@a+@e*0);}
+        &:nth-child(3){.transition-delay(@a+@e*1);}
+        &:nth-child(4){.transition-delay(@a+@e*2);}
+        &:nth-child(5){.transition-delay(@a+@e*3);}
+        &:nth-child(6){.transition-delay(@a+@e*4);}
+        &:nth-child(7){.transition-delay(@a+@e*5);}
+        &:nth-child(8){.transition-delay(@a+@e*6);}
+        &:nth-child(9){.transition-delay(@a+@e*7);}
     }
     #navBg{
         width:@menuWidth;
@@ -214,7 +224,7 @@ body.menuOpen{
     margin-left:-0.5 * @circleW;
     margin-bottom:-0.5 * @circleW;
     z-index:8;
-    .transition(~"left " @trans ~" ease-out, opacity 1s");
+    .transition(~"left " @trans ~" ease-out, opacity 0.5s");
     .border{
         position:absolute;
         bottom:@fatBorderW;
@@ -270,7 +280,7 @@ body.menuOpen{
     top: 50%;
     margin-top: -16.5em;
     .thin;
-    .transition(opacity 1s);
+    .transition(opacity 0.6s);
     p{
         .paragraph;
     }
@@ -321,12 +331,12 @@ body.menuOpen{
 #circleAnimation{
     height:0;
     overflow:hidden;
-    .transition(height 3.2s ease-in-out);
+    .transition(height 2.2s ease-in-out);
     &.animate{
         height:@circleW;
     }
     .border{
-        .transition(0.4s linear);
+        .transition(0.3s linear);
     }
 }
 
@@ -418,7 +428,7 @@ body.menuOpen{
         top:0;
         width:0;
         overflow:hidden;
-        .transition(width 0.8s linear);
+        .transition(width 0.6s linear);
 
     }
 }
@@ -467,7 +477,7 @@ body.menuOpen{
     width:100%;
     overflow:hidden;
     z-index:1;
-    .transition(margin 0.8s);
+    .transition(margin 0.6s);
     >div{
         .background;
         position:absolute;
@@ -504,7 +514,7 @@ form .problems{
 //categories
 .categories{
     &.animating{
-        .transition(~"top 1.7s ease-out,margin-top 0.8s");
+        .transition(~"top 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940),margin-top 0.6s");
     }
     h2{
         .thin;
@@ -515,6 +525,7 @@ form .problems{
         position: relative;
         z-index:60;
         background:@mainBg;
+        box-shadow: black 0 0.08em 0.13em;
         &:after{
             content:"";
             position:absolute;
@@ -590,7 +601,6 @@ form .problems{
             -webkit-animation-play-state:paused;
             animation-play-state: paused;
         }
-
     }
     .category-item , #project-container{
         >div{
@@ -599,23 +609,26 @@ form .problems{
             >img{
                 width:100%;  
                 display: block;
+                box-shadow: black 0 0.08em 0.4em;
+                position: relative;
+                z-index: 6;
             }
         }
         &.loading{
             .loadingIcon{
-                opacity:1;z-index:6;
+                opacity:1;z-index:8;
                 a{
                     -webkit-animation-play-state:running;
                     animation-play-state: running;
                 }
             }
             .noPlay{
-                opacity:0;z-index:4;
+                opacity:0;z-index:7;
             }
         }
         &.playing{
-            .noPlay{opacity:0;z-index:4;}
-            .duringPlay{opacity:1;z-index:6;}
+            .noPlay{opacity:0;z-index:7;}
+            .duringPlay{opacity:1;z-index:8;}
         }
         &.loadPause .loadingIcon a{
             -webkit-animation-play-state:paused;
@@ -635,7 +648,9 @@ form .problems{
         width:100%;
         position:relative;
         border-bottom: 1px solid #D2D2D2;
+        box-shadow: inset black 0 0 0.5em;
         >.bar{
+            box-shadow: black 0.26em 0 0.25em -0.2em;
             border-bottom: 1px solid #D2D2D2;
             .thin;
             position:relative;
@@ -756,7 +771,7 @@ form .problems{
             right:-1.05*@w;
             border-width: @w;
             border-style: solid;
-            border-color: black black transparent transparent;
+            border-color: #0F0F0F #0F0F0F transparent transparent;
 
         }
         &.inFav{
@@ -773,11 +788,11 @@ form .problems{
         }
     }
     .noPlay{
-        z-index:6;
+        z-index:8;
     }
     .duringPlay, .loadingIcon{
         opacity:0;
-        z-index:4;
+        z-index:7;
     }
 }
 .bs{
@@ -855,3 +870,11 @@ form .problems{
     }
 }
 
+#cyu{
+    background-color: @mainBg;
+    color:#505050;
+    text-align: center;
+    font-size: 1.9em;
+    line-height: 5em;
+    .thin;
+}

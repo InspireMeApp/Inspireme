@@ -63,12 +63,14 @@
                     if ($this.hasClass('open')) {
                         $this.removeClass('open');
                         $('.categories').css('margin-top', 0);
+                        $('.buttons').removeClass('noShadow');
                     } else {
                         var st = $('main').scrollTop();
                         $("main").animate({scrollTop: 0}, Math.round(Math.sqrt(st) * 20), function () {
                             setTimeout(function () {
                                 $this.addClass('open');
                                 $('.categories').css('margin-top', $('.appInfo').outerHeight());
+                                $('.buttons').addClass('noShadow');
                             }, Math.round(Math.sqrt(st) * 10));
                         });
                     }
@@ -89,26 +91,26 @@
 
                 intro = new timeline().add(1, function () {
                     $('#circleMain').removeClass('transparent');
-                }).add(1000, function () {
+                }).add(500, function () {
                     $('#introLogo').removeClass('right');
-                }).add(1100, function () {
+                }).add(600, function () {
                     $('#introPoweredBy').removeClass('right');
-                }).add(1505, function () {
+                }).add(1005, function () {
                     $('#circleAnimation').addClass('animate');
-                }).add(4800, function () {//4800
+                }).add(3300, function () {
                     $('#introLogo').addClass('left');
-                }).add(4900, function () {//4900
+                }).add(3400, function () {
                     $('#introPoweredBy').addClass('left');
-                }).add(5100, function () {//5100
+                }).add(3600, function () {
                     $('#circleAnimation .border').removeClass('fat');
-                }).add(6000, function () { //6000
-                    $('#circleAnimation').remove();
+                }).add(4000, function () {
+                    $('#circleAnimation').fadeOut(100,function(){$(this).remove();});
                     if (app.sessionid.length == 20) {
                     } else {
                         $('#introText').removeClass('right');
                         $('#introSteps,h1').removeClass('transparent');
                     }
-                }).add(6500, function () { //6500
+                }).add(5000, function () {
                     if (app.sessionid.length == 20) {
                         $('#circleMain').addClass('left');
                         $('header h1').removeClass('transparent');
@@ -281,7 +283,8 @@
                 });
 
                 $('#menu_home').click(function () {
-                    $('.category-item').show();
+                    $('.category-item, #cyu').show();
+                    $('main').scrollTop(0);
                     $('#project-container').hide();
                     $('body').removeClass('menuOpen');
                     app.endInfiniteScroll();
@@ -290,7 +293,7 @@
                 $('#menu_projects').click(function () {
                     if ($(this).hasClass('clicked')) {
                         var t = $(this);
-                        $('ul', $(this)).stop().animate({'height': 0}, 800, function () {
+                        $('ul', $(this)).stop().animate({'height': 0}, 500, function () {
                             $(this).empty();
                             t.removeClass('clicked');
                         });
@@ -311,7 +314,7 @@
                                     pr.append(li);
                                 });
                                 var prc = pr.children();
-                                pr.animate({'height': prc.first().height() * prc.length}, 800, function () {
+                                pr.animate({'height': prc.first().height() * prc.length}, 500, function () {
                                     pr.addClass('open');
                                 });
 
@@ -323,7 +326,7 @@
                                     text = $(this).html();
                                     ul.html('');
 
-                                    $('.category-item').hide();
+                                    $('.category-item, #cyu').hide();
 
                                     app.loadSongs({type: 'proj', type_id: proj_id, page: "1"}, function (data) {
                                         app.renderSongs(ul, data, function () {
@@ -355,7 +358,7 @@
                     var proj = $('#project-container');
                     var ul = $('ul', proj);
                     ul.html('');
-                    $('.category-item').hide();
+                    $('.category-item, #cyu').hide();
 
                     app.loadSongs({type: 'fav', page: "1"}, function (data) {
                         app.renderSongs(ul, data, function () {
@@ -800,8 +803,7 @@
 
         <div id="navBg"><div class="inner">
                 <div class="title"><span>Menu</span></div>
-                <a href='#' onclick="window.open('http://www.allmusic.nl', '_system', 'location=no');
-                return false;"><img src="media/allmusicLogo.png"></a>
+                <img src="media/allmusicLogo.png">
             </div></div>
         <nav class="navigation">
             <ul>
@@ -815,7 +817,7 @@
                 <li id='menu_logout'>Logout</li>
             </ul>
         </nav>
-
+        <div></div>
         <main class="transparent">
 
             <section class="categories" id="categories">

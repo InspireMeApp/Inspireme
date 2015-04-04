@@ -32,6 +32,7 @@ var app = (function ()
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
+            $('#categories').append('<div id="cyu">See you next week</div>');
             setTimeout(function () {
                 $('.buttons a', $('#categories')).click(function () {
                     press($(this));
