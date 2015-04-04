@@ -159,6 +159,17 @@
             font-size: 1.2em;
         }
     }
+    
+    button{.transition(@pressTransition);}
+    .pressed{
+        background-color:white;
+        @c:#A9A9A9;
+        color:@c;
+    }
+    .active{
+        background-color:white;     
+        color:black;
+    }
 }
 
 @s:0.9;

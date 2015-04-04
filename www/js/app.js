@@ -59,12 +59,12 @@ var app = (function ()
 
     app.loadSongs = function (entity, callback) {
         if (entity.type == 'fav') {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid , page : entity.page}, function (data) {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
                 callback(data);
             });
         }
         else {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid , page : entity.page}, function (data) {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid, page: entity.page}, function (data) {
                 callback(data);
             });
         }
@@ -84,7 +84,9 @@ var app = (function ()
                     '<span class="duration" data-duration="' + this.duration_sec +
                     '" data-dur-sec="' + this.duration_notation + '">' +
                     this.duration_notation + '</span><u><i></i><u></u><b></b></u></div>'
-                    ).click(function(){songClick($(this),true);}).swipe({swipeStatus: songSwipeStatus, allowPageScroll: "vertical"}) /*.bind('touchstart', songTouchStart)*/ .appendTo(li);
+                    ).click(function () {
+                songClick($(this), true);
+            }).swipe({swipeStatus: songSwipeStatus, allowPageScroll: "vertical"}) /*.bind('touchstart', songTouchStart)*/.appendTo(li);
             if (this.in_favourite == "true") {
                 li.addClass('faved');
             }
@@ -144,7 +146,10 @@ var app = (function ()
         $.each(params, function (callback, txt) {
             $('#buttonArea').append("<button id='button-" + cur + "'>" + txt + "</button>");
             $('#button-' + cur).click(function () {
-                eval(callback + "()");
+                press($(this));
+                setTimeout(function () {
+                    eval(callback + "()");
+                }, 450);
             });
             cur++;
         });
@@ -191,7 +196,7 @@ var app = (function ()
         console.log('logged out!');
         app.endInfiniteScroll();
         closeModal();
-        $('#introSteps').removeClass('step3');
+        $('#introSteps').removeClass('step3 transparent');
         if (media !== null) {
             media.stop();
             media = null;
@@ -236,32 +241,32 @@ var app = (function ()
             });
         });
     }
-    
+
     //TODO unbind when not needed anymore..
-    app.startInfiniteScroll = function (type , proj_id) {
+    app.startInfiniteScroll = function (type, proj_id) {
         var main = $('main');
         var counter = 1;
         main.bind('scroll.inf touchmove.inf', function () {
 
             var hh = $('header').height();
             var wh = $('body').height() - hh;
-    
-            if($(this).scrollTop() + wh + 5 >= $('#project-container').height())
-        {
-            app.loadSongs({type: type , type_id : proj_id , page : counter} , function(data){
-                counter++;
-                if(data == 0){ 
-                    app.endInfiniteScroll(); 
-                }else{
-                    app.renderSongs($('#project-container ul') , data , function(){
-                    });
-                }
-            });    
-        }
+
+            if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
+            {
+                app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
+                    counter++;
+                    if (data == 0) {
+                        app.endInfiniteScroll();
+                    } else {
+                        app.renderSongs($('#project-container ul'), data, function () {
+                        });
+                    }
+                });
+            }
         });
     };
 
-            app.endInfiniteScroll = function () {
+    app.endInfiniteScroll = function () {
         $('main').unbind('.inf');
     };
 
@@ -271,7 +276,7 @@ var app = (function ()
         app.launch();
     }
 
-    function postProject(){
+    function postProject() {
         var type = $('.proj_button.active').attr('data-tag');
         app.createProject(type);
     }
