@@ -16,8 +16,9 @@ body {
     color:@textColor;
     font-size: 2.8vw;
     letter-spacing: 0.106em;
-    position:relative;
+    position:fixed;
     right:0;
+    overflow:hidden;
     .transition(right @menuTransition);
     &.menuOpen{
         right:@menuWidth;

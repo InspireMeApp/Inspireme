@@ -28,12 +28,11 @@ header{
         left:0;
         width:100%;
         display:none;
+        overflow:hidden;
         height:@headerHeight;
         box-shadow: black 0 0.3em 0.4em -0.1em;
-        .transition(~"opacity 0.6s, box-shadow 0.2s");
-        .transition-delay(0.6s);
+        .transition(~"opacity 0.6s, padding-bottom " @headerITrans);
         &.noShadow{
-            .transition-delay(0s);
             box-shadow:none;
         }
         >a{
@@ -91,9 +90,9 @@ main{
     height:100%;
     height:calc(~"100% - " @headerHeight);
     overflow-y:scroll;
-    -webkit-overflow-scrolling: touch;
+    //////////-webkit-overflow-scrolling: touch;
     z-index:50;
-    .transition(opacity 0.6s);
+    .transition(~"opacity 0.6s, margin-top " @headerITrans);
     background-color:@mainBg;
     &.nobg{
         background:none;
@@ -209,6 +208,9 @@ body.menuOpen{
     }
     #navBg{
         width:@menuWidth;
+    }
+    #topFixed{
+        left:-@menuWidth;
     }
 }
 .circle{
@@ -511,15 +513,14 @@ form .problems{
 
 
 //categories
-.categories{
-    &.animating{
-        .transition(~"top 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940),margin-top 0.6s");
-    }
+.top{
+    position:relative;
+    @h2lh:2.4em;
     h2{
         .thin;
         text-align: center;
         font-size:1.8em;
-        line-height: 2.4em;
+        line-height: @h2lh;
         padding-bottom: 0.2em;
         position: relative;
         z-index:60;
@@ -539,13 +540,20 @@ form .problems{
             .transform(rotate(45deg));
         }
     }
+    >img{
+        width:100%;  
+        display: block;
+        box-shadow: black 0 0.08em 0.4em;
+        position: relative;
+        z-index: 6;
+    }
     .buttons{
         @buttonH:8.5em;
         position:absolute;
         width:100%;
         top:50%;
         line-height:0;
-        margin-top:-0.5 * @buttonH;
+        margin-top:-0.5 * @buttonH + 2.25em;
         text-align:center;
         .transition(opacity 0.6s);
         a{
@@ -601,38 +609,43 @@ form .problems{
             animation-play-state: paused;
         }
     }
-    .category-item , #project-container{
-        >div{
-            position:relative;
-            background:grey;
-            >img{
-                width:100%;  
-                display: block;
-                box-shadow: black 0 0.08em 0.4em;
-                position: relative;
-                z-index: 6;
+}
+.category-item{
+    >div{
+        position:relative;
+        background:grey;
+    }
+    .noPlay{
+        z-index:8;
+    }
+    .duringPlay, .loadingIcon{
+        opacity:0;
+        z-index:7;
+    }
+    &.loading{
+        .loadingIcon{
+            opacity:1;z-index:8;
+            a{
+                -webkit-animation-play-state:running;
+                animation-play-state: running;
             }
         }
-        &.loading{
-            .loadingIcon{
-                opacity:1;z-index:8;
-                a{
-                    -webkit-animation-play-state:running;
-                    animation-play-state: running;
-                }
-            }
-            .noPlay{
-                opacity:0;z-index:7;
-            }
+        .noPlay{
+            opacity:0;z-index:7;
         }
-        &.playing{
-            .noPlay{opacity:0;z-index:7;}
-            .duringPlay{opacity:1;z-index:8;}
-        }
-        &.loadPause .loadingIcon a{
-            -webkit-animation-play-state:paused;
-            animation-play-state: paused;
-        }
+    }
+    &.playing{
+        .noPlay{opacity:0;z-index:7;}
+        .duringPlay{opacity:1;z-index:8;}
+    }
+    &.loadPause .loadingIcon a{
+        -webkit-animation-play-state:paused;
+        animation-play-state: paused;
+    }
+}
+.categories{
+    &.animating{
+        .transition(top 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940));
     }
     .ulCont{
         height:0;
@@ -786,13 +799,6 @@ form .problems{
             }
         }
     }
-    .noPlay{
-        z-index:8;
-    }
-    .duringPlay, .loadingIcon{
-        opacity:0;
-        z-index:7;
-    }
 }
 .bs{
     position: absolute;
@@ -845,10 +851,21 @@ form .problems{
         >*{background-image:url(../media/songProjDark.png);}
     }
 }
+#topFixed{
+    position: fixed;
+    width: 100%;
+    top: 5.6em;
+    z-index: 58;
+    left:0;
+    .transition(~"margin-top" @headerITrans ~", left " @menuTransition);
+    .buttons{
+        z-index:60;
+    }
+}
 
 .appInfo{
     position: absolute;
-    bottom: 100%;
+    top:@headerHeight;
     z-index: 2;
     padding:2em 2.7em 3.3em;
     text-align:center;

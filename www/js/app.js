@@ -28,7 +28,7 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><h2>' + this.title + '</h2><div><img src="' + this['artwork-m'] + '" draggable="false">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-m'] + '" draggable="false">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
@@ -194,6 +194,9 @@ var app = (function ()
         app.sessionid = null;
         window.localStorage.clear();
         console.log('logged out!');
+        $('main').unbind('.cat');
+        $('#topFixed').empty();
+        topFixed = $('');
         app.endInfiniteScroll();
         closeModal();
         $('#introSteps').removeClass('step3 transparent');
@@ -209,6 +212,7 @@ var app = (function ()
         }).add(1050, function () {
             $('#headerI').removeClass('open');
             $('main, header .buttons').hide();
+            $('header .buttons,main').removeAttr('style');
             $('main').removeClass('nobg');
             $('#categories').removeClass('animating').removeAttr('style');
             $('.category-item.open').each(function () {
