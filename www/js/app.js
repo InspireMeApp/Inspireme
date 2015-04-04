@@ -14,9 +14,10 @@ var app = (function ()
         communicate({token: token, mode: 'get_values_categories'}, function (data) {
             imgs = [];
             $.each(data.categories, function () {
-                imgs.push(this['artwork-m']);
+                console.log(this);
+                imgs.push(this['artwork-xl']);
                 app.images[this.id] = new Image();
-                app.images[this.id].src = this['artwork-m']
+                app.images[this.id].src = this['artwork-xl']
             });
 
             var buttons =
@@ -28,7 +29,7 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-m'] + '" draggable="false">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-xl'] + '" draggable="false">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
@@ -46,14 +47,6 @@ var app = (function ()
 
     };
 
-    $('body').on('click', 'a', function(e) {
-        alert('clicking on link');
-        if($(this).attr("href") && $(this).attr("href") != "#" && $(this).attr("href").substring(0, 6) != "mailto" && !$(this).hasClass("telnr")) {
-            e.preventDefault();
-            window.open($(this).attr("href"), '_blank', 'location=yes');
-        }
-    });
-
     app.loadProjects = function (callback) {
         communicate({token: token, mode: "get_account_projects", uid: app.sessionid}, function (data) {
             var html = "";
@@ -68,7 +61,11 @@ var app = (function ()
     app.loadSongs = function (entity, callback) {
         if (entity.type == 'fav') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
-                callback(data);
+                if(data == 0){
+                    app.openModal("Sorry! You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!");
+                }else{
+                    callback(data);
+                }
             });
         }
         else {
