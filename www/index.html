@@ -173,7 +173,7 @@
                         var uname = $('#username').val();
                         var pass = $('#password').val();
                         //TODO remove hard code uname and pword
-                        communicate({token: token, mode: "post_account_login", uname: "merijnvanwouden", pword: "foVDbxx79O"}, function (data) {
+                        communicate({token: token, mode: "post_account_login", uname: uname, pword: pass}, function (data) {
                             app.sessionid = data.login[0].session;
                             window.localStorage.setItem("sessionid", app.sessionid);
 
