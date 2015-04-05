@@ -9,15 +9,28 @@ var app = (function ()
     app.images = new Array();
     app.user = null;
 
+    app.getImageSize = function(){
+        var ww = $(window).width();
+        if(ww > 1200){
+            app.imageFormat = 'xl';
+        }else if(ww > 800){
+            app.imageFormat = 'm';
+        }else{
+            app.imageFormat = 's'
+        }
+    };
+
     app.launch = function () {
         //preload images
+
+        app.getImageSize();
+
         communicate({token: token, mode: 'get_values_categories'}, function (data) {
             imgs = [];
             $.each(data.categories, function () {
-                console.log(this);
-                imgs.push(this['artwork-xl']);
+                imgs.push(this['artwork-']+app.imageFormat);
                 app.images[this.id] = new Image();
-                app.images[this.id].src = this['artwork-xl']
+                app.images[this.id].src = this['artwork-'+app.imageFormat]
             });
 
             var buttons =
@@ -29,7 +42,7 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-xl'] + '" draggable="false">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-'+app.imageFormat] + '" draggable="false">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
