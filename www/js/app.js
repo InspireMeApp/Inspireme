@@ -269,12 +269,13 @@ var app = (function ()
     app.startInfiniteScroll = function (type, proj_id) {
         var main = $('main');
         var counter = 1;
-        main.bind('scroll.inf touchmove.inf', function () {
+        if($('#project-container ul').length == 10){
+            main.bind('scroll.inf touchmove.inf', function () {
 
-            var hh = $('header').height();
-            var wh = $('body').height() - hh;
+                var hh = $('header').height();
+                var wh = $('body').height() - hh;
 
-            if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
+                if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
             {
                 app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
                     counter++;
@@ -286,7 +287,10 @@ var app = (function ()
                     }
                 });
             }
-        });
+            });
+
+        }
+
     };
 
     app.endInfiniteScroll = function () {
