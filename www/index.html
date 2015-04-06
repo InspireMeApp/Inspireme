@@ -4,9 +4,9 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet/less" type="text/css" href="less/_index.less" />
-        <script src="js/less.min.js"></script>
-        <!--<link rel="stylesheet" type="text/css" href="css/_index.css">-->
+        <!--<link rel="stylesheet/less" type="text/css" href="less/_index.less" />
+        <script src="js/less.min.js"></script>-->
+        <link rel="stylesheet" type="text/css" href="css/_index.css">
         <script src="js/jquery-2.1.3.min.js"></script>
         <script src="js/jquery.touchSwipe.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
@@ -14,7 +14,6 @@
         <script src="js/api.js"></script>
         <script src="js/app.js"></script>
         <script src="cordova.js"></script>
-
         <script>
 
             document.addEventListener("deviceready", function () {
@@ -39,15 +38,8 @@
                     app.sessionid = "0";
                 }
 
-                //Ugly place , where to put ?? 
-                //in app.js
-
-                function openLink() {
-                    window.open("http://google.com", '_system');
-                }
-
                 $('#noAccount').click(function (e) {
-                    app.openModal("<p>To sign up for our services visit our website <a href='#' onclick=\"window.open('http://www.allmusic.nl', '_system', 'location=no');return false;\">www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
+                    app.openModal("<p>To sign up for our services visit our website <a href='#'>www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
                 });
 
                 $('#forgotPassword').click(function (e) {
@@ -169,6 +161,7 @@
                     openIntroPage($('#loginDescription'));
                     $('#loginForm').submit(function (e) {
                         e.preventDefault();
+                        $('#username, #password').blur();
 
                         var uname = $('#username').val();
                         var pass = $('#password').val();
@@ -184,7 +177,6 @@
                                     app.user.fullname = user.userinfo[0].fullname;
                                     app.user.company = user.userinfo[0].company;
                                     intro4.run();
-                                    $('#username, #password').blur();
                                 });
                             } else {
                                 app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>', {closeModal: 'Close'});
@@ -282,17 +274,18 @@
                 });
 
                 $('#menu_home').click(function () {
-                    $('#topFixed').empty();
-                    $('main').unbind('.cat');
-                    if (media !== null) {
-                        media.stop();
-                        media = null;
-                    }
-                    $('.category-item, #cyu').show();
-                    $('main').scrollTop(0);
-                    $('#project-container').hide();
-                    $('body').removeClass('menuOpen');
-                    app.endInfiniteScroll();
+                    app.fader(function () {
+                        $('#topFixed').empty();
+                        $('main').unbind('.cat');
+                        if (media !== null) {
+                            media.stop();
+                            media = null;
+                        }
+                        $('.category-item, #cyu').show();
+                        $('main').scrollTop(0);
+                        $('#project-container').hide();
+                        app.endInfiniteScroll();
+                    });
                 });
 
                 $('#menu_projects').click(function () {
@@ -324,37 +317,38 @@
                                 });
 
                                 $('#menu_projects ul li').on('click', function () {
+                                    var $this = $(this);
+                                    app.fader(function () {
+                                        proj_id = $this.attr('data-tag');
+                                        var proj = $('#project-container');
+                                        var ul = $('ul', proj);
+                                        text = $this.html();
+                                        ul.html('');
 
-                                    proj_id = $(this).attr('data-tag');
-                                    var proj = $('#project-container');
-                                    var ul = $('ul', proj);
-                                    text = $(this).html();
-                                    ul.html('');
+                                        closeHome();
 
-                                    closeHome();
-
-                                    app.loadSongs({type: 'proj', type_id: proj_id, page: "1"}, function (data) {
-                                        app.renderSongs(ul, data, function () {
-                                            $('#project-container .top').css('visibility', 'visible');
-                                            $('#topFixed').empty();
-                                            setTimeout(function () {
-                                                ul.parent().stop().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                                    $(this).height('auto');
-                                                });
-                                            }, 10);
-
-                                            $('#project-container h2').html(text);
-                                            $('#project-container').show();
-                                            $('body').removeClass('menuOpen');
-                                            app.startInfiniteScroll('proj', proj_id);
-                                            setTimeout(function () {
-                                                var top = $('#project-container .top');
-                                                top.clone(true, true).appendTo($('#topFixed'));
-                                                topFixed = $('#topFixed').attr('data-ref', 'project-container').show();
+                                        app.loadSongs({type: 'proj', type_id: proj_id, page: "1"}, function (data) {
+                                            app.renderSongs(ul, data, function () {
+                                                $('#project-container .top').css('visibility', 'visible');
+                                                $('#topFixed').empty();
                                                 setTimeout(function () {
-                                                    top.css('visibility', 'hidden');
-                                                }, 5);
-                                            }, 400);
+                                                    ul.parent().stop().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                                        $(this).height('auto');
+                                                    });
+                                                }, 10);
+
+                                                $('#project-container h2').html(text);
+                                                $('#project-container').show();
+                                                app.startInfiniteScroll('proj', proj_id);
+                                                setTimeout(function () {
+                                                    var top = $('#project-container .top');
+                                                    top.clone(true, true).appendTo($('#topFixed'));
+                                                    topFixed = $('#topFixed').attr('data-ref', 'project-container').show();
+                                                    setTimeout(function () {
+                                                        top.css('visibility', 'hidden');
+                                                    }, 5);
+                                                }, 400);
+                                            });
                                         });
                                     });
                                 });
@@ -368,36 +362,36 @@
                 });
 
                 $('#menu_favourites').click(function () {
-                    $('#project-container .top').css('visibility', 'visible');
-                    $('#topFixed').empty();
-                    var proj = $('#project-container');
-                    var ul = $('ul', proj);
-                    ul.html('');
-                    closeHome();
+                    app.fader(function () {
+                        $('#project-container .top').css('visibility', 'visible');
+                        $('#topFixed').empty();
+                        var proj = $('#project-container');
+                        var ul = $('ul', proj);
+                        ul.html('');
+                        closeHome();
 
-                    app.loadSongs({type: 'fav', page: "1"}, function (data) {
-                        app.renderSongs(ul, data, function () {
-                            setTimeout(function () {
-                                ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
-                                    $(this).height('auto');
-                                });
-                            }, 10);
-
-                            $('#project-container h2').html('Favourites');
-                            $('#project-container').show();
-                            $('body').removeClass('menuOpen');
-                            app.startInfiniteScroll('fav', '0');
-                            setTimeout(function () {
-                                var top = $('#project-container .top');
-                                top.clone(true, true).appendTo($('#topFixed'));
-                                topFixed = $('#topFixed').attr('data-ref', 'project-container').show();
+                        app.loadSongs({type: 'fav', page: "1"}, function (data) {
+                            app.renderSongs(ul, data, function () {
                                 setTimeout(function () {
-                                    top.css('visibility', 'hidden');
-                                }, 5);
-                            }, 400);
+                                    ul.parent().animate({'height': ul.height() + 'px'}, 1300, function () {
+                                        $(this).height('auto');
+                                    });
+                                }, 10);
+
+                                $('#project-container h2').html('Favourites');
+                                $('#project-container').show();
+                                app.startInfiniteScroll('fav', '0');
+                                setTimeout(function () {
+                                    var top = $('#project-container .top');
+                                    top.clone(true, true).appendTo($('#topFixed'));
+                                    topFixed = $('#topFixed').attr('data-ref', 'project-container').show();
+                                    setTimeout(function () {
+                                        top.css('visibility', 'hidden');
+                                    }, 5);
+                                }, 400);
+                            });
                         });
                     });
-                    ;
                 });
 
                 $('#menu_profile').click(function () {
@@ -507,6 +501,9 @@
             var durLoop;
             var ulh = 300;
             function openCategory(cat) {
+                if (cat.index() > cat.parent().children().length - 3) {
+                    $('#cyu').height($(window).height() + ulh);
+                }
                 if ($('#headerI').hasClass('open')) {
                     $('#headerI').click();
                 }
@@ -586,12 +583,13 @@
                                             }
                                             top.css('top', ofs + 'px');
                                         });
-                                    }, 2);
+                                    }, 50);
                                     app.renderSongs(ul, data, function () {
                                         setTimeout(function () {
                                             ulh = ul.height();
                                             ul.parent().animate({'height': ulh + 'px'}, 1300, function () {
                                                 $(this).height('auto');
+                                                $('#cyu').height('auto');
                                                 songClick(ul.children().first().find('.bar'), false);
                                             });
                                         }, 10);
@@ -869,6 +867,7 @@
             }
 
             function closeHome() {
+                app.fader();
                 if (media !== null) {
                     media.stop();
                     media = null;
@@ -1057,13 +1056,12 @@
             <br>
             <b>Follow us</b>
             <div id="socialLinks">
-                <a href="https://www.facebook.com/pages/allmusicnl/155454641175182" target="_blank" class="facebook"></a>
-                <a href="https://twitter.com/allmusicnl" target="_blank" class="twitter"></a>
-                <a href="https://www.linkedin.com/company/all-music-publishing" target="_blank" class="linkedin"></a>
+                <a href="#" class="facebook"></a><!--https://www.facebook.com/pages/allmusicnl/155454641175182-->
+                <a href="#" class="twitter"></a><!--https://twitter.com/allmusicnl-->
+                <a href="#" class="linkedin"></a><!--https://www.linkedin.com/company/all-music-publishing-->
             </div>
         </div>
-        <div id="topFixed" class="category-item">
-
-        </div>
+        <div id="topFixed" class="category-item"></div>
+        <div id="fader"></div>
     </body>
 </html>

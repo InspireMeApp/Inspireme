@@ -65,6 +65,19 @@ h1{
     .thin;
     .transition(@pressTransition);
 }
+input:focus {
+    &::-webkit-input-placeholder {
+        color: transparent;
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        color: transparent;  
+    }
+
+    &::-moz-placeholder {  /* Firefox 19+ */
+        color: transparent;  
+    }
+}
 button{
     .input;
     border-style:solid;

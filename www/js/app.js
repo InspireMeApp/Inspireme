@@ -9,13 +9,13 @@ var app = (function ()
     app.images = new Array();
     app.user = null;
 
-    app.getImageSize = function(){
+    app.getImageSize = function () {
         var ww = $(window).width();
-        if(ww > 1200){
+        if (ww > 1200) {
             app.imageFormat = 'xl';
-        }else if(ww > 800){
+        } else if (ww > 800) {
             app.imageFormat = 'm';
-        }else{
+        } else {
             app.imageFormat = 's'
         }
     };
@@ -28,9 +28,9 @@ var app = (function ()
         communicate({token: token, mode: 'get_values_categories'}, function (data) {
             imgs = [];
             $.each(data.categories, function () {
-                imgs.push(this['artwork-']+app.imageFormat);
+                imgs.push(this['artwork-'] + app.imageFormat);
                 app.images[this.id] = new Image();
-                app.images[this.id].src = this['artwork-'+app.imageFormat]
+                app.images[this.id].src = this['artwork-' + app.imageFormat]
             });
 
             var buttons =
@@ -42,11 +42,12 @@ var app = (function ()
                     '<a class="stepForwards small" data-action="stepForwards"><span></span></a></div>';
             $.each(data.categories, function () {
                 $('#categories').append(
-                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-'+app.imageFormat] + '" draggable="false">' + buttons + '</div>' +
+                        '<div class="category-item" id="cat-' + this.id + '" data-tag="' + this.id + '"><div class="top"><h2>' + this.title + '</h2><img src="' + this['artwork-' + app.imageFormat] + '" draggable="false">' + buttons + '</div>' +
                         '<div class="ulCont"><ul></ul></div></div>'
                         );
             });
-            $('#categories').append('<div id="cyu">See you next week</div>');
+            var cyu = $('<div id="cyu">See you next week</div>');
+            $('#categories').append(cyu);
             setTimeout(function () {
                 $('.buttons a', $('#categories')).click(function () {
                     press($(this));
@@ -74,9 +75,9 @@ var app = (function ()
     app.loadSongs = function (entity, callback) {
         if (entity.type == 'fav') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
-                if(data == 0){
+                if (data == 0) {
                     app.openModal("Sorry! You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!");
-                }else{
+                } else {
                     callback(data);
                 }
             });
@@ -190,10 +191,6 @@ var app = (function ()
         app.openForgotPassword();
     }
 
-    function openLink() {
-        window.open("http://allmusic.nl", '_system');
-    }
-
     function sendEmail() {
         //TODO : SANITIZE EMAIL
         givenmail = $('#sendEmail').val();
@@ -238,6 +235,10 @@ var app = (function ()
                 $(this).removeClass('open playing');
                 $('.ulCont', $(this)).css({'height': '0px'}).empty();
             });
+            $('.category-item').show();
+            setTimeout(function(){
+                $('#project-container').hide();
+            },1);
             $('header u').removeClass('transparent');
         }).run();
     }
@@ -290,6 +291,28 @@ var app = (function ()
 
     app.endInfiniteScroll = function () {
         $('main').unbind('.inf');
+    };
+
+    app.fader = function (callback) {
+        var f = $('#fader');
+        $('body').removeClass('menuOpen');
+        new timeline().add(1, function () {
+            f.show();
+        }).add(10, function () {
+            f.addClass('show');
+        }).add(340, function () {
+            try {
+                callback();
+            } catch (e) {
+            }
+            if ($('#headerI').hasClass('open')) {
+                $('#headerI').click();
+            }
+        }).add(750, function () {
+            f.removeClass('show');
+        }).add(1050, function () {
+            f.hide();
+        }).run();
     };
 
     //temp functions

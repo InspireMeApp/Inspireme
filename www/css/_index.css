@@ -111,6 +111,17 @@ h1 .wave {
   -webkit-transition: 0.15s;
   transition: 0.15s;
 }
+input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+input:focus:-moz-placeholder {
+  /* Firefox 18- */
+  color: transparent;
+}
+input:focus::-moz-placeholder {
+  /* Firefox 19+ */
+  color: transparent;
+}
 button {
   display: block;
   width: 100%;
@@ -1164,6 +1175,23 @@ form .problems a {
   line-height: 5em;
   font-family: 'robotothin';
   font-weight: normal;
+}
+#fader {
+  position: absolute;
+  top: 5.6em;
+  left: 0;
+  background: #171717;
+  width: 100%;
+  height: 100%;
+  height: calc(100% -  5.6em);
+  z-index: 75786;
+  display: none;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+#fader.show {
+  opacity: 1;
 }
 #modal {
   position: fixed;
