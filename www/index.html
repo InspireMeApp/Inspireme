@@ -828,6 +828,7 @@
                                     "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject: 'Create project'}, 'Create project', 'textNotAbs');
 
                             $('.proj_button').click(function () {
+                                $('#proj_title').blur();
                                 $('.proj_button').removeClass('active');
                                 $(this).addClass('active');
                             });
