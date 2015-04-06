@@ -267,26 +267,6 @@ var app = (function ()
 
     //TODO unbind when not needed anymore..
     app.startInfiniteScroll = function (type, proj_id) {
-        var main = $('main');
-        var counter = 1;
-        main.bind('scroll.inf touchmove.inf', function () {
-
-            var hh = $('header').height();
-            var wh = $('body').height() - hh;
-
-            if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
-            {
-                app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
-                    counter++;
-                    if (data == 0) {
-                        app.endInfiniteScroll();
-                    } else {
-                        app.renderSongs($('#project-container ul'), data, function () {
-                        });
-                    }
-                });
-            }
-        });
     };
 
     app.endInfiniteScroll = function () {
