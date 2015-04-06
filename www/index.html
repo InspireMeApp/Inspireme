@@ -273,6 +273,10 @@
                     }
                 });
 
+                $('#navBg .title').click(function(e){
+                    $('body').removeClass('menuOpen');
+                });
+
                 $('#menu_home').click(function () {
                     app.fader(function () {
                         $('#topFixed').empty();

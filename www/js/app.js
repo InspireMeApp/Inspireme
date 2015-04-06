@@ -252,6 +252,7 @@ var app = (function ()
     app.addToProject = function (proj_id, song_id, callback) {
         communicate({token: token, mode: 'post_account_inproject', project: proj_id, song: song_id, uid: app.sessionid}, function (data) {
             callback(data);
+            closeSwipe($('.bar'));
         });
     }
 
