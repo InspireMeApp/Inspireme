@@ -271,13 +271,13 @@ var app = (function ()
         var main = $('main');
         var counter = 1;
         console.log($('#project-container ul li').length);
+        if($('#project-container ul li').length == 10){
+            main.bind('scroll.inf touchmove.inf', function () {
 
-        main.bind('scroll.inf touchmove.inf', function () {
+                var hh = $('header').height();
+                var wh = $('body').height() - hh;
 
-            var hh = $('header').height();
-            var wh = $('body').height() - hh;
-
-            if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
+                if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
             {
                 app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
                     counter++;
@@ -289,7 +289,8 @@ var app = (function ()
                     }
                 });
             }
-        });
+            });
+        }
     };
 
     app.endInfiniteScroll = function () {
