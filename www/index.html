@@ -841,8 +841,9 @@
 
                     $('#modal .project-item').click(function () {
                         press($(this));
+                        proj_id = $(this).attr('data-tag');
                         setTimeout(function () {
-                            app.addToProject($(this).attr('data-tag'), song_id, function () {
+                            app.addToProject(proj_id, song_id, function () {
                                 app.openModal('<p>Track succesfully added to project</p>', {closeModal: 'Ok'})
                             });
                         }, 450);
