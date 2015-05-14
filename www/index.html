@@ -4,10 +4,11 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <!--<link rel="stylesheet/less" type="text/css" href="less/_index.less" />
-        <script src="js/less.min.js"></script>-->
-        <link rel="stylesheet" type="text/css" href="css/_index.css">
+        <link rel="stylesheet/less" type="text/css" href="less/_index.less" />
+        <script src="js/less.min.js"></script>
+        <!--<link rel="stylesheet" type="text/css" href="css/_index.css">-->
         <script src="js/jquery-2.1.3.min.js"></script>
+        <script src="js/jquery.bez.min.js"></script>
         <script src="js/jquery.touchSwipe.min.js"></script>
         <script src="js/jquery.timeline.js"></script>
         <script src="js/mediaFallback.js"></script>
@@ -30,13 +31,26 @@
             function resetWw() {
                 ww = $(window).width();
             }
+
+            var section, main;
+
+
             $(document).ready(function () {
+
 
                 //fix for browser
                 app.sessionid = window.localStorage.getItem("sessionid");
                 if (app.sessionid == null) {
                     app.sessionid = "0";
                 }
+
+                main = $('main');
+                section = $('>section', main);
+                main
+                        .bind('touchmove', mainTouchMove)
+                        .bind('touchstart', mainTouchStart)
+                        .bind('touchend', mainTouchEnd);
+
 
                 $('#noAccount').click(function (e) {
                     app.openModal("<p>To sign up for our services visit our website <a href='#'>www.allmusic.nl</a> or call <span style='white-space:nowrap;'>088-0083000</span></p>", {closeModal: 'Ok', guestVisit: 'Visit as guest'});
@@ -135,6 +149,8 @@
                     }
                 });
                 intro.run();
+
+
 
                 intro2 = new timeline().add(1, function () {
                     $('#introText').addClass('left');
@@ -273,7 +289,7 @@
                     }
                 });
 
-                $('#navBg .title').click(function(e){
+                $('#navBg .title').click(function (e) {
                     $('body').removeClass('menuOpen');
                 });
 
@@ -455,7 +471,6 @@
             function audioAction(o) {
                 var cat = o.closest('.category-item');
                 var ref = cat.attr('data-ref');
-                console.log(ref);
                 if (ref) {
                     cat = $('#' + ref);
                 }
@@ -504,7 +519,10 @@
             var loaded = false;
             var durLoop;
             var ulh = 300;
+            var openingCat = false;
             function openCategory(cat) {
+                main.stop();
+                openingCat = true;
                 if (cat.index() > cat.parent().children().length - 3) {
                     $('#cyu').height($(window).height() + ulh);
                 }
@@ -549,7 +567,6 @@
                                     setTimeout(function () {
                                         cat.addClass('open');
                                         var top = $('.top', cat);
-                                        var main = $('main');
                                         var stInit = main.scrollTop();
                                         topFixed = $('#topFixed');
                                         topFixed.empty();
@@ -589,6 +606,7 @@
                                         });
                                     }, 50);
                                     app.renderSongs(ul, data, function () {
+                                        openingCat = false;
                                         setTimeout(function () {
                                             ulh = ul.height();
                                             ul.parent().animate({'height': ulh + 'px'}, 1300, function () {
@@ -607,6 +625,7 @@
                             open.run();
 
                         } else {
+                            openingCat = false;
                             cat.removeClass('loadPause loading');
                         }
 
@@ -895,6 +914,81 @@
 
                 $('#project-container').removeClass('playing');
             }
+
+
+            //// start momentum scroll
+            var ts = 0;
+            var tc = 0;
+            var momentumTimeout;
+            var queue;
+            var deceleration = 0.0006;
+            var timingcircular = $.bez([0.1, 0.57, 0.1, 1]);
+            var timingquadratic = $.bez([0.25, 0.46, 0.45, 0.94]);
+            var smax;
+            function mainTouchStart(e) {
+                if (openingCat) {
+                    return;
+                }
+                main.stop();
+                tc = main.scrollTop();
+                ts = e.originalEvent.touches[0].pageY + tc;
+                queue = [];
+                smax = section.outerHeight() - $('main').height();
+                momentumLoop();
+            }
+            function mainTouchEnd(e) {
+                clearTimeout(momentumTimeout);
+                console.log(queue);
+                if (openingCat) {
+                    return;
+                }
+                var start = queue[0];
+                var end = queue[queue.length - 1];
+                var distance = end - start;
+                var speed = Math.abs(distance) * 0.01;
+                if(speed>1.3){speed=1.3;}
+                var to = end - (speed * speed) / (2 * deceleration) * (distance < 0 ? 1 : -1);
+                var tim = timingcircular;
+
+                if (to < 0) {
+                    to = 0;
+                    tim = timingquadratic;
+                    speed*=0.65;
+                }
+                else if (to > smax) {
+                    to = smax;
+                    tim = timingquadratic;
+                    speed*=0.65;
+                }
+                var duration = Math.round(speed / deceleration);
+                main.animate({scrollTop: to}, duration, tim);
+
+            }
+            function mainTouchMove(e) {
+                e.preventDefault();
+                if (openingCat) {
+                    return;
+                }
+                tc = -1 * (e.originalEvent.touches[0].pageY - ts);
+                if (tc < 0) {
+                    tc = 0
+                }
+                else if (tc > smax) {
+                    tc = smax;
+                }
+                main.scrollTop(tc);
+            }
+            function momentumLoop() {
+                queue.push(tc);
+                if(queue.length>8){
+                    queue.shift();
+                }
+                if (openingCat) {
+                    return;
+                }
+                momentumTimeout = setTimeout(momentumLoop, 3);
+            }
+            //// end momentum scroll
 
         </script>
         <title>Inspire Me</title>

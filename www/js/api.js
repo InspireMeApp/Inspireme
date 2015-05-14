@@ -12,7 +12,7 @@ function communicate(params, callback) {
         })
         .done(callback)
         .fail(function(jqXHR, textStatus, errorThrown) {
-            //error
+            //console.log(jqXHR);console.log(textStatus);console.log(errorThrown);
         });
     });
 }
