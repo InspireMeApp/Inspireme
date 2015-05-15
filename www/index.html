@@ -827,10 +827,21 @@
                 var li = $(this).closest('li');
                 var song_id = li.attr('data-id');
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
+                console.log(data);
+                if(data.infavourite != undefined){
                     if (data.infavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
                         closeSwipe(li.children('.bar'));
-                    }
+                        }
+                     }
+
+                    if(data.outfavourite[0].successful == 'true'){
+                        li.toggleClass('inFav');
+                        if($('#project-container').is(':visible')){
+                        li.hide();
+                        }
+
+                        }
                 });
             }
             function songProj() {
