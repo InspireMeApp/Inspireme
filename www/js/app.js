@@ -73,10 +73,27 @@ var app = (function ()
     }
 
     app.loadSongs = function (entity, callback) {
-        if (entity.type == 'fav') {
+        if (entity.type == 'fav' || entity.type == 'proj') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
                 if (data == 0) {
-                    app.openModal("Sorry! You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!");
+                    if(entity.type == 'fav'){
+                    app.openModal("Sorry! You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!", {});
+                    }else{
+                    app.openModal("Sorry! this project does not contain any songs as of yet. Swipe to the left on the track you want to add to your project and hit the plus!", {});
+                    }
+                     app.fader(function () {
+                        $('#topFixed').empty();
+                        $('main').unbind('.cat');
+                        if (media !== null) {
+                            media.stop();
+                            media = null;
+                        }
+                        $('.category-item, #cyu').show();
+                        $('main').scrollTop(0);
+                        $('#project-container').hide();
+                        app.endInfiniteScroll();
+                    });
+
                 } else {
                     callback(data);
                 }
@@ -107,7 +124,7 @@ var app = (function ()
                 songClick($(this), true);
             }).swipe({swipeStatus: songSwipeStatus, allowPageScroll: "vertical"}) /*.bind('touchstart', songTouchStart)*/.appendTo(li);
             if (this.in_favourite == "true") {
-                li.addClass('faved');
+                li.addClass('inFav');
             }
             li.appendTo(container);
         });
