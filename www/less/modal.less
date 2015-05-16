@@ -158,7 +158,7 @@
         width: 2.6em;
         height: 2.6em;
     }
-    li{
+    &:not(.how) li{
         .transition(@pressTransition);
         margin: auto;
         width:67%;
@@ -179,6 +179,21 @@
     .active{
         background-color:white;     
         color:black;
+    }
+    &.how{
+        padding-top: 25%;
+        #textArea{
+            position: relative;
+            bottom: initial;
+        }
+        .howTo{
+            width: 83%;
+            margin: auto;
+            background:@howtobg;
+        }
+        li>.bar{
+            background-color:@howtobg;
+        }
     }
 }
 

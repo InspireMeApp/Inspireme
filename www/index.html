@@ -79,6 +79,10 @@
                         $('.buttons').css('padding-bottom', h + 'px');
                     }
                 });
+                
+                $('#howTo').click(function(){
+                    app.openHowTo();
+                });
 
 
                 if ($('#vwtest').width() === 0) {
@@ -1031,7 +1035,7 @@
                         a couple of minutes of spare time. While sipping your cappuccino at your 
                         local coffeebar for example, just load this app and ask us: Inspire Me.
                     </p>
-                    <button>How to use?</button>
+                    <button id="howTo">How to use?</button>
                 </div>
             </div>
         </header>

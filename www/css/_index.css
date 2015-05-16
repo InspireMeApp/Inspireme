@@ -192,6 +192,51 @@ input {
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+.howToAnim {
+  border: 1px solid white;
+  font-size: 0.67em;
+}
+.howToAnim header {
+  position: relative;
+  border-bottom: 1px solid white;
+}
+.howToAnim h2 {
+  background: none;
+}
+.howToAnim .ulCont {
+  overflow: visible !important;
+}
+.howToAnim li {
+  text-align: left;
+  border: 1px solid white;
+  margin-bottom: -1px;
+  border-right: none;
+  box-sizing: border-box;
+}
+.howToAnim li .bar {
+  color: white !important;
+  border: 1px solid white;
+  margin-top: -1px;
+  margin-left: -2px;
+  padding-right: 1px;
+}
+.howToAnim li .bar > u > i {
+  background-image: url(../media/audioPlaySmallWhite.png) !important;
+}
+.howToAnim li .bar > u > b {
+  background-image: url(../media/audioPauseSmallWhite.png) !important;
+}
+.howToAnim .bs .fav {
+  border-color: white;
+}
+.howToAnim * {
+  box-shadow: none !important;
+}
+#intro .howToAnim li .bar {
+  background: url(../media/mountains-small.jpg) no-repeat center center;
+  background-size: cover;
+  -webkit-background-size: cover;
+}
 @-moz-keyframes spin {
   from {
     -moz-transform: rotate(0deg);
@@ -1372,7 +1417,7 @@ form .problems a {
   width: 2.6em;
   height: 2.6em;
 }
-#modal li {
+#modal:not(.how) li {
   -webkit-transition: 0.15s;
   transition: 0.15s;
   margin: auto;
@@ -1382,7 +1427,7 @@ form .problems a {
   font-family: 'robotothin';
   font-weight: normal;
 }
-#modal li > b {
+#modal:not(.how) li > b {
   font-size: 1.2em;
 }
 #modal button {
@@ -1396,6 +1441,21 @@ form .problems a {
 #modal .active {
   background-color: white;
   color: black;
+}
+#modal.how {
+  padding-top: 25%;
+}
+#modal.how #textArea {
+  position: relative;
+  bottom: initial;
+}
+#modal.how .howTo {
+  width: 83%;
+  margin: auto;
+  background: #141414;
+}
+#modal.how li > .bar {
+  background-color: #141414;
 }
 @-moz-keyframes openModal {
   from {

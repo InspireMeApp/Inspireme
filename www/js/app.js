@@ -318,6 +318,27 @@ var app = (function ()
             f.hide();
         }).run();
     };
+    
+    app.openHowTo = function(){
+        app.openModal("<div class='howTo'></div>", {}, 'How to use', 'titleOnTop how');
+        app.howToAnimation('#modal .howTo');
+    };
+    app.howToAnimation = function(selector){
+        var container=$(selector);
+        new timeline().add(1,function(){
+            container.append('<div class="howToAnim">'+
+                    '<header> <h1 class=""> <span>Inspire Me</span> </h1> <div class="buttons" style="display: block;"> <a class="i" id="headerI"><span></span></a> <a class="menu" id="headerMenu"><span></span></a> </div> </header>'+
+                    '<div class="category-item categories">'+
+                    '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play" data-action="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small" data-action="stepBackwards"><span></span></a><a class="pause" data-action="pause"><span></span></a><a class="stepForwards small" data-action="stepForwards"><span></span></a></div></div>'+
+                    '<div class="ulCont" style="height: auto;"><ul>'+
+                    (new Array(8).join('<li><div class="bs"><a class="proj"><span></span></a><a class="fav"><span></span><u></u></a><a class="i"><span></span></a></div><div class="bar"><div class="favIcon"></div><div class="info"><b>Title</b><i>Producer</i></div><span class="duration">02:12</span><u><i></i><u></u><b></b></u></div></li>'))+
+                    '</ul></div>'+
+                    '</div></div>');
+        }).add(3000,function(){
+            //alert('bome');
+        }).run();
+    };
+    
 
     //temp functions
     function reconnect() {

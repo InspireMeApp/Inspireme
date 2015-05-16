@@ -37,6 +37,54 @@
     }
 }
 
+.howToAnim{
+    border: 1px solid white;
+    font-size: 0.67em;
+    header{
+        position:relative;
+        border-bottom: 1px solid white;
+    }
+    h2{
+        background:none;
+    }
+    .ulCont{
+        overflow:visible @i; 
+    }
+    li{
+        text-align:left;
+        border: 1px solid white;
+        margin-bottom: -1px;
+        border-right: none;
+        box-sizing: border-box;
+        .bar{
+            color:white @i;
+            border: 1px solid white;
+            margin-top: -1px;
+            margin-left: -2px;
+            padding-right: 1px;
+            >u{
+                >i{
+                    background-image:url(../media/audioPlaySmallWhite.png) @i;
+                }
+                >b{
+                    background-image:url(../media/audioPauseSmallWhite.png) @i;
+                }
+            }
+        }
+    }
+    .bs .fav{
+        border-color: white;
+    }
+    *{
+        box-shadow:none @i;
+    }
+}
+#intro .howToAnim{
+    li .bar{
+        .background;
+    }
+}
+
 
 //animations
 @-moz-keyframes spin {
