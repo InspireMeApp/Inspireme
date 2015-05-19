@@ -337,23 +337,77 @@ var app = (function ()
     };
     
     app.openHowTo = function(){
-        app.openModal("<div class='howTo'></div>", {}, 'How to use', 'titleOnTop how');
+        app.openModal("<div class='howTo'></div>", {}, 'How to use', 'titleOnTop how opacity');
         app.howToAnimation('#modal .howTo');
     };
     app.howToAnimation = function(selector){
         var container=$(selector);
+        var openli,sfw;
         new timeline().add(1,function(){
-            container.append('<div class="howToAnim">'+
+            container.append('<div class="howToAnim"><div class="menulist"></div><div class="inner">'+
                     '<header> <h1 class=""> <span>Inspire Me</span> </h1> <div class="buttons" style="display: block;"> <a class="i" id="headerI"><span></span></a> <a class="menu" id="headerMenu"><span></span></a> </div> </header>'+
-                    '<div class="category-item categories">'+
-                    '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play" data-action="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small" data-action="stepBackwards"><span></span></a><a class="pause" data-action="pause"><span></span></a><a class="stepForwards small" data-action="stepForwards"><span></span></a></div></div>'+
+                    '<div class="category-item categories playing">'+
+                    '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small"><span></span></a><a class="pause"><span></span></a><a class="stepForwards small"><span></span></a></div></div>'+
                     '<div class="ulCont" style="height: auto;"><ul>'+
                     (new Array(8).join('<li><div class="bs"><a class="proj"><span></span></a><a class="fav"><span></span><u></u></a><a class="i"><span></span></a></div><div class="bar"><div class="favIcon"></div><div class="info"><b>Title</b><i>Producer</i></div><span class="duration">02:12</span><u><i></i><u></u><b></b></u></div></li>'))+
                     '</ul></div>'+
-                    '</div></div>');
+                    '</div></div></div>');
+        }).add(2000,function(){
+            openli=$('li:nth-child(4)',container);
+            openli.addClass('active');
         }).add(3000,function(){
-            //alert('bome');
-        }).run();
+            openli.addClass('open');
+        }).add(4000,function(){
+            openli.removeClass('open');
+        }).add(5000,function(){
+            openli.addClass('open');
+        }).add(6000,function(){
+            openli.removeClass('open');
+        }).add(7000,function(){
+            openli.addClass('open');
+        }).add(9500,function(){
+            $('.bs>.i',openli).addClass('pressed');
+        }).add(11500,function(){
+            $('.bs>.i',openli).removeClass('pressed');
+            $('.bs>.fav',openli).addClass('pressed');
+        }).add(13500,function(){
+            $('.bs>.fav',openli).removeClass('pressed');
+            $('.bs>.proj',openli).addClass('pressed');
+        }).add(15500,function(){
+            $('.bs>.proj',openli).removeClass('pressed');
+        }).add(17000,function(){
+            openli.removeClass('open');
+        }).add(18000,function(){
+            openli.removeClass('active');
+        }).add(19000,function(){
+            sfw=$('.stepForwards',container);
+            sfw.addClass('pressed');
+        }).add(21000,function(){
+            sfw.removeClass('pressed');
+        }).add(21500,function(){
+            sfw.addClass('pressed');
+        }).add(22000,function(){
+            sfw.removeClass('pressed');
+        }).add(22500,function(){
+            sfw.addClass('pressed');
+        }).add(23000,function(){
+            sfw.removeClass('pressed');
+        }).add(24500,function(){
+            var sp=$('header .menu span');
+            var t=new timeline();
+            for(var i=0;i<5;i++){
+                t.add(i*200,function(){
+                    sp.addClass('big');
+                }).add(i*200+100,function(){
+                    sp.removeClass('big');
+                });
+            }
+            t.run();
+        }).add(26000,function(){
+            $('.menulist',container).show();
+        }).add(26010,function(){
+            $('.howToAnim',container).addClass('menuOpen');
+        }).run(500);
     };
     
 
