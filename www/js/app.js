@@ -407,7 +407,7 @@ var app = (function ()
             $('.menulist',container).show();
         }).add(26010,function(){
             $('.howToAnim',container).addClass('menuOpen');
-        }).run(500);
+        }).run();
     };
     
 
