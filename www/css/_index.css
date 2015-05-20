@@ -199,6 +199,7 @@ input {
 .howToAnim > .inner {
   border: 1px solid white;
   position: relative;
+  left: 0;
   -webkit-transition: 0.6s left;
   transition: 0.6s left;
 }
@@ -277,7 +278,19 @@ input {
   width: 11.11em;
   top: 0;
   right: 0;
-  background: grey;
+  text-align: center;
+}
+.howToAnim .menulist b {
+  margin-top: 0.6em;
+  margin-bottom: 1.3em;
+}
+.howToAnim .menulist b,
+.howToAnim .menulist i {
+  font-weight: normal;
+  font-style: normal;
+  display: block;
+  font-size: 1.2em;
+  line-height: 2.8em;
 }
 #intro .howToAnim li .bar {
   background: url(../media/mountains-small.jpg) no-repeat center center;
@@ -1503,7 +1516,8 @@ form .problems a {
 #modal.how header,
 #modal.how .top h2,
 #modal.how .top h2:after,
-#modal.how li > .bar {
+#modal.how li > .bar,
+#modal.how .menulist {
   background-color: #141414;
 }
 @-moz-keyframes openModal {

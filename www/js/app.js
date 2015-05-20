@@ -344,7 +344,7 @@ var app = (function ()
         var container=$(selector);
         var openli,sfw;
         new timeline().add(1,function(){
-            container.append('<div class="howToAnim"><div class="menulist"></div><div class="inner">'+
+            container.append('<div class="howToAnim"><div class="menulist"><b>Menu</b><i>Projects</i><i>Favourites</i><i>Profile</i><i>Contact</i><i>Logout</i></div><div class="inner">'+
                     '<header> <h1 class=""> <span>Inspire Me</span> </h1> <div class="buttons" style="display: block;"> <a class="i" id="headerI"><span></span></a> <a class="menu" id="headerMenu"><span></span></a> </div> </header>'+
                     '<div class="category-item categories playing">'+
                     '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small"><span></span></a><a class="pause"><span></span></a><a class="stepForwards small"><span></span></a></div></div>'+
@@ -403,10 +403,16 @@ var app = (function ()
                 });
             }
             t.run();
-        }).add(26000,function(){
+        }).add(25000,function(){
             $('.menulist',container).show();
-        }).add(26010,function(){
+        }).add(25010,function(){
             $('.howToAnim',container).addClass('menuOpen');
+        }).add(28000,function(){
+            $('.howToAnim',container).removeClass('menuOpen');
+        }).add(29500,function(){
+            $('.howToAnim',container).fadeOut(600);
+        }).add(30200,function(){
+            closeModal();
         }).run();
     };
     

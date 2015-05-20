@@ -44,6 +44,7 @@
     >.inner{
         border: 1px solid white;
         position:relative;
+        left:0;
         .transition(0.6s left);
     }
     &.menuOpen{
@@ -125,7 +126,18 @@
         width:@menulist * 1.01;
         top:0;
         right:0;
-        background:grey;
+        text-align:center;
+        b{
+            margin-top: 0.6em;
+            margin-bottom: 1.3em;
+        }
+        b,i{
+            font-weight:normal;
+            font-style:normal;
+            display:block;
+            font-size: 1.2em;
+            line-height: 2.8em;
+        }
     }
 }
 #intro .howToAnim{
