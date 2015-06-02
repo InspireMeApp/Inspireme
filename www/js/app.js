@@ -73,7 +73,7 @@ var app = (function ()
     }
 
     app.loadSongs = function (entity, callback) {
-        if (entity.type == 'fav' || entity.type == 'proj') {
+        if (entity.type == 'fav') {
             communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
                 if (data == 0) {
                     if(entity.type == 'fav'){
