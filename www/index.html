@@ -305,7 +305,7 @@
                         $('.navigation').swipe('destroy');
                     }
                 });
-                $('#menuCloseOverlay').click(function(){
+                $('#menuCloseOverlay').click(function () {
                     $('#headerMenu').click();
                 });
 
@@ -389,7 +389,7 @@
                                                         top.css('visibility', 'hidden');
                                                     }, 5);
                                                 }, 400);
-                                            }, 'class="projScreen" data-pid="'+proj_id+'"');
+                                            }, 'class="projScreen" data-pid="' + proj_id + '"');
                                         });
                                     });
                                 });
@@ -458,7 +458,7 @@
 
                 $('#menu_logout').click(function () {
                     app.sessionid = null;
-                    app.openModal('<p>are you sure you want to logout?</p><br><br>', {closeModal: 'Cancel', logout: 'Logout' });
+                    app.openModal('<p>are you sure you want to logout?</p><br><br>', {closeModal: 'Cancel', logout: 'Logout'});
                 });
 
 
@@ -859,8 +859,8 @@
                     if (data.outfavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
                         closeSwipe(li.children('.bar'));
-                        if($('#project-container').is(':visible')){
-                        li.hide();
+                        if (li.hasClass('favScreen')) {
+                            li.slideUp();
                         }
 
                     }
@@ -873,8 +873,8 @@
 
                 var li = $(this).closest('li');
                 var song_id = li.attr('data-id');
-                if(li.hasClass('projScreen')){
-                    app.addToProject(li.attr('data-pid'), song_id, function(){
+                if (li.hasClass('projScreen')) {
+                    app.addToProject(li.attr('data-pid'), song_id, function () {
                         li.slideUp();
                     });
                     return;
