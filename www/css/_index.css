@@ -239,16 +239,14 @@ input {
   margin-top: -1px;
   margin-left: -2px;
   padding-right: 1px;
+  -webkit-transition: background-color 0.65s, margin-left 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) !important;
+  transition: background-color 0.65s, margin-left 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) !important;
 }
 .howToAnim li .bar > u > i {
   background-image: url(../media/audioPlaySmallWhite.png) !important;
 }
 .howToAnim li .bar > u > b {
   background-image: url(../media/audioPauseSmallWhite.png) !important;
-}
-.howToAnim li .bar {
-  -webkit-transition: background-color 0.65s, margin-left 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) !important;
-  transition: background-color 0.65s, margin-left 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) !important;
 }
 .howToAnim li.active {
   background: none !important;
@@ -292,10 +290,28 @@ input {
   font-size: 1.2em;
   line-height: 2.8em;
 }
-#intro .howToAnim li .bar {
+#intro .howToAnim li,
+#intro .howToAnim header {
   background: url(../media/mountains-small.jpg) no-repeat center center;
   background-size: cover;
   -webkit-background-size: cover;
+  background-attachment: fixed;
+  -webkit-background-attachment: fixed;
+}
+#intro .howToAnim li .bar {
+  background-color: transparent;
+  -webkit-transition: background-color 0.5s, margin-left 0.3s ease-in, color 0.5s;
+  transition: background-color 0.5s, margin-left 0.3s ease-in, color 0.5s;
+}
+#intro .howToAnim .bs {
+  display: none;
+}
+#intro .howToAnim li.active .bar {
+  background-color: white !important;
+  color: black !important;
+}
+#intro .howToAnim li.open .bar {
+  margin-left: -4.5em;
 }
 @-moz-keyframes spin {
   from {
@@ -738,6 +754,12 @@ body.menuOpen #topFixed {
 #introSteps.step3 .go {
   opacity: 1;
 }
+#introSteps.step3 .st1 {
+  display: none;
+}
+#introSteps.step3 .st3 {
+  display: block !important;
+}
 #introSteps > .inner {
   position: relative;
   width: 31.7em;
@@ -781,6 +803,28 @@ body.menuOpen #topFixed {
   display: block;
   font-family: 'robotothin';
   font-weight: normal;
+}
+#introSteps .go .st3 {
+  display: none;
+}
+#welcomeHow {
+  position: fixed;
+  bottom: 15em;
+  top: initial;
+  left: 20%;
+  width: 60%;
+}
+#welcomeHow .instrux {
+  position: absolute;
+  bottom: 100%;
+  width: 100%;
+  height: 2em;
+  font-size: 2.5em;
+  font-family: 'robotothin';
+  font-weight: normal;
+}
+#welcomeHow .instrux div {
+  display: none;
 }
 .wave {
   width: 100%;
@@ -1061,7 +1105,7 @@ form .problems a {
   transition: background-color 0.5s, margin-left 0.1s ease-in;
 }
 .categories li > .bar.bounce {
-  margin-left: -0.5em;
+  margin-left: -0.8em;
   -webkit-transition: background-color 0.5s, margin-left 0.1s ease-out;
   transition: background-color 0.5s, margin-left 0.1s ease-out;
 }
@@ -1238,6 +1282,12 @@ form .problems a {
 .bs .proj > * {
   background-image: url(../media/songProjDark.png);
 }
+.projScreen .bs .proj {
+  background-image: url(../media/songProjDelete.png);
+}
+.projScreen .bs .proj > * {
+  background-image: url(../media/songProjDeleteDark.png);
+}
 #topFixed {
   position: fixed;
   width: 100%;
@@ -1297,6 +1347,16 @@ form .problems a {
 }
 #fader.show {
   opacity: 1;
+}
+#menuCloseOverlay {
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 65;
 }
 #modal {
   position: fixed;
@@ -1372,6 +1432,9 @@ form .problems a {
   bottom: auto;
   top: 2.6%;
   line-height: 1.4em;
+}
+#modal.buttonDisabled #buttonArea button {
+  opacity: 0.5;
 }
 #modal .proj_button {
   width: 67%;
@@ -1506,11 +1569,11 @@ form .problems a {
   padding-top: 25%;
 }
 #modal.how #textArea {
-  position: relative;
-  bottom: initial;
+  position: absolute;
+  bottom: 10em;
 }
 #modal.how .howTo {
-  width: 83%;
+  width: 71%;
   margin: auto;
 }
 #modal.how header,
@@ -1519,6 +1582,54 @@ form .problems a {
 #modal.how li > .bar,
 #modal.how .menulist {
   background-color: #141414;
+}
+#modal .instrux {
+  font-family: 'robotothin';
+  font-weight: normal;
+  position: fixed;
+  width: 100%;
+  bottom: 1.7em;
+  font-size: 2.9em;
+  left: 0;
+  height: 3em;
+  z-index: 6;
+}
+#modal .instrux div {
+  display: none;
+}
+#modal .instrux div div {
+  font-size: 66%;
+  margin-top: 0.3em;
+}
+#dots {
+  display: block;
+  position: absolute;
+  top: 102%;
+  left: 0;
+  width: 100%;
+  font-size: 0.4em;
+}
+#dots span {
+  display: inline-block;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0 0.7em;
+  background-color: #313131;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+#dots span:first-child {
+  background-color: white;
+}
+#dots.d2 span:nth-child(2) {
+  background-color: white;
+}
+#dots.d3 span:nth-child(2),
+#dots.d3 span:nth-child(3) {
+  background-color: white;
 }
 @-moz-keyframes openModal {
   from {

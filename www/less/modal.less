@@ -60,6 +60,9 @@
             line-height: 1.4em;
         }
     }
+    &.buttonDisabled #buttonArea button{
+        opacity:0.5;
+    }
     .proj_button{
         width: 67%;
         font-size: 1em;
@@ -183,17 +186,61 @@
     &.how{
         padding-top: 25%;
         #textArea{
-            position: relative;
-            bottom: initial;
+            position: absolute;
+            bottom: 10em;
         }
         .howTo{
-            width: 83%;
+            width: 71%;
             margin: auto;
         }
         header, .top h2, .top h2:after, li>.bar, .menulist{
             background-color:@howtobg;
         }
     }
+    .instrux{
+        .thin;
+        position: fixed;
+        width: 100%;
+        bottom: 1.7em;
+        font-size: 2.9em;
+        left: 0;
+        height: 3em;
+        z-index: 6;
+        div{
+            display:none;
+            div{
+                font-size: 66%;
+                margin-top: 0.3em;
+            }
+        }
+    }
+}
+#dots{
+    display:block;
+    position:absolute;
+    top:102%;
+    left:0;
+    width:100%;
+    font-size: 0.4em;
+    span{
+        display:inline-block;
+        .rounded-corners(100px);
+        @w:0.8em;
+        width:@w;
+        height:@w;
+        margin:0 0.7em;
+        background-color:@textColorDark;
+        .transition(background-color 0.3s);
+        &:first-child{
+            background-color:white;
+        }
+    }
+    &.d2 span:nth-child(2){
+        background-color:white;
+    }
+    &.d3{ span:nth-child(2), span:nth-child(3){
+              background-color:white;
+          }}
 }
 
 @s:0.9;

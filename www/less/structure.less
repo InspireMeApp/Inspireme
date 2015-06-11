@@ -368,6 +368,12 @@ body.menuOpen{
         .go{
             opacity:1;
         }
+        .st1{
+            display:none;
+        }
+        .st3{
+            display:block !important;
+        }
     }
     >.inner{
         position:relative;
@@ -407,6 +413,27 @@ body.menuOpen{
             font-size: 1.8em;
             display: block;
             .thin;
+        }
+        .st3{
+            display:none;
+        }
+    }
+}
+#welcomeHow{
+    position: fixed;
+    bottom: 15em;
+    top: initial;
+    left: 20%;
+    width: 60%;
+    .instrux{
+        position:absolute;
+        bottom:100%;
+        width:100%;
+        height:2em;
+        font-size:2.5em;
+        .thin;
+        div{
+            display:none;
         }
     }
 }
@@ -645,7 +672,7 @@ form .problems{
 }
 .categories{
     &.animating{
-       .transition(top 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940));
+        .transition(top 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940));
     }
     .ulCont{
         height:0;
@@ -675,7 +702,7 @@ form .problems{
             overflow:hidden;
             .transition(~"background-color 0.5s, margin-left 0.1s ease-in");
             &.bounce{
-                margin-left:-0.5em;
+                margin-left:-0.8em;
                 .transition(~"background-color 0.5s, margin-left 0.1s ease-out");
             }
         }
@@ -851,6 +878,10 @@ form .problems{
         >*{background-image:url(../media/songProjDark.png);}
     }
 }
+.projScreen .bs .proj{
+    background-image:url(../media/songProjDelete.png);
+    >*{background-image:url(../media/songProjDeleteDark.png);}
+}
 #topFixed{
     position: fixed;
     width: 100%;
@@ -910,4 +941,15 @@ form .problems{
     &.show{
         opacity:1;
     }
+}
+
+#menuCloseOverlay{
+    cursor:pointer;
+    display:none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 65;
 }
