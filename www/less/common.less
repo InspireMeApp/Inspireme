@@ -91,8 +91,6 @@
                     background-image:url(../media/audioPauseSmallWhite.png) @i;
                 }
             }
-        }
-        .bar{
             .transition(~"background-color 0.65s, margin-left 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) !important");
         }
         &.active{
@@ -141,8 +139,24 @@
     }
 }
 #intro .howToAnim{
-    li .bar{
+    li, header{
         .background;
+        background-attachment: fixed;
+        -webkit-background-attachment: fixed;
+    }
+    li .bar{
+        background-color:transparent;
+        .transition(~"background-color 0.5s, margin-left 0.3s ease-in, color 0.5s");
+    }
+    .bs{
+        display:none;
+    }
+    li.active .bar {
+        background-color: white @i;
+        color:black @i;
+    }
+    li.open .bar {
+        margin-left: -4.5em;
     }
 }
 

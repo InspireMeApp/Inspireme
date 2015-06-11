@@ -79,8 +79,8 @@
                         $('.buttons').css('padding-bottom', h + 'px');
                     }
                 });
-                
-                $('#howTo').click(function(){
+
+                $('#howTo').click(function () {
                     app.openHowTo();
                 });
 
@@ -124,7 +124,7 @@
                     if (app.sessionid.length == 20) {
                         $('#circleMain').addClass('left');
                         $('header h1').removeClass('transparent');
-                        introEnd.run();
+                        window.introEnd.run();
 
                     } else {
                         $('#introSteps').addClass('step1');
@@ -179,31 +179,6 @@
                 }).add(1300, function () {
                     $('#backgroundParts').addClass('open');
                     openIntroPage($('#loginDescription'));
-                    $('#loginForm').submit(function (e) {
-                        e.preventDefault();
-                        $('#username, #password').blur();
-
-                        var uname = $('#username').val();
-                        var pass = $('#password').val();
-                        //TODO remove hard code uname and pword
-                        communicate({token: token, mode: "post_account_login", uname: uname, pword: pass}, function (data) {
-                            app.sessionid = data.login[0].session;
-                            window.localStorage.setItem("sessionid", app.sessionid);
-
-                            if (data.login[0].login == "true") {
-                                communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
-                                    app.user = [];
-                                    app.user.firstname = user.userinfo[0].firstname;
-                                    app.user.fullname = user.userinfo[0].fullname;
-                                    app.user.company = user.userinfo[0].company;
-                                    intro4.run();
-                                });
-                            } else {
-                                app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>', {closeModal: 'Close'});
-                            }
-
-                        });
-                    });
                 });
 
                 intro4 = new timeline().add(1, function () {
@@ -221,26 +196,35 @@
                         }
                         goPressed = true;
                         $(this).unbind('click');
-                        $(document).unbind('click');
+                        //$(document).unbind('click');
                         press($(this));
                         setTimeout(function () {
                             closeIntroPage($('#welcome'));
-                            introEnd.run();
+                            openIntroPage($('#welcomeHow'));
+                            app.howToAnimation('#welcomeHow', true);
+                            $('#introSteps .go').click(function () {
+                                $(this).unbind('click');
+                                press($(this));
+                                window.howto1.stop();
+                                window.howto2.stop();
+                                window.howto3.stop();
+                                window.introEnd.run();
+                            });
                         }, 400);
                     });
-                    $(document).click(function () {
-                        if (goPressed) {
-                            return;
-                        }
-                        goPressed = true;
-                        $('#introSteps .go').unbind('click');
-                        $(document).unbind('click');
-                        closeIntroPage($('#welcome'));
-                        introEnd.run();
-                    });
+                    /*$(document).click(function () {
+                     if (goPressed) {
+                     return;
+                     }
+                     goPressed = true;
+                     $('#introSteps .go').unbind('click');
+                     $(document).unbind('click');
+                     closeIntroPage($('#welcome'));
+                     window.introEnd.run();
+                     });*/
                 });
 
-                var introEnd = new timeline().add(1, function () {
+                window.introEnd = new timeline().add(1, function () {
                     app.endInfiniteScroll();
                     $('main, header .buttons').show();
                 }).add(50, function () {
@@ -252,9 +236,36 @@
                     $('#categories').show().addClass('animating');
                 }).add(1050, function () {
                     $('#categories').css('top', 0);
+                    $('#welcomeHow').empty().hide();
                 }).add(3000, function () {
                     $('main').addClass('nobg');
                     $('#introSteps').addClass('transparent').addClass('step1 step2 step3');
+                });
+
+                $('#loginForm').submit(function (e) {
+                    e.preventDefault();
+                    $('#username, #password').blur();
+
+                    var uname = $('#username').val();
+                    var pass = $('#password').val();
+                    //TODO remove hard code uname and pword
+                    communicate({token: token, mode: "post_account_login", uname: uname, pword: pass}, function (data) {
+                        app.sessionid = data.login[0].session;
+                        window.localStorage.setItem("sessionid", app.sessionid);
+
+                        if (data.login[0].login == "true") {
+                            communicate({token: token, mode: "get_account_userinfo", uid: data.login[0].session}, function (user) {
+                                app.user = [];
+                                app.user.firstname = user.userinfo[0].firstname;
+                                app.user.fullname = user.userinfo[0].fullname;
+                                app.user.company = user.userinfo[0].company;
+                                intro4.run();
+                            });
+                        } else {
+                            app.openModal('<p>Hmmm, looks like combination username and/or password is wrong</p>', {closeModal: 'Close'});
+                        }
+
+                    });
                 });
 
                 //menu listeners
@@ -266,6 +277,7 @@
                     if ($('body').toggleClass('menuOpen').hasClass('menuOpen')) {
                         $('.navigation ul ul').empty().removeAttr('style').removeClass('open');
                         $('.navigation .clicked').removeClass('clicked');
+                        $('#menuCloseOverlay').show();
                         var closingMenu = false;
                         $('.navigation').swipe({
                             swipeStatus: function (event, phase, direction, distance, duration, fingers) {
@@ -289,12 +301,17 @@
                             allowPageScroll: "vertical"
                         });
                     } else {
+                        $('#menuCloseOverlay').hide();
                         $('.navigation').swipe('destroy');
                     }
+                });
+                $('#menuCloseOverlay').click(function(){
+                    $('#headerMenu').click();
                 });
 
                 $('#navBg .title').click(function (e) {
                     $('body').removeClass('menuOpen');
+                    $('#menuCloseOverlay').hide();
                 });
 
                 $('#menu_home').click(function () {
@@ -372,7 +389,7 @@
                                                         top.css('visibility', 'hidden');
                                                     }, 5);
                                                 }, 400);
-                                            });
+                                            }, 'class="projScreen" data-pid="'+proj_id+'"');
                                         });
                                     });
                                 });
@@ -381,9 +398,9 @@
                     }
                 });
 
-                $('#add_project').click(function () {
+                // $('#add_project').click(function () {
 
-                });
+                // });
 
                 $('#menu_favourites').click(function () {
                     app.fader(function () {
@@ -413,7 +430,7 @@
                                         top.css('visibility', 'hidden');
                                     }, 5);
                                 }, 400);
-                            });
+                            }, 'class="inFav favScreen"');
                         });
                     });
                 });
@@ -545,6 +562,9 @@
                 new timeline().add(260, function () {
                     //start loading songs
                     cat.addClass('loading');
+                    var st = $('main').scrollTop();
+                    var to = cat.position().top + 1;
+                    $('main').animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40));
                     var data_tag = cat[0].dataset.tag;
                     var ul = $('ul', cat);
                     app.loadSongs({type: 'cat', type_id: data_tag, container: ul, page: "1"}, function (data) {
@@ -555,8 +575,7 @@
                                 cat.removeClass('loadPause loading');
                             }).add(1100, function () {
                                 var st = $('main').scrollTop();
-                                var to = cat.position().top + 1;
-                                $('main').animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40), function () {
+                                $('main').stop().animate({scrollTop: to}, Math.round(Math.sqrt(Math.abs(st - to)) * 40), function () {
                                     var curI = cat.index();
                                     $('.category-item.open').each(function () {
                                         $(this).removeClass('open');
@@ -831,22 +850,20 @@
                 var li = $(this).closest('li');
                 var song_id = li.attr('data-id');
                 communicate({token: token, mode: "post_account_infavourite", song: song_id, uid: app.sessionid}, function (data) {
-                console.log(data);
-                if(data.infavourite != undefined){
-                    if (data.infavourite[0].successful == 'true') {
-                        li.toggleClass('inFav');
-                        closeSwipe(li.children('.bar'));
+                    if (data.infavourite != undefined) {
+                        if (data.infavourite[0].successful == 'true') {
+                            li.toggleClass('inFav');
+                            closeSwipe(li.children('.bar'));
                         }
-                     }
-
-                    if(data.outfavourite[0].successful == 'true'){
+                    }
+                    if (data.outfavourite[0].successful == 'true') {
                         li.toggleClass('inFav');
                         closeSwipe(li.children('.bar'));
                         if($('#project-container').is(':visible')){
                         li.hide();
                         }
 
-                        }
+                    }
                 });
             }
             function songProj() {
@@ -855,7 +872,13 @@
                 }
 
                 var li = $(this).closest('li');
-                song_id = li.attr('data-id');
+                var song_id = li.attr('data-id');
+                if(li.hasClass('projScreen')){
+                    app.addToProject(li.attr('data-pid'), song_id, function(){
+                        li.slideUp();
+                    });
+                    return;
+                }
 
                 app.loadProjects(function (html) {
 
@@ -864,12 +887,13 @@
                     $('#modal .plus').click(function () {
                         press($(this));
                         setTimeout(function () {
-                            app.openModal("<br><br><input style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" +
+                            app.openModal("<br><br><input spellcheck='false' style='margin-top:1em;' type='text' id='proj_title' placeholder='Project title'>" +
                                     "<button class='proj_button' data-tag='1'>Corporate film</button>" +
                                     "<button class='proj_button' data-tag='2'>TV programme</button>" +
-                                    "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject: 'Create project'}, 'Create project', 'textNotAbs');
+                                    "<button class='proj_button' data-tag='3'>Commercial</button>", {postProject: 'Create project'}, 'Create project', 'textNotAbs buttonDisabled');
 
                             $('.proj_button').click(function () {
+                                $('#modal').removeClass('buttonDisabled');
                                 $('#proj_title').blur();
                                 $('.proj_button').removeClass('active');
                                 $(this).addClass('active');
@@ -879,7 +903,7 @@
 
                     $('#modal .project-item').click(function () {
                         press($(this));
-                        proj_id = $(this).attr('data-tag');
+                        var proj_id = $(this).attr('data-tag');
                         setTimeout(function () {
                             app.addToProject(proj_id, song_id, function () {
                                 app.openModal('<p>Track succesfully added to project</p>', {closeModal: 'Ok'})
@@ -1130,6 +1154,7 @@
                     Be prepared to be Inspired.
                 </p>
             </div>
+            <div id="welcomeHow" class="introPage"></div>
             <div id="introSteps" class="transparent">
                 <div class="inner">
                     <div class="wave wave33">
@@ -1139,7 +1164,8 @@
                     <div class="steps"><span class="s1">Get started</span><span class="s2">Login</span><span class="s3">Welcome</span></div>
                 </div>
                 <div class="go">
-                    <span>Go</span>
+                    <span class="st1">Go</span>
+                    <span class="st3">Next</span>
                 </div>
             </div>
         </div>
@@ -1173,16 +1199,19 @@
             Skoon 8<br>
             1511 HV Oostzaan<br>
             The Netherlands<br>
+            <!--
             <br>
             <br>
             <b>Follow us</b>
             <div id="socialLinks">
-                <a href="#" class="facebook"></a><!--https://www.facebook.com/pages/allmusicnl/155454641175182-->
-                <a href="#" class="twitter"></a><!--https://twitter.com/allmusicnl-->
-                <a href="#" class="linkedin"></a><!--https://www.linkedin.com/company/all-music-publishing-->
-            </div>
+                <a href="#" class="facebook"></a>https://www.facebook.com/pages/allmusicnl/155454641175182
+            <a href="#" class="twitter"></a>https://twitter.com/allmusicnl
+            <a href="#" class="linkedin"></a>https://www.linkedin.com/company/all-music-publishing
+        </div>
+            -->
         </div>
         <div id="topFixed" class="category-item"></div>
         <div id="fader"></div>
+        <div id="menuCloseOverlay"></div>
     </body>
 </html>

@@ -73,42 +73,44 @@ var app = (function ()
     }
 
     app.loadSongs = function (entity, callback) {
-        if (entity.type == 'fav') {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, function (data) {
-                if (data == 0) {
-                    if(entity.type == 'fav'){
-                    app.openModal("Sorry! You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!", {});
-                    }else{
-                    app.openModal("Sorry! this project does not contain any songs as of yet. Swipe to the left on the track you want to add to your project and hit the plus!", {});
-                    }
-                     app.fader(function () {
-                        $('#topFixed').empty();
-                        $('main').unbind('.cat');
-                        if (media !== null) {
-                            media.stop();
-                            media = null;
-                        }
-                        $('.category-item, #cyu').show();
-                        $('main').scrollTop(0);
-                        $('#project-container').hide();
-                        app.endInfiniteScroll();
-                    });
-
+        var func = function (data) {
+            if (data == 0) {
+                if (entity.type == 'fav') {
+                    app.openModal("<p>You don't have any favourite tracks as yet. Swipe to the left on the track you want to add to your favourites and hit the gem!</p>", {});
                 } else {
-                    callback(data);
+                    if($('#project-container li').length>0){
+                        return;
+                    }
+                    app.openModal("<p>This project does not contain any songs as of yet. Swipe to the left on the track you want to add to your project and hit the plus!</p>", {});
                 }
-            });
-        }
-        else {
-            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid, page: entity.page}, function (data) {
+                app.fader(function () {
+                    $('#topFixed').empty();
+                    $('main').unbind('.cat');
+                    if (media !== null) {
+                        media.stop();
+                        media = null;
+                    }
+                    $('.category-item, #cyu').show();
+                    $('main').scrollTop(0);
+                    $('#project-container').hide();
+                    app.endInfiniteScroll();
+                });
+
+            } else {
                 callback(data);
-            });
+            }
+        };
+        if (entity.type === 'fav') {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, uid: app.sessionid, page: entity.page}, func);
+        } else {
+            communicate({token: token, mode: "get_values_songlist", type: entity.type, type_id: entity.type_id, uid: app.sessionid, page: entity.page}, func);
         }
     };
 
-    app.renderSongs = function (container, data, callback) {
+    app.renderSongs = function (container, data, callback, extra) {
+        extra = extra || '';
         $.each(data.songlist, function () {
-            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '"/>');
+            var li = $('<li data-id="' + this.id + '" data-url="' + this.streaming_url + '" ' + extra + '/>');
             var buttons = $('<div class="bs"/>');
             $('<a class="proj"><span></span></a>').click(songProj).appendTo(buttons);
             $('<a class="fav"><span></span><u></u></a>').click(songFav).appendTo(buttons);
@@ -239,6 +241,7 @@ var app = (function ()
         var t = new timeline().add(400, function () {
             $('main, header .buttons').addClass('transparent');
             $('body').removeClass('menuOpen');
+            $('#menuCloseOverlay').hide();
         }).add(800, function () {
             intro3.run();
         }).add(1050, function () {
@@ -253,9 +256,9 @@ var app = (function ()
                 $('.ulCont', $(this)).css({'height': '0px'}).empty();
             });
             $('.category-item').show();
-            setTimeout(function(){
+            setTimeout(function () {
                 $('#project-container').hide();
-            },1);
+            }, 1);
             $('header u').removeClass('transparent');
         }).run();
     }
@@ -263,7 +266,7 @@ var app = (function ()
     function closeModal() {
         $('#modal').fadeOut(280, function () {
             $(this).hide();
-        });
+        }).swipe('destroy');
     }
 
     app.addToProject = function (proj_id, song_id, callback) {
@@ -274,7 +277,10 @@ var app = (function ()
     };
 
     app.createProject = function (type) {
-        title = $('#proj_title').val();
+        var title = $('#proj_title').val();
+        if (!title.length) {
+            return;
+        }
         communicate({token: token, mode: 'post_account_newproject', uid: app.sessionid, name: title, type: type}, function (data) {
             proj_id = data.newproject[0].id;
             app.addToProject(proj_id, song_id, function (data) {
@@ -288,24 +294,24 @@ var app = (function ()
         var main = $('main');
         var counter = 1;
         console.log($('#project-container ul li').length);
-        if($('#project-container ul li').length == 10){
+        if ($('#project-container ul li').length == 10) {
             main.bind('scroll.inf touchmove.inf', function () {
 
                 var hh = $('header').height();
                 var wh = $('body').height() - hh;
 
                 if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
-            {
-                app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
-                    counter++;
-                    if (data == 0) {
-                        app.endInfiniteScroll();
-                    } else {
-                        app.renderSongs($('#project-container ul'), data, function () {
-                        });
-                    }
-                });
-            }
+                {
+                    app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
+                        counter++;
+                        if (data == 0) {
+                            app.endInfiniteScroll();
+                        } else {
+                            app.renderSongs($('#project-container ul'), data, function () {
+                            });
+                        }
+                    });
+                }
             });
         }
     };
@@ -317,6 +323,7 @@ var app = (function ()
     app.fader = function (callback) {
         var f = $('#fader');
         $('body').removeClass('menuOpen');
+        $('#menuCloseOverlay').hide();
         new timeline().add(1, function () {
             f.show();
         }).add(10, function () {
@@ -335,87 +342,190 @@ var app = (function ()
             f.hide();
         }).run();
     };
-    
-    app.openHowTo = function(){
+
+    app.openHowTo = function () {
         app.openModal("<div class='howTo'></div>", {}, 'How to use', 'titleOnTop how opacity');
-        app.howToAnimation('#modal .howTo');
+        app.howToAnimation('#modal .howTo', false);
+        $('#modal').swipe({
+            swipeLeft: function (event, distance, duration, fingerCount, fingerData) {
+                if (howtopos === 3) {
+                    closeModal();
+                    return;
+                }
+                $('#modal .instrux div').stop().fadeOut();
+                window['howto' + howtopos].stop();
+                window['howto' + (howtopos + 1)].run();
+                $('#dots').removeAttr('class').addClass('d' + (howtopos + 1));
+            },
+            swipeRight: function (event, distance, duration, fingerCount, fingerData) {
+                if (howtopos === 1) {
+                    closeModal();
+                    return;
+                }
+                $('#modal .instrux div').fadeOut();
+                window['howto' + howtopos].stop();
+                window['howto' + (howtopos - 1)].run();
+                $('#dots').removeAttr('class').addClass('d' + (howtopos - 1));
+            }
+        });
+        setTimeout(function () {
+            $('#headerI').click();
+        }, 100);
     };
-    app.howToAnimation = function(selector){
-        var container=$(selector);
-        var openli,sfw;
-        new timeline().add(1,function(){
-            container.append('<div class="howToAnim"><div class="menulist"><b>Menu</b><i>Projects</i><i>Favourites</i><i>Profile</i><i>Contact</i><i>Logout</i></div><div class="inner">'+
-                    '<header> <h1 class=""> <span>Inspire Me</span> </h1> <div class="buttons" style="display: block;"> <a class="i" id="headerI"><span></span></a> <a class="menu" id="headerMenu"><span></span></a> </div> </header>'+
-                    '<div class="category-item categories playing">'+
-                    '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small"><span></span></a><a class="pause"><span></span></a><a class="stepForwards small"><span></span></a></div></div>'+
-                    '<div class="ulCont" style="height: auto;"><ul>'+
-                    (new Array(8).join('<li><div class="bs"><a class="proj"><span></span></a><a class="fav"><span></span><u></u></a><a class="i"><span></span></a></div><div class="bar"><div class="favIcon"></div><div class="info"><b>Title</b><i>Producer</i></div><span class="duration">02:12</span><u><i></i><u></u><b></b></u></div></li>'))+
-                    '</ul></div>'+
-                    '</div></div></div>');
-        }).add(2000,function(){
-            openli=$('li:nth-child(4)',container);
+    var howtopos;
+    app.howToAnimation = function (selector, welcome) {
+        var container = $(selector);
+        if ($('.howToAnim', container).length > 0) {
+            return;
+        }
+        var openli, sfw;
+        var ratio = $(window).height() / $(window).width();
+        var listlength;
+        var nm = 4;
+        if (welcome && ratio < 1.54) {
+            listlength = 4;
+            nm = 2;
+        } else if (!welcome && ratio < 1.4 || welcome && ratio < 1.65) {
+            listlength = 5;
+            nm = 3;
+        } else if (!welcome && ratio < 1.6 || welcome && ratio < 1.75) {
+            listlength = 6;
+        } else if (!welcome && ratio < 1.7 || welcome && ratio < 1.85) {
+            listlength = 7;
+        } else {
+            listlength = 8;
+        }
+        howtopos = 1;
+        container.append('<div class="howToAnim"><div class="menulist"><b>Menu</b><i>Projects</i><i>Favourites</i><i>Profile</i><i>Contact</i><i>Logout</i></div><div class="inner">' +
+                '<header> <h1 class=""> <span>Inspire Me</span> </h1> <div class="buttons" style="display: block;"> <a class="i"><span></span></a> <a class="menu"><span></span></a> </div> </header>' +
+                '<div class="category-item categories playing">' +
+                '<div class="top"><h2>Focus</h2><img src="media/defaultCatImg.jpg" draggable="false"><div class="buttons loadingIcon" style="padding-bottom: 0px;"><a class="load"></a></div><div class="buttons noPlay" style="padding-bottom: 0px;"><a class="play"><span></span></a></div><div class="buttons duringPlay" style="padding-bottom: 0px;"><a class="stepBackwards small"><span></span></a><a class="pause"><span></span></a><a class="stepForwards small"><span></span></a></div></div>' +
+                '<div class="ulCont" style="height: auto;"><ul>' +
+                (new Array(listlength).join('<li><div class="bs"><a class="proj"><span></span></a><a class="fav"><span></span><u></u></a><a class="i"><span></span></a></div><div class="bar"><div class="favIcon"></div><div class="info"><b>Title</b><i>Producer</i></div><span class="duration">02:12</span><u><i></i><u></u><b></b></u></div></li>')) +
+                '</ul></div>' +
+                '</div></div>' +
+                '<div class="instrux">' +
+                '<div class="t1">Open the track menu<div class="t2">By swiping the track to the left</div></div>' +
+                '<div class="t3">Get information about the track</div>' +
+                '<div class="t4">Add track to favourites</div>' +
+                '<div class="t5">Add track to project</div>' +
+                '<div class="t6">Fastforward in a track</div>' +
+                '<div class="t7">Open main menu</div>' +
+                '<span id="dots"><span></span><span></span><span></span></span></div>' +
+                '</div>');
+        var instrux = $('.instrux', container);
+        window.howto1 = new timeline().add(1, function () {
+            howtopos = 1;
+            $('.stepForwards', container).removeClass('pressed');
+            $('.menulist', container).hide();
+        }).add(2000, function () {
+            openli = $('li:nth-child(' + nm + ')', container);
             openli.addClass('active');
-        }).add(3000,function(){
+            $('.t1', instrux).fadeIn();
+        }).add(3000, function () {
             openli.addClass('open');
-        }).add(4000,function(){
+        }).add(4000, function () {
             openli.removeClass('open');
-        }).add(5000,function(){
+        }).add(5000, function () {
+            if (welcome) {
+                window.howto1.stop();
+                $('.t1', instrux).fadeOut();
+                window.howto2.run();
+            } else {
+                openli.addClass('open');
+                $('.t2', instrux).fadeIn();
+            }
+        }).add(6000, function () {
+            openli.removeClass('open');
+        }).add(7000, function () {
             openli.addClass('open');
-        }).add(6000,function(){
+            $('.t1', instrux).fadeOut();
+        }).add(9500, function () {
+            $('.bs>.i', openli).addClass('pressed');
+            $('.t3', instrux).fadeIn();
+        }).add(11000, function () {
+            $('.t3', instrux).fadeOut();
+        }).add(11500, function () {
+            $('.bs>.i', openli).removeClass('pressed');
+            $('.bs>.fav', openli).addClass('pressed');
+            $('.t4', instrux).fadeIn();
+        }).add(13000, function () {
+            $('.t4', instrux).fadeOut();
+        }).add(13500, function () {
+            $('.bs>.fav', openli).removeClass('pressed');
+            $('.bs>.proj', openli).addClass('pressed');
+            $('.t5', instrux).fadeIn();
+        }).add(15500, function () {
+            $('.bs>.proj', openli).removeClass('pressed');
+            $('.t5', instrux).fadeOut();
+        }).add(17000, function () {
             openli.removeClass('open');
-        }).add(7000,function(){
-            openli.addClass('open');
-        }).add(9500,function(){
-            $('.bs>.i',openli).addClass('pressed');
-        }).add(11500,function(){
-            $('.bs>.i',openli).removeClass('pressed');
-            $('.bs>.fav',openli).addClass('pressed');
-        }).add(13500,function(){
-            $('.bs>.fav',openli).removeClass('pressed');
-            $('.bs>.proj',openli).addClass('pressed');
-        }).add(15500,function(){
-            $('.bs>.proj',openli).removeClass('pressed');
-        }).add(17000,function(){
-            openli.removeClass('open');
-        }).add(18000,function(){
+        }).add(18000, function () {
             openli.removeClass('active');
-        }).add(19000,function(){
-            sfw=$('.stepForwards',container);
+        });
+        window.howto1.run();
+
+        window.howto2 = new timeline().add(1, function () {
+            howtopos = 2;
+            sfw = $('.stepForwards', container);
+            $('.active, .open, .pressed', container).removeClass('active open pressed');
+            $('.howToAnim', container).removeClass('menuOpen');
+        }).add(1000, function () {
+            $('.menulist', container).hide();
             sfw.addClass('pressed');
-        }).add(21000,function(){
+            $('.t6', instrux).fadeIn();
+        }).add(3000, function () {
             sfw.removeClass('pressed');
-        }).add(21500,function(){
+        }).add(3200, function () {
             sfw.addClass('pressed');
-        }).add(22000,function(){
+        }).add(3400, function () {
             sfw.removeClass('pressed');
-        }).add(22500,function(){
+        }).add(3600, function () {
             sfw.addClass('pressed');
-        }).add(23000,function(){
+        }).add(3800, function () {
             sfw.removeClass('pressed');
-        }).add(24500,function(){
-            var sp=$('header .menu span');
-            var t=new timeline();
-            for(var i=0;i<5;i++){
-                t.add(i*200,function(){
+        }).add(4000, function () {
+            sfw.addClass('pressed');
+        }).add(4200, function () {
+            sfw.removeClass('pressed');
+        }).add(4400, function () {
+            sfw.addClass('pressed');
+        }).add(5000, function () {
+            sfw.removeClass('pressed');
+            $('.t6', instrux).fadeOut();
+            if (welcome) {
+                window.howto3.run();
+            }
+        });
+
+        window.howto3 = new timeline().add(1, function () {
+            howtopos = 3;
+            $('.stepForwards', container).removeClass('pressed');
+            $('.menulist', container).show();
+        }).add(1000, function () {
+            var sp = $('header .menu span');
+            var t = new timeline();
+            for (var i = 0; i < 5; i++) {
+                t.add(i * 200, function () {
                     sp.addClass('big');
-                }).add(i*200+100,function(){
+                }).add(i * 200 + 100, function () {
                     sp.removeClass('big');
                 });
             }
             t.run();
-        }).add(25000,function(){
-            $('.menulist',container).show();
-        }).add(25010,function(){
-            $('.howToAnim',container).addClass('menuOpen');
-        }).add(28000,function(){
-            $('.howToAnim',container).removeClass('menuOpen');
-        }).add(29500,function(){
-            $('.howToAnim',container).fadeOut(600);
-        }).add(30200,function(){
-            closeModal();
-        }).run();
+        }).add(2300, function () {
+            $('.howToAnim', container).addClass('menuOpen');
+            $('.t7', instrux).fadeIn();
+        }).add(5300, function () {
+            $('.howToAnim', container).removeClass('menuOpen');
+        }).add(6000, function () {
+            if (welcome) {
+                window.introEnd.run();
+            }
+        });
+
     };
-    
+
 
     //temp functions
     function reconnect() {
