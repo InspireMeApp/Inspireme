@@ -441,7 +441,7 @@
 
                 $('#menu_logout').click(function () {
                     app.sessionid = null;
-                    app.openModal('<p>are you sure you want to logout?</p><br><br>', {logout: 'Logout', closeModal: 'Cancel'});
+                    app.openModal('<p>are you sure you want to logout?</p><br><br>', {closeModal: 'Cancel', logout: 'Logout' });
                 });
 
 
@@ -841,6 +841,7 @@
 
                     if(data.outfavourite[0].successful == 'true'){
                         li.toggleClass('inFav');
+                        closeSwipe(li.children('.bar'));
                         if($('#project-container').is(':visible')){
                         li.hide();
                         }
