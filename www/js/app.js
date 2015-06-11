@@ -292,7 +292,7 @@ var app = (function ()
     //TODO unbind when not needed anymore..
     app.startInfiniteScroll = function (type, proj_id) {
         var main = $('main');
-        var counter = 1;
+        var counter = 2;
         console.log($('#project-container ul li').length);
         if ($('#project-container ul li').length == 10) {
             main.bind('scroll.inf touchmove.inf', function () {
@@ -303,6 +303,7 @@ var app = (function ()
                 if ($(this).scrollTop() + wh + 5 >= $('#project-container').height())
                 {
                     app.loadSongs({type: type, type_id: proj_id, page: counter}, function (data) {
+                        console.log(data);
                         counter++;
                         if (data == 0) {
                             app.endInfiniteScroll();
